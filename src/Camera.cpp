@@ -1,0 +1,128 @@
+#include "Camera.h"
+
+Camera::Camera(glm::vec3 position, glm::vec3 up, GLfloat yaw, GLfloat pitch)
+    : m_front(glm::vec3(0.0f, 0.0f, -1.0f)), m_movementSpeed(SPEED), m_mouseSensitivity(SENSITIVTY), m_zoom(ZOOM),
+    m_position(position), m_worldUp(up), m_yaw(yaw), m_pitch(pitch)
+{
+    std::cout << "Scene Camera Initialized" << std::endl;
+
+    this->updateCameraVectors();
+
+    //EngineStatics::Setcamera(this);
+}
+
+Camera::~Camera()
+{
+    std::cout << "Scene Camera Destroyed" << std::endl;
+
+    //EngineStatics::Setcamera(nullptr);
+}
+
+void Camera::Update(GLfloat deltaTime)
+{
+    if (Input::getKeyPressed(GLFW_KEY_W)) { processKeyboard(FORWARD, deltaTime); }
+    if (Input::getKeyPressed(GLFW_KEY_S)) { processKeyboard(BACKWARD, deltaTime); }
+    if (Input::getKeyPressed(GLFW_KEY_A)) { processKeyboard(LEFT, deltaTime); }
+    if (Input::getKeyPressed(GLFW_KEY_D)) { processKeyboard(RIGHT, deltaTime); }
+
+    double x, y;
+    Input::getMouseMoved(x,y);
+    //std::cout << x << " " << y << std::endl;
+    processMouse(x, y);
+    //std::cout << "camera updated" << std::endl;
+}
+
+glm::mat4 Camera::getViewMatrix() const
+{
+    //std::cout << "getviewmatrix" << std::endl;
+
+    //std::cout << "X: " << (int)position.x << std::endl;
+    //std::cout << "Y: " << (int)position.y << std::endl;
+    //std::cout << "Z: " << (int)position.z << std::endl;
+	//Stating where we want to look (front) 
+    return glm::lookAt(m_position, m_position + m_front, m_up);
+
+}
+
+glm::vec3 Camera::getPosition() const
+{
+    return m_position;
+}
+
+void Camera::processKeyboard(Camera_Movement direction, GLfloat deltaTime)
+{
+    //std::cout << "process keyboard" << std::endl;
+	GLfloat velocity = m_movementSpeed * deltaTime;
+
+    //Multiple if statements to allow multiple keys pressed down
+    if (direction == FORWARD)
+    {
+        m_position += m_front * velocity;
+    }
+
+    if (direction == BACKWARD)
+    {
+        m_position -= m_front * velocity;
+    }
+
+    if (direction == LEFT)
+    {
+        m_position -= m_right * velocity;
+    }
+
+    if (direction == RIGHT)
+    {
+        m_position += m_right * velocity;
+    }
+}
+
+void Camera::processMouse(GLfloat xOffset, GLfloat yOffset, GLboolean constrainPitch)
+{
+    if (xOffset > 100 && xOffset > 0)
+        xOffset = 100;
+    if (yOffset > 100 && yOffset > 0)
+        yOffset = 100;
+    
+    if (xOffset < -100 && xOffset < 0)
+        xOffset = -100;
+    if (yOffset < -100 && yOffset < 0)
+        yOffset = -100;
+    
+    
+    xOffset *= m_mouseSensitivity;
+    yOffset *= m_mouseSensitivity;
+    
+    m_yaw += xOffset;
+    m_pitch += yOffset;
+    
+    //Make sure that when pitch is out of bounds, screen doesnt get flipped
+    if (constrainPitch)
+    {
+        if (m_pitch > 89.0f)
+        {
+            m_pitch = 89.0;
+        }
+        if (m_pitch < -89.0f)
+        {
+            m_pitch = -89.0f;
+        }
+    }
+    
+    //Update Front, Right and Up vectors using the updated eular angles
+    this->updateCameraVectors();
+
+}
+
+void Camera::updateCameraVectors()
+{
+    // Calculate the new Front vector
+    glm::vec3 front = { 0.0f,0.0f,0.0f };
+    front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+    front.y = sin(glm::radians(m_pitch));
+    front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+    m_front = glm::normalize(front);
+    
+    // Also re-calculate the Right and Up vector
+    m_right = glm::normalize(glm::cross(m_front, m_worldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+    m_up = glm::normalize(glm::cross(m_right, m_front));
+}
