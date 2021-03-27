@@ -4,9 +4,11 @@
 
 #include "ModelLoader.h"
 
+std::vector<ImportedModel*> MeshManager::loadedModels;
+
 ImportedModel::ImportedModel(const char* filePath)
 {
-
+	m_filePath = filePath;
 	ModelLoader ml = ModelLoader();
 	ml.parseOBJ(filePath);
 
@@ -136,4 +138,35 @@ std::vector<float> ModelLoader::getTextureCoordinates() const
 std::vector<float> ModelLoader::getNormals() const
 {
 	return normals;
+}
+
+ImportedModel* MeshManager::loadModel(const char* filePath)
+{
+	//Check if mesh loaded
+	//loadedModels.reserve(100);
+	//std::cout << loadedModels.at(0) << std::endl;
+
+	for (ImportedModel* im : loadedModels)
+	{
+		if (im->m_filePath == filePath)
+		{
+			std::cout << "MESH->" << filePath << " already exists, returning loaded model" << std::endl;
+			return im;
+		}
+	}
+
+	std::cout << "MESH->" << filePath << " is being loaded" << std::endl;
+
+	
+
+	loadedModels.push_back(new ImportedModel(filePath));
+	//std::cout << loadedModels.size();
+
+	for (ImportedModel* im : loadedModels)
+	{
+		std::cout << im << std::endl;
+	}
+
+	return loadedModels.back();
+	//return im;
 }

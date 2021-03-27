@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-
+#include <iostream>
 #include "glm/glm.hpp"
 
 class ImportedModel
@@ -14,6 +14,8 @@ public:
 	std::vector<glm::vec3> getVertices() const;
 	std::vector<glm::vec2> getTextureCoords() const;
 	std::vector<glm::vec3> getNormals() const;
+
+	const char* m_filePath;
 
 private:
 
@@ -51,6 +53,19 @@ private:
 	std::vector<float> triangleVerts;
 	std::vector<float> textureCoords;
 	std::vector<float> normals;
+
+};
+
+class MeshManager
+{
+public:
+
+	static ImportedModel* loadModel(const char* filePath);
+
+private:
+
+	static std::vector<ImportedModel*> loadedModels;
+
 
 };
 

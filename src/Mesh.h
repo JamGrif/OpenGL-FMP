@@ -27,7 +27,8 @@ public:
 	void updateMesh();
 	void drawMesh();
 
-	GLuint loadTexture(const char* texturePath);
+	void loadDiffuseTexture(const char* texturePath);
+	void loadSpecularTexture(const char* texturePath);
 
 	void		SetXPos(float num), SetYPos(float num), SetZPos(float num);
 	float		GetXPos(), GetYPos(), GetZPos();
@@ -52,7 +53,8 @@ private:
 	//Mesh properties
 	ImportedModel* meshModel;
 	Shader* meshShader;
-	GLuint meshTexture;
+	GLuint meshDiffuseTexture;
+	GLuint meshSpecularTexture;
 
 	GLuint VBO[3];
 
@@ -76,17 +78,6 @@ private:
 	//Fragment Shader
 	GLuint lightAmbLoc, lightDiffLoc, lightSpecLoc, lightPosLoc, viewPosLoc;
 
-	
-
-	//Material
-	struct Material
-	{
-		float Ambient[3]{ 0.0f,0.0f,0.0f };
-		float* Diffuse;
-		float* Specular;
-		float Shininess;
-	};
-	//Material modelMaterial;
 
 };
 
