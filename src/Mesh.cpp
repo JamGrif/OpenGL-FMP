@@ -1,7 +1,7 @@
 #include "Mesh.h"
 
 Mesh::Mesh(const char* meshFilePath)
-	:meshModel(nullptr), meshShader(nullptr), meshDiffuseTexture(0), meshSpecularTexture(0),
+	:meshModel(nullptr), meshShader(nullptr), meshDiffuseTexture(nullptr), meshSpecularTexture(nullptr),
 	m_position{ 0.0f,0.0f,0.0f }, m_rotation{ 0.0f,0.0f,0.0f }, m_scale{ 1.0f,1.0f,1.0f },
 	mMat{ 1.0f }, vMat{ 1.0f }, tMat{ 1.0f }, rMat{ 1.0f }, sMat{ 1.0f }, invTrMat{ 1.0f }
 {
@@ -18,22 +18,24 @@ Mesh::~Mesh()
 	//delete meshModel;
 	meshModel = nullptr;
 
-	delete meshShader;
+	//delete meshShader;
 	meshShader = nullptr;
+
+	meshDiffuseTexture = nullptr;
+
+	meshSpecularTexture = nullptr;
 
 
 }
 
 void Mesh::initMesh(const char* meshFilePath)
 {
-	//modelMaterial.Ambient = Utility::goldAmbient();
-	//modelMaterial.Diffuse = Utility::goldDiffuse();
-	//modelMaterial.Specular = Utility::goldSpecular();
-	//modelMaterial.Shininess = Utility::goldShininess();
 
 	meshModel = MeshManager::loadModel(meshFilePath);
 	//meshModel = new ImportedModel(meshFilePath);
-	meshShader = new Shader("res/shaders/DEFAULT-vertexShader.glsl", "res/shaders/DEFAULT-fragmentShader.glsl");
+	//meshShader = new Shader("res/shaders/DEFAULT-vertexShader.glsl", "res/shaders/DEFAULT-fragmentShader.glsl");
+	meshShader = ShaderManager::loadShader("res/shaders/DEFAULT-vertexShader.glsl", "res/shaders/DEFAULT-fragmentShader.glsl");
+
 	//std::cout << "hello" << std::endl;
 	std::vector<glm::vec3> vert = meshModel->getVertices();
 	std::vector<glm::vec2> tex = meshModel->getTextureCoords();
@@ -70,8 +72,6 @@ void Mesh::initMesh(const char* meshFilePath)
 	glBindBuffer(GL_ARRAY_BUFFER, VBO[2]);
 	glBufferData(GL_ARRAY_BUFFER, nvalues.size() * 4, &nvalues[0], GL_STATIC_DRAW);
 
-	//meshDiffuseTexture = loadDiffuseTexture("res/textures/shuttle_diff.jpg");
-	//meshSpecularTexture = loadDiffuseTexture("res/textures/shuttle_spec.jpg");
 
 }
 
@@ -110,23 +110,16 @@ void Mesh::drawMesh()
 	glUniform1i(glGetUniformLocation(meshShader->getProgram(), "material.specular"), 1);
 	glUniform1f(glGetUniformLocation(meshShader->getProgram(), "material.shininess"), 48.0f);
 
-	//Bind diffuse map
-	if (meshDiffuseTexture > 0)
-	{
-		//std::cout << meshDiffuseTexture << std::endl;
-	}
+
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, meshDiffuseTexture);
+	glBindTexture(GL_TEXTURE_2D, meshDiffuseTexture->getTexture());
 
-	//Bind specular map
-	if (meshSpecularTexture > 0)
-	{
-		//std::cout << meshSpecularTexture << std::endl;
-	}
+
 
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, meshSpecularTexture);
+	glBindTexture(GL_TEXTURE_2D, meshSpecularTexture->getTexture());
+
 
 	//Fragment
 	viewPosLoc = glGetUniformLocation(meshShader->getProgram(), "viewPos");
@@ -173,66 +166,23 @@ void Mesh::drawMesh()
 
 void Mesh::loadDiffuseTexture(const char* texturePath)
 {
-	GLuint textureID;
-	textureID = SOIL_load_OGL_texture(texturePath, SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y); //Generates texture object
-
-	if (textureID == 0)
+	if (meshDiffuseTexture == nullptr)
 	{
-		std::cout << "Could not find requested texture! " << texturePath << std::endl;
-		return;
+		meshDiffuseTexture = TextureManager::loadTexture(texturePath);
+
 	}
-
-	glBindTexture(GL_TEXTURE_2D, textureID); //Activate texture
-
-	//Mipmap
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); //Apply Mipmapping
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	//Anisotropic filtering
-	if (glewIsSupported("GL_EXT_texture_filter_anisotropic")) //Ensure supported
-	{
-		GLfloat anisoSetting = 0.0f;
-		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &anisoSetting); //Set anisoSetting to maximum sampling support
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisoSetting); //Apply Anisotropic Filtering
-	}
-
-	//Specify what happens to texture coords outside 0-1 range
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-
-	meshDiffuseTexture = textureID;
 }
 
 void Mesh::loadSpecularTexture(const char* texturePath)
 {
-	GLuint textureID;
-	textureID = SOIL_load_OGL_texture(texturePath, SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y); //Generates texture object
-
-	if (textureID == 0)
+	if (meshSpecularTexture == nullptr)
 	{
-		std::cout << "Could not find requested texture! " << texturePath << std::endl;
-		return;
+		meshSpecularTexture = TextureManager::loadTexture(texturePath);
 	}
-
-	glBindTexture(GL_TEXTURE_2D, textureID); //Activate texture
-
-	//Mipmap
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); //Apply Mipmapping
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	//Anisotropic filtering
-	if (glewIsSupported("GL_EXT_texture_filter_anisotropic")) //Ensure supported
+	else 
 	{
-		GLfloat anisoSetting = 0.0f;
-		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &anisoSetting); //Set anisoSetting to maximum sampling support
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisoSetting); //Apply Anisotropic Filtering
+		std::cout << "texture slot already in use" << std::endl;
 	}
-
-	//Specify what happens to texture coords outside 0-1 range
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-
-	meshSpecularTexture = textureID;
 }
 
 void Mesh::SetXPos(float num) { m_position.x = num; }

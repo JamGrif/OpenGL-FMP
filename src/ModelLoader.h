@@ -66,6 +66,6 @@ private:
 
 	static std::vector<ImportedModel*> loadedModels;
 
-
+	MeshManager();
 };
 

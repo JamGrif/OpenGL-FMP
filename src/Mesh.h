@@ -3,6 +3,7 @@
 
 #include "ModelLoader.h"
 #include "Shader.h"
+#include "Texture.h"
 #include "Utility.h"
 #include "EngineStatics.h"
 
@@ -51,10 +52,13 @@ public:
 private:
 	
 	//Mesh properties
-	ImportedModel* meshModel;
-	Shader* meshShader;
-	GLuint meshDiffuseTexture;
-	GLuint meshSpecularTexture;
+	ImportedModel*	meshModel;
+	Shader*			meshShader;
+	Texture*		meshDiffuseTexture;
+	Texture*		meshSpecularTexture;
+
+	//GLuint meshDiffuseTexture;
+	//GLuint meshSpecularTexture;
 
 	GLuint VBO[3];
 

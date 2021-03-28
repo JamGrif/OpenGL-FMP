@@ -162,6 +162,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Utility.cpp" />
+    <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LightManager.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="src\ErrorChecking.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Utility.h" />
+    <ClInclude Include="src\Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\DEFAULT-fragmentShader.glsl" />

@@ -1,5 +1,7 @@
 #include "Shader.h"
 
+std::vector<Shader*> ShaderManager::loadedShaders;
+
 Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 {
 	std::cout << "Shader Initialized" << std::endl;
@@ -92,6 +94,9 @@ Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 	//Delete the shaders as they're linked into our program now and no longer neccessery
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);
+
+	m_vertexPath = vertexPath;
+	m_fragmentPath = fragmentPath;
 }
 
 Shader::~Shader()
@@ -110,4 +115,33 @@ void Shader::Use() const
 GLuint Shader::getProgram() const
 {
 	return this->m_shaderProgram;
+}
+
+const GLchar* Shader::getVertexPath()
+{
+	return m_vertexPath;
+}
+
+const GLchar* Shader::getFragmentPath()
+{
+	return m_fragmentPath;
+}
+
+Shader* ShaderManager::loadShader(const GLchar* vertexPath, const GLchar* fragmentPath)
+{
+	//Check if shader program is already loaded
+	for (Shader* s : loadedShaders)
+	{
+		if (s->getVertexPath() == vertexPath && s->getFragmentPath() == fragmentPath)
+		{
+			std::cout << "SHADERMANAGER->" << vertexPath << " + " << fragmentPath << " program already exists, returning loaded shader program" << std::endl;
+			return s;
+		}
+	}
+
+	//Otherwise, create new texture and add it to vector
+	std::cout << "SHADERMANAGER->" << vertexPath << " + " << fragmentPath << " program is being created" << std::endl;
+
+	loadedShaders.push_back(new Shader(vertexPath, fragmentPath));
+	return loadedShaders.back();
 }

@@ -142,31 +142,19 @@ std::vector<float> ModelLoader::getNormals() const
 
 ImportedModel* MeshManager::loadModel(const char* filePath)
 {
-	//Check if mesh loaded
-	//loadedModels.reserve(100);
-	//std::cout << loadedModels.at(0) << std::endl;
-
+	//Check if model is already loaded loaded
 	for (ImportedModel* im : loadedModels)
 	{
 		if (im->m_filePath == filePath)
 		{
-			std::cout << "MESH->" << filePath << " already exists, returning loaded model" << std::endl;
+			std::cout << "MESHMANAGER->" << filePath << " already exists, returning loaded model" << std::endl;
 			return im;
 		}
 	}
 
-	std::cout << "MESH->" << filePath << " is being loaded" << std::endl;
-
-	
+	//Otherwise, create new model and add it to vector
+	std::cout << "MESHMANAGER->" << filePath << " is being loaded" << std::endl;
 
 	loadedModels.push_back(new ImportedModel(filePath));
-	//std::cout << loadedModels.size();
-
-	for (ImportedModel* im : loadedModels)
-	{
-		std::cout << im << std::endl;
-	}
-
 	return loadedModels.back();
-	//return im;
 }
