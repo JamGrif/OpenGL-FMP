@@ -25,6 +25,11 @@ void Camera::Update(GLfloat deltaTime)
     if (Input::getKeyPressed(GLFW_KEY_A)) { processKeyboard(LEFT, deltaTime); }
     if (Input::getKeyPressed(GLFW_KEY_D)) { processKeyboard(RIGHT, deltaTime); }
 
+    if (Input::getKeyPressed(GLFW_KEY_R))
+    {
+        std::cout << "Position x - " << m_position.x << " Position y - " << m_position.y << " Position z - " << m_position.z << std::endl;
+    }
+
     double x, y;
     Input::getMouseMoved(x,y);
     //std::cout << x << " " << y << std::endl;
@@ -53,6 +58,7 @@ void Camera::processKeyboard(Camera_Movement direction, GLfloat deltaTime)
 {
     //std::cout << "process keyboard" << std::endl;
 	GLfloat velocity = m_movementSpeed * deltaTime;
+
 
     //Multiple if statements to allow multiple keys pressed down
     if (direction == FORWARD)

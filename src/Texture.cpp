@@ -62,7 +62,7 @@ Texture* TextureManager::loadTexture(const char* filePath)
 	{
 		if (t->getFilePath() == filePath)
 		{
-			std::cout << "TEXTUREMANAGER->" << filePath << " already exists, returning loaded texture" << std::endl;
+			//std::cout << "TEXTUREMANAGER->" << filePath << " already exists, returning loaded texture" << std::endl;
 			return t;
 		}
 	}

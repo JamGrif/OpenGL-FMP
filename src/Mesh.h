@@ -52,35 +52,39 @@ public:
 private:
 	
 	//Mesh properties
-	ImportedModel*	meshModel;
-	Shader*			meshShader;
-	Texture*		meshDiffuseTexture;
-	Texture*		meshSpecularTexture;
+	ImportedModel*	m_meshModel;
+	Shader*			m_meshShader;
+	Texture*		m_meshDiffuseTexture;
+	Texture*		m_meshSpecularTexture;
 
 	//GLuint meshDiffuseTexture;
 	//GLuint meshSpecularTexture;
 
-	GLuint VBO[3];
+	GLuint m_VBO[3];
 
 	//Space
 	glm::vec3 m_position;
 	glm::vec3 m_rotation;
 	glm::vec3 m_scale;
 
-	glm::mat4 mMat;     //Model
-	glm::mat4 vMat;     //View
-	glm::mat4 tMat;     //Translation
-	glm::mat4 rMat;     //Rotation
-	glm::mat4 sMat;		//Scale
-	glm::mat4 invTrMat; //Inverse transpose
+	glm::mat4 m_mMat;     //Model
+	glm::mat4 m_vMat;     //View
+	glm::mat4 m_tMat;     //Translation
+	glm::mat4 m_rMat;     //Rotation
+	glm::mat4 m_sMat;		//Scale
+	glm::mat4 m_invTrMat; //Inverse transpose
 	
 
 	//Uniforms
 	//Vertex Shader
-	GLuint mLoc, vLoc, projLoc;
+	//GLuint mLoc, vLoc, projLoc;
 
 	//Fragment Shader
 	GLuint lightAmbLoc, lightDiffLoc, lightSpecLoc, lightPosLoc, viewPosLoc;
+
+
+	//Cached other classes
+	LightManager* m_localLightManager;
 
 
 };

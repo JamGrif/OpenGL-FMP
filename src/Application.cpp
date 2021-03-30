@@ -63,7 +63,7 @@ int Application::appInit()
 	}
 
 	glfwSwapInterval(1);
-	glClearColor(0.1, 0.1, 0.1, 1.0); //Sets clear colour
+	glClearColor(0.0, 0.0, 0.0, 1.0); //Sets clear colour
 
 	//Build projection matrix
 	glfwGetFramebufferSize(m_appWindow, &m_currentWindowWidth, &m_currentWindowHeight);
@@ -84,6 +84,8 @@ int Application::appInit()
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
 	glCullFace(GL_BACK);
+
+	glEnable(GL_MULTISAMPLE);
 
 
 	//Create Input object

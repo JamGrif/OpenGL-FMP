@@ -2,6 +2,7 @@
 
 int main()
 {
+	
 	Application* app = new Application();
 
 	if (app->appInit() == 0)
@@ -9,8 +10,11 @@ int main()
 		app->appLoop();
 	}
 
+
 	delete app;
 	app = nullptr;
+
+	
 
 	return 0;
 }

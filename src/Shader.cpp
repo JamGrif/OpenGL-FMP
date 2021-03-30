@@ -134,7 +134,7 @@ Shader* ShaderManager::loadShader(const GLchar* vertexPath, const GLchar* fragme
 	{
 		if (s->getVertexPath() == vertexPath && s->getFragmentPath() == fragmentPath)
 		{
-			std::cout << "SHADERMANAGER->" << vertexPath << " + " << fragmentPath << " program already exists, returning loaded shader program" << std::endl;
+			//std::cout << "SHADERMANAGER->" << vertexPath << " + " << fragmentPath << " program already exists, returning loaded shader program" << std::endl;
 			return s;
 		}
 	}

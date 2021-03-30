@@ -39,7 +39,6 @@ private:
 
 	static std::vector<Texture*> loadedTextures;
 
-
 	TextureManager();
 };
 

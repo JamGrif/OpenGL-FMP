@@ -147,7 +147,7 @@ ImportedModel* MeshManager::loadModel(const char* filePath)
 	{
 		if (im->m_filePath == filePath)
 		{
-			std::cout << "MESHMANAGER->" << filePath << " already exists, returning loaded model" << std::endl;
+			//std::cout << "MESHMANAGER->" << filePath << " already exists, returning loaded model" << std::endl;
 			return im;
 		}
 	}

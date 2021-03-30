@@ -1,51 +1,59 @@
 #include "Mesh.h"
 
 Mesh::Mesh(const char* meshFilePath)
-	:meshModel(nullptr), meshShader(nullptr), meshDiffuseTexture(nullptr), meshSpecularTexture(nullptr),
+	:m_meshModel(nullptr), m_meshShader(nullptr), m_meshDiffuseTexture(nullptr), m_meshSpecularTexture(nullptr),
 	m_position{ 0.0f,0.0f,0.0f }, m_rotation{ 0.0f,0.0f,0.0f }, m_scale{ 1.0f,1.0f,1.0f },
-	mMat{ 1.0f }, vMat{ 1.0f }, tMat{ 1.0f }, rMat{ 1.0f }, sMat{ 1.0f }, invTrMat{ 1.0f }
+	m_mMat{ 1.0f }, m_vMat{ 1.0f }, m_tMat{ 1.0f }, m_rMat{ 1.0f }, m_sMat{ 1.0f }, m_invTrMat{ 1.0f }
 {
-	std::cout << "Mesh Initialized" << std::endl;
+	//std::cout << "MESH->Initialized" << std::endl;
+
+	m_localLightManager = EngineStatics::getLightManager();
 
 	initMesh(meshFilePath);
-	//std::cout << meshModel << std::endl;
+
 }
 
 Mesh::~Mesh()
 {
-	std::cout << "Mesh Destroyed" << std::endl;
+	std::cout << "MESH->Destroyed" << std::endl;
 
-	//delete meshModel;
-	meshModel = nullptr;
+	if (m_meshModel != nullptr)
+	{
+		m_meshModel = nullptr;
+	}
 
-	//delete meshShader;
-	meshShader = nullptr;
+	if (m_meshShader != nullptr)
+	{
+		m_meshShader = nullptr;
+	}
 
-	meshDiffuseTexture = nullptr;
-
-	meshSpecularTexture = nullptr;
-
+	if (m_meshDiffuseTexture != nullptr)
+	{
+		m_meshDiffuseTexture = nullptr;
+	}
+	
+	if (m_meshSpecularTexture != nullptr)
+	{
+		m_meshSpecularTexture = nullptr;
+	}
 
 }
 
 void Mesh::initMesh(const char* meshFilePath)
 {
 
-	meshModel = MeshManager::loadModel(meshFilePath);
-	//meshModel = new ImportedModel(meshFilePath);
-	//meshShader = new Shader("res/shaders/DEFAULT-vertexShader.glsl", "res/shaders/DEFAULT-fragmentShader.glsl");
-	meshShader = ShaderManager::loadShader("res/shaders/DEFAULT-vertexShader.glsl", "res/shaders/DEFAULT-fragmentShader.glsl");
+	m_meshModel = MeshManager::loadModel(meshFilePath);
+	m_meshShader = ShaderManager::loadShader("res/shaders/DEFAULT-vertexShader.glsl", "res/shaders/DEFAULT-fragmentShader.glsl");
 
-	//std::cout << "hello" << std::endl;
-	std::vector<glm::vec3> vert = meshModel->getVertices();
-	std::vector<glm::vec2> tex = meshModel->getTextureCoords();
-	std::vector<glm::vec3> norm = meshModel->getNormals();
+	std::vector<glm::vec3> vert = m_meshModel->getVertices();
+	std::vector<glm::vec2> tex = m_meshModel->getTextureCoords();
+	std::vector<glm::vec3> norm = m_meshModel->getNormals();
 
 	std::vector<float> pvalues;     //Vertex positions
 	std::vector<float> tvalues;     //Texture coordinates
 	std::vector<float> nvalues;     //normal vectors
 
-	for (int i = 0; i < meshModel->getNumVertices(); i++)
+	for (int i = 0; i < m_meshModel->getNumVertices(); i++)
 	{
 		pvalues.push_back((vert[i]).x);
 		pvalues.push_back((vert[i]).y);
@@ -57,132 +65,131 @@ void Mesh::initMesh(const char* meshFilePath)
 		nvalues.push_back((norm[i]).z);
 	}
 
-	glGenBuffers(3, VBO);
-
+	glGenBuffers(3, m_VBO);
 
 	//Vertex locations
-	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
 	glBufferData(GL_ARRAY_BUFFER, pvalues.size() * 4, &pvalues[0], GL_STATIC_DRAW);
 
 	//Texture coordinates
-	glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
 	glBufferData(GL_ARRAY_BUFFER, tvalues.size() * 4, &tvalues[0], GL_STATIC_DRAW);
 
 	//Normal vectors
-	glBindBuffer(GL_ARRAY_BUFFER, VBO[2]);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[2]);
 	glBufferData(GL_ARRAY_BUFFER, nvalues.size() * 4, &nvalues[0], GL_STATIC_DRAW);
-
 
 }
 
 void Mesh::updateMesh()
 {
-	//std::cout << "updatemesh" << std::endl;
 	drawMesh();
 }
 
 void Mesh::drawMesh()
 {
 	//Bind shader
-	meshShader->Use();
+	m_meshShader->Use();
 
 	//Reset matrix values
-	mMat = glm::mat4(1.0f);
-	tMat = glm::mat4(1.0f);
-	rMat = glm::mat4(1.0f);
-	sMat = glm::mat4(1.0f);
+	m_mMat = glm::mat4(1.0f);
+	m_tMat = glm::mat4(1.0f);
+	m_rMat = glm::mat4(1.0f);
+	m_sMat = glm::mat4(1.0f);
 
-	//Find uniform locations
+	//Set meshes matrices
+	m_tMat = glm::translate(m_tMat, m_position);
+	m_rMat = glm::rotate(m_rMat, glm::radians(m_rotation.x), glm::vec3(1.0, 0.0f, 0.0f));
+	m_rMat = glm::rotate(m_rMat, glm::radians(m_rotation.y), glm::vec3(0.0f, 1.0, 0.0f));
+	m_rMat = glm::rotate(m_rMat, glm::radians(m_rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+	m_sMat = glm::scale(m_sMat, m_scale);
+
+	m_mMat = m_tMat * m_rMat * m_sMat;
+	m_vMat = EngineStatics::getCamera()->getViewMatrix();
+
+
+	//Set shader uniform locations
 	//Vertex
-	mLoc = glGetUniformLocation(meshShader->getProgram(), "m_matrix");
-	vLoc = glGetUniformLocation(meshShader->getProgram(), "v_matrix");
-	projLoc = glGetUniformLocation(meshShader->getProgram(), "proj_matrix");
+	glUniformMatrix4fv(glGetUniformLocation(m_meshShader->getProgram(), "m_matrix"), 1, GL_FALSE, glm::value_ptr(m_mMat));
+	glUniformMatrix4fv(glGetUniformLocation(m_meshShader->getProgram(), "v_matrix"), 1, GL_FALSE, glm::value_ptr(m_vMat));
+	glUniformMatrix4fv(glGetUniformLocation(m_meshShader->getProgram(), "proj_matrix"), 1, GL_FALSE, glm::value_ptr(*EngineStatics::getProjectionMatrix()));
 
 
 	//Light properties
-	glUniform3f(glGetUniformLocation(meshShader->getProgram(), "pLight.ambient"), 0.2f, 0.2f, 0.2f);
-	glUniform3f(glGetUniformLocation(meshShader->getProgram(), "pLight.diffuse"), 0.5f, 0.5f, 0.5f);
-	glUniform3f(glGetUniformLocation(meshShader->getProgram(), "pLight.specular"), 1.0f, 1.0f, 1.0f);
-	glUniform3f(glGetUniformLocation(meshShader->getProgram(), "pLight.position"), EngineStatics::getLightManager()->getPointLight()->Position.x, EngineStatics::getLightManager()->getPointLight()->Position.y, EngineStatics::getLightManager()->getPointLight()->Position.z);
+	//glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "dLight.ambient"), m_localLightManager->getDirectionalLight()->Ambient.r, m_localLightManager->getDirectionalLight()->Ambient.g, m_localLightManager->getDirectionalLight()->Ambient.b);
+	//glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "dLight.diffuse"), m_localLightManager->getDirectionalLight()->Diffuse.r, m_localLightManager->getDirectionalLight()->Diffuse.g, m_localLightManager->getDirectionalLight()->Diffuse.b);
+	//glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "dLight.specular"), m_localLightManager->getDirectionalLight()->Specular.r, m_localLightManager->getDirectionalLight()->Specular.g, m_localLightManager->getDirectionalLight()->Specular.b);
+	//glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "dLight.direction"), m_localLightManager->getDirectionalLight()->Direction.x, m_localLightManager->getDirectionalLight()->Direction.y, m_localLightManager->getDirectionalLight()->Direction.z);
+
+	//Point lights
+	glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "pLight.ambient"), m_localLightManager->getPointLight(0)->Ambient.r, m_localLightManager->getPointLight(0)->Ambient.g, m_localLightManager->getPointLight(0)->Ambient.b);
+	glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "pLight.diffuse"), m_localLightManager->getPointLight(0)->Diffuse.r, m_localLightManager->getPointLight(0)->Diffuse.g, m_localLightManager->getPointLight(0)->Diffuse.b);
+	glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "pLight.specular"), m_localLightManager->getPointLight(0)->Specular.r, m_localLightManager->getPointLight(0)->Specular.g, m_localLightManager->getPointLight(0)->Specular.b);
+	glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "pLight.position"), EngineStatics::getCamera()->getPosition().x, EngineStatics::getCamera()->getPosition().y, EngineStatics::getCamera()->getPosition().z);
+	glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), "pLight.constant"), m_localLightManager->getPointLight(0)->Constant);
+	glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), "pLight.linear"), m_localLightManager->getPointLight(0)->Linear);
+	glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), "pLight.quadratic"), m_localLightManager->getPointLight(0)->Quadratic);
+
+
 
 	//Material properties
-	glUniform1i(glGetUniformLocation(meshShader->getProgram(), "material.diffuse"), 0);
-	glUniform1i(glGetUniformLocation(meshShader->getProgram(), "material.specular"), 1);
-	glUniform1f(glGetUniformLocation(meshShader->getProgram(), "material.shininess"), 48.0f);
+	glUniform1i(glGetUniformLocation(m_meshShader->getProgram(), "material.diffuse"), 0);
+	glUniform1i(glGetUniformLocation(m_meshShader->getProgram(), "material.specular"), 1);
+	glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), "material.shininess"), 48.0f);
 
 
+	glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "viewPos"), EngineStatics::getCamera()->getPosition().x, EngineStatics::getCamera()->getPosition().y, EngineStatics::getCamera()->getPosition().z);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, meshDiffuseTexture->getTexture());
+	//Bind textures to pipeline
+	if (m_meshDiffuseTexture != nullptr)
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_meshDiffuseTexture->getTexture());
+	}
+	//No diffuse texture
+	else
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 
-
-
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, meshSpecularTexture->getTexture());
-
-
-	//Fragment
-	viewPosLoc = glGetUniformLocation(meshShader->getProgram(), "viewPos");
-
-	
-	//Set matrices
-	tMat = glm::translate(tMat, m_position);
-	rMat = glm::rotate(rMat, glm::radians(m_rotation.x), glm::vec3(1.0, 0.0f, 0.0f));
-	rMat = glm::rotate(rMat, glm::radians(m_rotation.y), glm::vec3(0.0f, 1.0, 0.0f));
-	rMat = glm::rotate(rMat, glm::radians(m_rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-	sMat = glm::scale(sMat, m_scale);
-
-	mMat = tMat * rMat * sMat;
-	vMat = EngineStatics::getCamera()->getViewMatrix();
-
-	//Set uniform values
-	glUniformMatrix4fv(mLoc, 1, GL_FALSE, glm::value_ptr(mMat));
-	glUniformMatrix4fv(vLoc, 1, GL_FALSE, glm::value_ptr(vMat));
-	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(*EngineStatics::getProjectionMatrix()));
-	
-
-	glUniform3f(viewPosLoc, EngineStatics::getCamera()->getPosition().x, EngineStatics::getCamera()->getPosition().y, EngineStatics::getCamera()->getPosition().z);
-
+	if (m_meshSpecularTexture != nullptr)
+	{
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, m_meshSpecularTexture->getTexture());
+	}
+	//No specular texture
+	else
+	{
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 
 	//Activate VBO and associate vertex attributes
-	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(1);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO[2]);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[2]);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(2);
 
-	//glActiveTexture(GL_TEXTURE0); //Make 0th texture unit active in shader
-	//glBindTexture(GL_TEXTURE_2D, meshDiffuseTexture);
+	glDrawArrays(GL_TRIANGLES, 0, m_meshModel->getNumVertices());
 
-
-	glDrawArrays(GL_TRIANGLES, 0, meshModel->getNumVertices());
 }
 
 void Mesh::loadDiffuseTexture(const char* texturePath)
 {
-	if (meshDiffuseTexture == nullptr)
-	{
-		meshDiffuseTexture = TextureManager::loadTexture(texturePath);
-
-	}
+	m_meshDiffuseTexture = TextureManager::loadTexture(texturePath);
 }
 
 void Mesh::loadSpecularTexture(const char* texturePath)
 {
-	if (meshSpecularTexture == nullptr)
-	{
-		meshSpecularTexture = TextureManager::loadTexture(texturePath);
-	}
-	else 
-	{
-		std::cout << "texture slot already in use" << std::endl;
-	}
+	m_meshSpecularTexture = TextureManager::loadTexture(texturePath);
 }
 
 void Mesh::SetXPos(float num) { m_position.x = num; }
