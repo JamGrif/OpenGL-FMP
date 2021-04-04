@@ -51,14 +51,11 @@ private:
 	Input* m_input;
 
 	//Delta time
+
+
 	GLfloat m_deltaTime;
 	GLfloat m_lastFrame;
 
 
 };
 
-
-struct gameTimer
-{
-
-};

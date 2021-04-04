@@ -46,6 +46,11 @@ std::vector<glm::vec3> ImportedModel::getNormals() const
 	return normalVecs;
 }
 
+const char* ImportedModel::getFilePath()
+{
+	return m_filePath;
+}
+
 ModelLoader::ModelLoader()
 {
 }
@@ -145,7 +150,7 @@ ImportedModel* MeshManager::loadModel(const char* filePath)
 	//Check if model is already loaded loaded
 	for (ImportedModel* im : loadedModels)
 	{
-		if (im->m_filePath == filePath)
+		if (im->getFilePath() == filePath)
 		{
 			//std::cout << "MESHMANAGER->" << filePath << " already exists, returning loaded model" << std::endl;
 			return im;

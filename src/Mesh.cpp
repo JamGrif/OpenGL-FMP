@@ -116,20 +116,65 @@ void Mesh::drawMesh()
 
 
 	//Light properties
-	//glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "dLight.ambient"), m_localLightManager->getDirectionalLight()->Ambient.r, m_localLightManager->getDirectionalLight()->Ambient.g, m_localLightManager->getDirectionalLight()->Ambient.b);
-	//glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "dLight.diffuse"), m_localLightManager->getDirectionalLight()->Diffuse.r, m_localLightManager->getDirectionalLight()->Diffuse.g, m_localLightManager->getDirectionalLight()->Diffuse.b);
-	//glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "dLight.specular"), m_localLightManager->getDirectionalLight()->Specular.r, m_localLightManager->getDirectionalLight()->Specular.g, m_localLightManager->getDirectionalLight()->Specular.b);
-	//glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "dLight.direction"), m_localLightManager->getDirectionalLight()->Direction.x, m_localLightManager->getDirectionalLight()->Direction.y, m_localLightManager->getDirectionalLight()->Direction.z);
 
-	//Point lights
-	glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "pLight.ambient"), m_localLightManager->getPointLight(0)->Ambient.r, m_localLightManager->getPointLight(0)->Ambient.g, m_localLightManager->getPointLight(0)->Ambient.b);
-	glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "pLight.diffuse"), m_localLightManager->getPointLight(0)->Diffuse.r, m_localLightManager->getPointLight(0)->Diffuse.g, m_localLightManager->getPointLight(0)->Diffuse.b);
-	glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "pLight.specular"), m_localLightManager->getPointLight(0)->Specular.r, m_localLightManager->getPointLight(0)->Specular.g, m_localLightManager->getPointLight(0)->Specular.b);
-	glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "pLight.position"), EngineStatics::getCamera()->getPosition().x, EngineStatics::getCamera()->getPosition().y, EngineStatics::getCamera()->getPosition().z);
-	glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), "pLight.constant"), m_localLightManager->getPointLight(0)->Constant);
-	glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), "pLight.linear"), m_localLightManager->getPointLight(0)->Linear);
-	glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), "pLight.quadratic"), m_localLightManager->getPointLight(0)->Quadratic);
+	
+	for (GLuint i = 0; i < m_localLightManager->getCurrentDirectionalLights(); i++)
+	{
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "dLight.ambient"), m_localLightManager->getDirectionalLight(i)->Ambient.r, m_localLightManager->getDirectionalLight(i)->Ambient.g, m_localLightManager->getDirectionalLight(i)->Ambient.b);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "dLight.diffuse"), m_localLightManager->getDirectionalLight(i)->Diffuse.r, m_localLightManager->getDirectionalLight(i)->Diffuse.g, m_localLightManager->getDirectionalLight(i)->Diffuse.b);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "dLight.specular"), m_localLightManager->getDirectionalLight(i)->Specular.r, m_localLightManager->getDirectionalLight(i)->Specular.g, m_localLightManager->getDirectionalLight(i)->Specular.b);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "dLight.direction"), m_localLightManager->getDirectionalLight(i)->Direction.x, m_localLightManager->getDirectionalLight(i)->Direction.y, m_localLightManager->getDirectionalLight(i)->Direction.z);
+	}
 
+	{
+		//Point lights
+		
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[0].ambient")), m_localLightManager->getPointLight(0)->Ambient.r, m_localLightManager->getPointLight(0)->Ambient.g, m_localLightManager->getPointLight(0)->Ambient.b);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[0].diffuse")), m_localLightManager->getPointLight(0)->Diffuse.r, m_localLightManager->getPointLight(0)->Diffuse.g, m_localLightManager->getPointLight(0)->Diffuse.b);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[0].specular")), m_localLightManager->getPointLight(0)->Specular.r, m_localLightManager->getPointLight(0)->Specular.g, m_localLightManager->getPointLight(0)->Specular.b);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[0].position")), m_localLightManager->getPointLight(0)->Position.x, m_localLightManager->getPointLight(0)->Position.y, m_localLightManager->getPointLight(0)->Position.z);
+		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[0].constant")), m_localLightManager->getPointLight(0)->Constant);
+		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[0].linear")), m_localLightManager->getPointLight(0)->Linear);
+		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[0].quadratic")), m_localLightManager->getPointLight(0)->Quadratic);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[1].ambient")), m_localLightManager->getPointLight(1)->Ambient.r, m_localLightManager->getPointLight(1)->Ambient.g, m_localLightManager->getPointLight(1)->Ambient.b);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[1].diffuse")), m_localLightManager->getPointLight(1)->Diffuse.r, m_localLightManager->getPointLight(1)->Diffuse.g, m_localLightManager->getPointLight(1)->Diffuse.b);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[1].specular")), m_localLightManager->getPointLight(1)->Specular.r, m_localLightManager->getPointLight(1)->Specular.g, m_localLightManager->getPointLight(1)->Specular.b);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[1].position")), m_localLightManager->getPointLight(1)->Position.x, m_localLightManager->getPointLight(1)->Position.y, m_localLightManager->getPointLight(1)->Position.z);
+		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[1].constant")), m_localLightManager->getPointLight(1)->Constant);
+		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[1].linear")), m_localLightManager->getPointLight(1)->Linear);
+		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[1].quadratic")), m_localLightManager->getPointLight(1)->Quadratic);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[2].ambient")), m_localLightManager->getPointLight(2)->Ambient.r, m_localLightManager->getPointLight(2)->Ambient.g, m_localLightManager->getPointLight(2)->Ambient.b);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[2].diffuse")), m_localLightManager->getPointLight(2)->Diffuse.r, m_localLightManager->getPointLight(2)->Diffuse.g, m_localLightManager->getPointLight(2)->Diffuse.b);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[2].specular")), m_localLightManager->getPointLight(2)->Specular.r, m_localLightManager->getPointLight(2)->Specular.g, m_localLightManager->getPointLight(2)->Specular.b);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[2].position")), m_localLightManager->getPointLight(2)->Position.x, m_localLightManager->getPointLight(2)->Position.y, m_localLightManager->getPointLight(2)->Position.z);
+		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[2].constant")), m_localLightManager->getPointLight(2)->Constant);
+		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[2].linear")), m_localLightManager->getPointLight(2)->Linear);
+		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[2].quadratic")), m_localLightManager->getPointLight(2)->Quadratic);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[3].ambient")), m_localLightManager->getPointLight(3)->Ambient.r, m_localLightManager->getPointLight(3)->Ambient.g, m_localLightManager->getPointLight(3)->Ambient.b);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[3].diffuse")), m_localLightManager->getPointLight(3)->Diffuse.r, m_localLightManager->getPointLight(3)->Diffuse.g, m_localLightManager->getPointLight(3)->Diffuse.b);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[3].specular")), m_localLightManager->getPointLight(3)->Specular.r, m_localLightManager->getPointLight(3)->Specular.g, m_localLightManager->getPointLight(3)->Specular.b);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[3].position")), m_localLightManager->getPointLight(3)->Position.x, m_localLightManager->getPointLight(3)->Position.y, m_localLightManager->getPointLight(3)->Position.z);
+		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[3].constant")), m_localLightManager->getPointLight(3)->Constant);
+		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[3].linear")), m_localLightManager->getPointLight(3)->Linear);
+		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[3].quadratic")), m_localLightManager->getPointLight(3)->Quadratic);
+		
+	}
+	
+
+	for (GLuint i = 0; i < m_localLightManager->getCurrentSpotLights(); i++)
+	{
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "sLight.ambient"), m_localLightManager->getSpotLight(0)->Ambient.r, m_localLightManager->getSpotLight(0)->Ambient.g, m_localLightManager->getSpotLight(0)->Ambient.b);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "sLight.diffuse"), m_localLightManager->getSpotLight(0)->Diffuse.r, m_localLightManager->getSpotLight(0)->Diffuse.g, m_localLightManager->getSpotLight(0)->Diffuse.b);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "sLight.specular"), m_localLightManager->getSpotLight(0)->Specular.r, m_localLightManager->getSpotLight(0)->Specular.g, m_localLightManager->getSpotLight(0)->Specular.b);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "sLight.position"), EngineStatics::getCamera()->getPosition().x, EngineStatics::getCamera()->getPosition().y, EngineStatics::getCamera()->getPosition().z);
+		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "sLight.direction"), EngineStatics::getCamera()->getFront().x, EngineStatics::getCamera()->getFront().y, EngineStatics::getCamera()->getFront().z);
+		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), "sLight.cutOff"), glm::cos(glm::radians(m_localLightManager->getSpotLight(0)->cutOff)));
+		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), "sLight.outerCutOff"), glm::cos(glm::radians(m_localLightManager->getSpotLight(0)->outerCutOff)));
+		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), "sLight.constant"), m_localLightManager->getSpotLight(0)->Constant);
+		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), "sLight.linear"), m_localLightManager->getSpotLight(0)->Linear);
+		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), "sLight.quadratic"), m_localLightManager->getSpotLight(0)->Quadratic);
+	}
+	
 
 
 	//Material properties

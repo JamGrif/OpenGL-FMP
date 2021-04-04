@@ -4,7 +4,6 @@
 #include "ModelLoader.h"
 #include "Shader.h"
 #include "Texture.h"
-#include "Utility.h"
 #include "EngineStatics.h"
 
 #include <GL/glew.h>

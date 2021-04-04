@@ -13,15 +13,14 @@ struct PointLight
 		Position.z = z;
 	}
 	glm::vec3 Position;
+
+	float Constant = 1.0f;
+	float Linear = 0.045f;
+	float Quadratic = 0.0075f;
 	
 	glm::vec3 Ambient { 0.2f, 0.2f, 0.2f };
 	glm::vec3 Diffuse { 1.0f, 1.0f, 1.0f };
 	glm::vec3 Specular{ 1.0f, 1.0f, 1.0f };
-
-	float Constant = 1.0f;
-	float Linear = 0.09f;
-	float Quadratic = 0.032f;
-
 };
 
 struct DirectionalLight
@@ -32,11 +31,33 @@ struct DirectionalLight
 		Direction.y = y;
 		Direction.z = z;
 	}
-
 	glm::vec3 Direction;
 
-	glm::vec3 Ambient { 0.2f, 0.2f, 0.2f };
-	glm::vec3 Diffuse { 0.4f, 0.4f, 0.4f };
+	glm::vec3 Ambient { 0.1f, 0.1f, 0.1f };
+	glm::vec3 Diffuse { 0.3f, 0.3f, 0.3f };
+	glm::vec3 Specular{ 0.7f, 0.7f, 0.7f };
+
+};
+
+struct SpotLight
+{
+	SpotLight(float x = 0.0f, float y = 0.0f, float z = 0.0f)
+	{
+		Position.x = x;
+		Position.y = y;
+		Position.z = z;
+	}
+	glm::vec3 Position;
+	glm::vec3 Direction;
+	float cutOff = 4.5;
+	float outerCutOff = 25.5;
+
+	float Constant = 1.0f;
+	float Linear = 0.09f;
+	float Quadratic = 0.032f;
+
+	glm::vec3 Ambient{ 0.1f, 0.1f, 0.1f };
+	glm::vec3 Diffuse{ 0.8f, 0.8f, 0.8f };
 	glm::vec3 Specular{ 1.0f, 1.0f, 1.0f };
 
 };
@@ -52,14 +73,21 @@ public:
 	void addDirectionalLight(float x, float y, float z);
 	DirectionalLight* getDirectionalLight(int index = 0);
 
+	int getCurrentDirectionalLights();
+
 	//Point Lights
 	void setPointLight(float x, float y, float z, int index = 0);
 	void addPointLight(float x, float y, float z);
 	PointLight* getPointLight(int index = 0);
 
+	int getCurrentPointLights();
+
 	//Spot Lights
+	void setSpotLight(float x, float y, float z, int index = 0);
+	void addSpotLight(float x, float y, float z);
+	SpotLight* getSpotLight(int index = 0);
 
-
+	int getCurrentSpotLights();
 
 private:
 
@@ -76,7 +104,9 @@ private:
 
 
 	//Spot Lights
-
+	std::vector<SpotLight*> m_sceneSpotLights;
+	const int m_maxSpotLights;
+	int m_currentSpotLights;
 	
 
 };

@@ -54,6 +54,11 @@ glm::vec3 Camera::getPosition() const
     return m_position;
 }
 
+glm::vec3 Camera::getFront() const
+{
+    return m_front;
+}
+
 void Camera::processKeyboard(Camera_Movement direction, GLfloat deltaTime)
 {
     //std::cout << "process keyboard" << std::endl;

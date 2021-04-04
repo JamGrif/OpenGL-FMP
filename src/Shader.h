@@ -8,7 +8,6 @@
 
 #include <GL/glew.h>
 
-#include "ErrorChecking.h"
 
 
 class Shader

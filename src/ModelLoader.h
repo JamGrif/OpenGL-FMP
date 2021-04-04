@@ -15,9 +15,11 @@ public:
 	std::vector<glm::vec2> getTextureCoords() const;
 	std::vector<glm::vec3> getNormals() const;
 
-	const char* m_filePath;
+	const char* getFilePath();
 
 private:
+
+	const char* m_filePath;
 
 	int numVertices;
 

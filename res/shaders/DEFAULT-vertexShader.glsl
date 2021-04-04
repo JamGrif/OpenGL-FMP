@@ -16,7 +16,7 @@ out vec3 normal;
 
 void main(void) 
 {
-	gl_Position = proj_matrix * v_matrix * m_matrix * vec4(vertPos,1.0);
+	gl_Position = proj_matrix * v_matrix * m_matrix * vec4(vertPos,1.0); //Position of vertex in 3D space
 	fragPos = vec3(m_matrix * vec4(vertPos, 1.0f));
 	normal = mat3(transpose(inverse(m_matrix))) * vertNormal;
 	texCoords = vertTex;
