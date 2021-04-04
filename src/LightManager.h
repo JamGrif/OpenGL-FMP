@@ -71,23 +71,23 @@ public:
 	//Directional Lights
 	void setDirectionalLight(float x, float y, float z, int index = 0);
 	void addDirectionalLight(float x, float y, float z);
-	DirectionalLight* getDirectionalLight(int index = 0);
+	DirectionalLight* getDirectionalLight(int index = 0) const;
 
-	int getCurrentDirectionalLights();
+	int getCurrentDirectionalLights() const;
 
 	//Point Lights
 	void setPointLight(float x, float y, float z, int index = 0);
 	void addPointLight(float x, float y, float z);
-	PointLight* getPointLight(int index = 0);
+	PointLight* getPointLight(int index = 0) const;
 
-	int getCurrentPointLights();
+	int getCurrentPointLights() const;
 
 	//Spot Lights
 	void setSpotLight(float x, float y, float z, int index = 0);
 	void addSpotLight(float x, float y, float z);
-	SpotLight* getSpotLight(int index = 0);
+	SpotLight* getSpotLight(int index = 0) const;
 
-	int getCurrentSpotLights();
+	int getCurrentSpotLights() const;
 
 private:
 

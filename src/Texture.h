@@ -16,8 +16,8 @@ public:
 
 	void loadTexture(const char* filePath);
 
-	const char* getFilePath();
-	GLuint getTexture();
+	const char* getFilePath() const;
+	GLuint getTexture() const;
 	
 
 private:

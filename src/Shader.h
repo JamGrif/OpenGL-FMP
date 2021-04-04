@@ -20,8 +20,8 @@ public:
 
 	GLuint getProgram() const;
 
-	const GLchar* getVertexPath();
-	const GLchar* getFragmentPath();
+	const GLchar* getVertexPath() const;
+	const GLchar* getFragmentPath() const;
 
 private:
 	GLuint m_shaderProgram;

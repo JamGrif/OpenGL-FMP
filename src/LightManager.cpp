@@ -38,7 +38,7 @@ void LightManager::addDirectionalLight(float x, float y, float z)
 	}
 }
 
-DirectionalLight* LightManager::getDirectionalLight(int index)
+DirectionalLight* LightManager::getDirectionalLight(int index) const
 {
 	//No directional lights exists
 	if (m_currentDirectionalLights == 0)
@@ -56,7 +56,7 @@ DirectionalLight* LightManager::getDirectionalLight(int index)
 	
 }
 
-int LightManager::getCurrentDirectionalLights()
+int LightManager::getCurrentDirectionalLights() const
 {
 	return m_currentDirectionalLights;
 }
@@ -84,7 +84,7 @@ void LightManager::addPointLight(float x, float y, float z)
 }
 
 //Returns the pointlight at specified index in vector
-PointLight* LightManager::getPointLight(int index)
+PointLight* LightManager::getPointLight(int index) const
 {
 	//No point lights exists
 	if (m_currentPointLights == 0)
@@ -102,7 +102,7 @@ PointLight* LightManager::getPointLight(int index)
 	
 }
 
-int LightManager::getCurrentPointLights()
+int LightManager::getCurrentPointLights() const
 {
 	return m_currentPointLights;
 }
@@ -127,7 +127,7 @@ void LightManager::addSpotLight(float x, float y, float z)
 	}
 }
 
-SpotLight* LightManager::getSpotLight(int index)
+SpotLight* LightManager::getSpotLight(int index) const
 {
 	//No point lights exists
 	if (m_currentSpotLights == 0)
@@ -144,7 +144,7 @@ SpotLight* LightManager::getSpotLight(int index)
 	return nullptr;
 }
 
-int LightManager::getCurrentSpotLights()
+int LightManager::getCurrentSpotLights() const
 {
 	return m_currentSpotLights;
 }

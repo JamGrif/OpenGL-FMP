@@ -117,12 +117,12 @@ GLuint Shader::getProgram() const
 	return this->m_shaderProgram;
 }
 
-const GLchar* Shader::getVertexPath()
+const GLchar* Shader::getVertexPath() const
 {
 	return m_vertexPath;
 }
 
-const GLchar* Shader::getFragmentPath()
+const GLchar* Shader::getFragmentPath() const
 {
 	return m_fragmentPath;
 }

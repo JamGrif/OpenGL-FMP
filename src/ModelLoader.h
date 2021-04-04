@@ -4,6 +4,10 @@
 #include <iostream>
 #include "glm/glm.hpp"
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 class ImportedModel
 {
 public:
@@ -15,7 +19,7 @@ public:
 	std::vector<glm::vec2> getTextureCoords() const;
 	std::vector<glm::vec3> getNormals() const;
 
-	const char* getFilePath();
+	const char* getFilePath() const;
 
 private:
 

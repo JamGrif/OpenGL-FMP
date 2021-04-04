@@ -46,7 +46,7 @@ std::vector<glm::vec3> ImportedModel::getNormals() const
 	return normalVecs;
 }
 
-const char* ImportedModel::getFilePath()
+const char* ImportedModel::getFilePath() const
 {
 	return m_filePath;
 }

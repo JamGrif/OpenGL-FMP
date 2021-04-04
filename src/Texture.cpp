@@ -45,12 +45,12 @@ void Texture::loadTexture(const char* filePath)
 	
 }
 
-const char* Texture::getFilePath()
+const char* Texture::getFilePath() const
 {
 	return m_filePath;
 }
 
-GLuint Texture::getTexture()
+GLuint Texture::getTexture() const
 {
 	return m_texture;
 }
