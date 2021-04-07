@@ -1,310 +1,165 @@
+#include <fstream>
+#include <sstream>
+#include <glm\glm.hpp>
+
 #include "Mesh.h"
 
-Mesh::Mesh(const char* meshFilePath)
-	:m_meshModel(nullptr), m_meshShader(nullptr), m_meshDiffuseTexture(nullptr), m_meshSpecularTexture(nullptr),
-	m_position{ 0.0f,0.0f,0.0f }, m_rotation{ 0.0f,0.0f,0.0f }, m_scale{ 1.0f,1.0f,1.0f },
-	m_mMat{ 1.0f }, m_vMat{ 1.0f }, m_tMat{ 1.0f }, m_rMat{ 1.0f }, m_sMat{ 1.0f }, m_invTrMat{ 1.0f }
+std::vector<Mesh*> MeshManager::loadedModels;
+
+Mesh::Mesh(const char* filePath)
 {
-	//std::cout << "MESH->Initialized" << std::endl;
+	m_filePath = filePath;
+	MeshLoader ml = MeshLoader();
+	ml.parseOBJ(filePath);
 
-	m_localLightManager = EngineStatics::getLightManager();
+	numVertices = ml.getNumVertices();
 
-	initMesh(meshFilePath);
+	std::vector<float> verts = ml.getVertices();
+	std::vector<float> tcs = ml.getTextureCoordinates();
+	std::vector<float> normals = ml.getNormals();
 
+	for (int i = 0; i < numVertices; i++)
+	{
+		vertices.push_back(glm::vec3(verts[i * 3], verts[i * 3 + 1], verts[i * 3 + 2]));
+		texCoords.push_back(glm::vec2(tcs[i * 2], tcs[i * 2 + 1]));
+		normalVecs.push_back(glm::vec3(normals[i * 3], normals[i * 3 + 1], normals[i * 3 + 2]));
+	}
 }
 
-Mesh::~Mesh()
+int Mesh::getNumVertices() const
 {
-	std::cout << "MESH->Destroyed" << std::endl;
-
-	if (m_meshModel != nullptr)
-	{
-		m_meshModel = nullptr;
-	}
-
-	if (m_meshShader != nullptr)
-	{
-		m_meshShader = nullptr;
-	}
-
-	if (m_meshDiffuseTexture != nullptr)
-	{
-		m_meshDiffuseTexture = nullptr;
-	}
-	
-	if (m_meshSpecularTexture != nullptr)
-	{
-		m_meshSpecularTexture = nullptr;
-	}
-
+	return numVertices;
 }
 
-void Mesh::initMesh(const char* meshFilePath)
+std::vector<glm::vec3> Mesh::getVertices() const
 {
-
-	m_meshModel = MeshManager::loadModel(meshFilePath);
-	m_meshShader = ShaderManager::loadShader("res/shaders/DEFAULT-vertexShader.glsl", "res/shaders/DEFAULT-fragmentShader.glsl");
-
-	std::vector<glm::vec3> vert = m_meshModel->getVertices();
-	std::vector<glm::vec2> tex = m_meshModel->getTextureCoords();
-	std::vector<glm::vec3> norm = m_meshModel->getNormals();
-
-	std::vector<float> pvalues;     //Vertex positions
-	std::vector<float> tvalues;     //Texture coordinates
-	std::vector<float> nvalues;     //normal vectors
-
-	for (int i = 0; i < m_meshModel->getNumVertices(); i++)
-	{
-		pvalues.push_back((vert[i]).x);
-		pvalues.push_back((vert[i]).y);
-		pvalues.push_back((vert[i]).z);
-		tvalues.push_back((tex[i]).s);
-		tvalues.push_back((tex[i]).t);
-		nvalues.push_back((norm[i]).x);
-		nvalues.push_back((norm[i]).y);
-		nvalues.push_back((norm[i]).z);
-	}
-
-	glGenBuffers(3, m_VBO);
-
-	//Vertex locations
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
-	glBufferData(GL_ARRAY_BUFFER, pvalues.size() * 4, &pvalues[0], GL_STATIC_DRAW);
-
-	//Texture coordinates
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
-	glBufferData(GL_ARRAY_BUFFER, tvalues.size() * 4, &tvalues[0], GL_STATIC_DRAW);
-
-	//Normal vectors
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[2]);
-	glBufferData(GL_ARRAY_BUFFER, nvalues.size() * 4, &nvalues[0], GL_STATIC_DRAW);
-
+	return vertices;
 }
 
-void Mesh::updateMesh()
+std::vector<glm::vec2> Mesh::getTextureCoords() const
 {
-	drawMesh();
+	return texCoords;
 }
 
-void Mesh::drawMesh()
+std::vector<glm::vec3> Mesh::getNormals() const
 {
-	//Bind shader
-	m_meshShader->Use();
-
-	//Reset matrix values
-	m_mMat = glm::mat4(1.0f);
-	m_tMat = glm::mat4(1.0f);
-	m_rMat = glm::mat4(1.0f);
-	m_sMat = glm::mat4(1.0f);
-
-	//Set meshes matrices
-	m_tMat = glm::translate(m_tMat, m_position);
-	m_rMat = glm::rotate(m_rMat, glm::radians(m_rotation.x), glm::vec3(1.0, 0.0f, 0.0f));
-	m_rMat = glm::rotate(m_rMat, glm::radians(m_rotation.y), glm::vec3(0.0f, 1.0, 0.0f));
-	m_rMat = glm::rotate(m_rMat, glm::radians(m_rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-	m_sMat = glm::scale(m_sMat, m_scale);
-
-	m_mMat = m_tMat * m_rMat * m_sMat;
-	m_vMat = EngineStatics::getCamera()->getViewMatrix();
-
-
-	//Set shader uniform locations
-	//Vertex
-	glUniformMatrix4fv(glGetUniformLocation(m_meshShader->getProgram(), "m_matrix"), 1, GL_FALSE, glm::value_ptr(m_mMat));
-	glUniformMatrix4fv(glGetUniformLocation(m_meshShader->getProgram(), "v_matrix"), 1, GL_FALSE, glm::value_ptr(m_vMat));
-	glUniformMatrix4fv(glGetUniformLocation(m_meshShader->getProgram(), "proj_matrix"), 1, GL_FALSE, glm::value_ptr(*EngineStatics::getProjectionMatrix()));
-
-
-	//Light properties
-
-	
-	for (GLuint i = 0; i < m_localLightManager->getCurrentDirectionalLights(); i++)
-	{
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "dLight.ambient"), m_localLightManager->getDirectionalLight(i)->Ambient.r, m_localLightManager->getDirectionalLight(i)->Ambient.g, m_localLightManager->getDirectionalLight(i)->Ambient.b);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "dLight.diffuse"), m_localLightManager->getDirectionalLight(i)->Diffuse.r, m_localLightManager->getDirectionalLight(i)->Diffuse.g, m_localLightManager->getDirectionalLight(i)->Diffuse.b);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "dLight.specular"), m_localLightManager->getDirectionalLight(i)->Specular.r, m_localLightManager->getDirectionalLight(i)->Specular.g, m_localLightManager->getDirectionalLight(i)->Specular.b);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "dLight.direction"), m_localLightManager->getDirectionalLight(i)->Direction.x, m_localLightManager->getDirectionalLight(i)->Direction.y, m_localLightManager->getDirectionalLight(i)->Direction.z);
-	}
-
-	{
-		//Point lights
-		
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[0].ambient")), m_localLightManager->getPointLight(0)->Ambient.r, m_localLightManager->getPointLight(0)->Ambient.g, m_localLightManager->getPointLight(0)->Ambient.b);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[0].diffuse")), m_localLightManager->getPointLight(0)->Diffuse.r, m_localLightManager->getPointLight(0)->Diffuse.g, m_localLightManager->getPointLight(0)->Diffuse.b);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[0].specular")), m_localLightManager->getPointLight(0)->Specular.r, m_localLightManager->getPointLight(0)->Specular.g, m_localLightManager->getPointLight(0)->Specular.b);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[0].position")), m_localLightManager->getPointLight(0)->Position.x, m_localLightManager->getPointLight(0)->Position.y, m_localLightManager->getPointLight(0)->Position.z);
-		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[0].constant")), m_localLightManager->getPointLight(0)->Constant);
-		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[0].linear")), m_localLightManager->getPointLight(0)->Linear);
-		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[0].quadratic")), m_localLightManager->getPointLight(0)->Quadratic);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[1].ambient")), m_localLightManager->getPointLight(1)->Ambient.r, m_localLightManager->getPointLight(1)->Ambient.g, m_localLightManager->getPointLight(1)->Ambient.b);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[1].diffuse")), m_localLightManager->getPointLight(1)->Diffuse.r, m_localLightManager->getPointLight(1)->Diffuse.g, m_localLightManager->getPointLight(1)->Diffuse.b);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[1].specular")), m_localLightManager->getPointLight(1)->Specular.r, m_localLightManager->getPointLight(1)->Specular.g, m_localLightManager->getPointLight(1)->Specular.b);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[1].position")), m_localLightManager->getPointLight(1)->Position.x, m_localLightManager->getPointLight(1)->Position.y, m_localLightManager->getPointLight(1)->Position.z);
-		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[1].constant")), m_localLightManager->getPointLight(1)->Constant);
-		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[1].linear")), m_localLightManager->getPointLight(1)->Linear);
-		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[1].quadratic")), m_localLightManager->getPointLight(1)->Quadratic);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[2].ambient")), m_localLightManager->getPointLight(2)->Ambient.r, m_localLightManager->getPointLight(2)->Ambient.g, m_localLightManager->getPointLight(2)->Ambient.b);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[2].diffuse")), m_localLightManager->getPointLight(2)->Diffuse.r, m_localLightManager->getPointLight(2)->Diffuse.g, m_localLightManager->getPointLight(2)->Diffuse.b);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[2].specular")), m_localLightManager->getPointLight(2)->Specular.r, m_localLightManager->getPointLight(2)->Specular.g, m_localLightManager->getPointLight(2)->Specular.b);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[2].position")), m_localLightManager->getPointLight(2)->Position.x, m_localLightManager->getPointLight(2)->Position.y, m_localLightManager->getPointLight(2)->Position.z);
-		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[2].constant")), m_localLightManager->getPointLight(2)->Constant);
-		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[2].linear")), m_localLightManager->getPointLight(2)->Linear);
-		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[2].quadratic")), m_localLightManager->getPointLight(2)->Quadratic);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[3].ambient")), m_localLightManager->getPointLight(3)->Ambient.r, m_localLightManager->getPointLight(3)->Ambient.g, m_localLightManager->getPointLight(3)->Ambient.b);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[3].diffuse")), m_localLightManager->getPointLight(3)->Diffuse.r, m_localLightManager->getPointLight(3)->Diffuse.g, m_localLightManager->getPointLight(3)->Diffuse.b);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[3].specular")), m_localLightManager->getPointLight(3)->Specular.r, m_localLightManager->getPointLight(3)->Specular.g, m_localLightManager->getPointLight(3)->Specular.b);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[3].position")), m_localLightManager->getPointLight(3)->Position.x, m_localLightManager->getPointLight(3)->Position.y, m_localLightManager->getPointLight(3)->Position.z);
-		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[3].constant")), m_localLightManager->getPointLight(3)->Constant);
-		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[3].linear")), m_localLightManager->getPointLight(3)->Linear);
-		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), ("pLight[3].quadratic")), m_localLightManager->getPointLight(3)->Quadratic);
-		
-	}
-	
-
-	for (GLuint i = 0; i < m_localLightManager->getCurrentSpotLights(); i++)
-	{
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "sLight.ambient"), m_localLightManager->getSpotLight(0)->Ambient.r, m_localLightManager->getSpotLight(0)->Ambient.g, m_localLightManager->getSpotLight(0)->Ambient.b);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "sLight.diffuse"), m_localLightManager->getSpotLight(0)->Diffuse.r, m_localLightManager->getSpotLight(0)->Diffuse.g, m_localLightManager->getSpotLight(0)->Diffuse.b);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "sLight.specular"), m_localLightManager->getSpotLight(0)->Specular.r, m_localLightManager->getSpotLight(0)->Specular.g, m_localLightManager->getSpotLight(0)->Specular.b);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "sLight.position"), EngineStatics::getCamera()->getPosition().x, EngineStatics::getCamera()->getPosition().y, EngineStatics::getCamera()->getPosition().z);
-		glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "sLight.direction"), EngineStatics::getCamera()->getFront().x, EngineStatics::getCamera()->getFront().y, EngineStatics::getCamera()->getFront().z);
-		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), "sLight.cutOff"), glm::cos(glm::radians(m_localLightManager->getSpotLight(0)->cutOff)));
-		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), "sLight.outerCutOff"), glm::cos(glm::radians(m_localLightManager->getSpotLight(0)->outerCutOff)));
-		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), "sLight.constant"), m_localLightManager->getSpotLight(0)->Constant);
-		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), "sLight.linear"), m_localLightManager->getSpotLight(0)->Linear);
-		glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), "sLight.quadratic"), m_localLightManager->getSpotLight(0)->Quadratic);
-	}
-	
-
-
-	//Material properties
-	glUniform1i(glGetUniformLocation(m_meshShader->getProgram(), "material.diffuse"), 0);
-	glUniform1i(glGetUniformLocation(m_meshShader->getProgram(), "material.specular"), 1);
-	glUniform1f(glGetUniformLocation(m_meshShader->getProgram(), "material.shininess"), 48.0f);
-
-
-	glUniform3f(glGetUniformLocation(m_meshShader->getProgram(), "viewPos"), EngineStatics::getCamera()->getPosition().x, EngineStatics::getCamera()->getPosition().y, EngineStatics::getCamera()->getPosition().z);
-
-	//Bind textures to pipeline
-	if (m_meshDiffuseTexture != nullptr)
-	{
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, m_meshDiffuseTexture->getTexture());
-	}
-	//No diffuse texture
-	else
-	{
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-
-	if (m_meshSpecularTexture != nullptr)
-	{
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, m_meshSpecularTexture->getTexture());
-	}
-	//No specular texture
-	else
-	{
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-
-	//Activate VBO and associate vertex attributes
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(1);
-
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[2]);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(2);
-
-	glDrawArrays(GL_TRIANGLES, 0, m_meshModel->getNumVertices());
-
+	return normalVecs;
 }
 
-void Mesh::loadDiffuseTexture(const char* texturePath)
+const char* Mesh::getFilePath() const
 {
-	m_meshDiffuseTexture = TextureManager::loadTexture(texturePath);
+	return m_filePath;
 }
 
-void Mesh::loadSpecularTexture(const char* texturePath)
+MeshLoader::MeshLoader()
 {
-	m_meshSpecularTexture = TextureManager::loadTexture(texturePath);
 }
 
-void Mesh::SetXPos(float num) { m_position.x = num; }
 
-void Mesh::SetYPos(float num) { m_position.y = num; }
+void MeshLoader::parseOBJ(const char* filePath)
+{
+	float x, y, z;
+	std::string content;
 
-void Mesh::SetZPos(float num) { m_position.z = num; }
+	std::ifstream fileStream(filePath, std::ios::in);
+	std::string line = "";
 
-float Mesh::GetXPos() { return m_position.x; }
+	while (!fileStream.eof())
+	{
+		std::getline(fileStream, line);
+		if (line.compare(0, 2, "v ") == 0)							// vertex position ("v")
+		{
+			std::stringstream ss(line.erase(0, 1));
+			ss >> x; ss >> y; ss >> z;								// extract the vertex position values
+			vertVals.push_back(x);
+			vertVals.push_back(y);
+			vertVals.push_back(z);
+		}
 
-float Mesh::GetYPos() { return m_position.y; }
+		if (line.compare(0, 2, "vt") == 0)							// texture coordinates ("vt)
+		{
+			std::stringstream ss(line.erase(0, 2));
+			ss >> x; ss >> y;										// extract texture coordinate values
+			stVals.push_back(x);
+			stVals.push_back(y);
+		}
 
-float Mesh::GetZPos() { return m_position.z; }
+		if (line.compare(0, 2, "vn") == 0)							// vertex normals ("vn")
+		{
+			std::stringstream ss(line.erase(0, 2));
+			ss >> x; ss >> y; ss >> z;								// extract the normal vector values
+			normVals.push_back(x);
+			normVals.push_back(y);
+			normVals.push_back(z);
+		}
 
-void Mesh::SetXRot(float num) { m_position.x = num; }
+		if (line.compare(0, 2, "f ") == 0)							// triangle faces ("f")
+		{
+			std::string oneCorner, v, t, n;
+			std::stringstream ss(line.erase(0, 2));
 
-void Mesh::SetYRot(float num) { m_position.y = num; }
+			for (int i = 0; i < 3; i++)
+			{
+				std::getline(ss, oneCorner, ' ');						// extract triangle face references
+				std::stringstream oneCornerSS(oneCorner);
+				std::getline(oneCornerSS, v, '/');
+				std::getline(oneCornerSS, t, '/');
+				std::getline(oneCornerSS, n, '/');
 
-void Mesh::SetZRot(float num) { m_position.z = num; }
+				int vertRef = (stoi(v) - 1) * 3;					// stoi converts string to int
+				int tcRef = (stoi(t) - 1) * 2;
+				int normRef = (stoi(n) - 1) * 3;
 
-float Mesh::GetXRot() { return m_rotation.x; }
+				triangleVerts.push_back(vertVals[vertRef]);			// build vector of vertices
+				triangleVerts.push_back(vertVals[vertRef + 1]);
+				triangleVerts.push_back(vertVals[vertRef + 2]);
 
-float Mesh::GetYRot() { return m_rotation.y; }
+				textureCoords.push_back(stVals[tcRef]);				// build vector of texture coords
+				textureCoords.push_back(stVals[tcRef+1]);
 
-float Mesh::GetZRot() { return m_rotation.z; }
+				normals.push_back(normVals[normRef]);				// build vector of normals
+				normals.push_back(normVals[normRef + 1]);
+				normals.push_back(normVals[normRef + 2]);
+			}
+		}
+	}
+}
 
-void Mesh::SetXScale(float num) { m_scale.x = num; }
+int MeshLoader::getNumVertices() const
+{
+	return (triangleVerts.size() / 3);
+}
 
-void Mesh::SetYScale(float num) { m_scale.y = num; }
+std::vector<float> MeshLoader::getVertices() const
+{
+	return triangleVerts;
+}
 
-void Mesh::SetZScale(float num) { m_scale.z = num; }
+std::vector<float> MeshLoader::getTextureCoordinates() const
+{
+	return textureCoords;
+}
 
-float Mesh::GetXScale() { return m_scale.x; }
+std::vector<float> MeshLoader::getNormals() const
+{
+	return normals;
+}
 
-float Mesh::GetYScale() { return m_scale.y; }
+Mesh* MeshManager::loadModel(const char* filePath)
+{
+	//Check if model is already loaded loaded
+	for (Mesh* im : loadedModels)
+	{
+		if (im->getFilePath() == filePath)
+		{
+			//std::cout << "MESHMANAGER->" << filePath << " already exists, returning loaded model" << std::endl;
+			return im;
+		}
+	}
 
-float Mesh::GetZScale() { return m_scale.z; }
+	//Otherwise, create new model and add it to vector
+	std::cout << "MESHMANAGER->" << filePath << " is being loaded" << std::endl;
 
-void Mesh::IncXPos(float num) { m_position.x += num; }
-
-void Mesh::IncYPos(float num) { m_position.y += num; }
-
-void Mesh::IncZPos(float num) { m_position.z += num; }
-
-void Mesh::DecXPos(float num) { m_position.x -= num; }
-
-void Mesh::DecYPos(float num) { m_position.y -= num; }
-
-void Mesh::DecZPos(float num) { m_position.z -= num; }
-
-void Mesh::IncXRot(float num) { m_rotation.x += num; }
-
-void Mesh::IncYRot(float num) { m_rotation.y += num; }
-
-void Mesh::IncZRot(float num) { m_rotation.z += num; }
-
-void Mesh::DecXRot(float num) { m_rotation.x -= num; }
-
-void Mesh::DecYRot(float num) { m_rotation.y -= num; }
-
-void Mesh::DecZRot(float num) { m_rotation.z -= num; }
-
-void Mesh::IncXScale(float num) { m_scale.x += num; }
-
-void Mesh::IncYScale(float num) { m_scale.y += num; }
-
-void Mesh::IncZScale(float num) { m_scale.z += num; }
-
-void Mesh::DecXScale(float num) { m_scale.x -= num; }
-
-void Mesh::DecYScale(float num) { m_scale.y -= num; }
-
-void Mesh::DecZScale(float num) { m_scale.z -= num; }
+	loadedModels.push_back(new Mesh(filePath));
+	return loadedModels.back();
+}

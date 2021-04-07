@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include <SOIL2.h>
+
 
 #include <vector>
 #include <iostream>
@@ -14,7 +14,9 @@ public:
 	Texture(const char* filePath);
 	~Texture();
 
-	void loadTexture(const char* filePath);
+	void Bind(unsigned int slot = 0) const;
+	void Unbind() const;
+
 
 	const char* getFilePath() const;
 	GLuint getTexture() const;
@@ -23,7 +25,12 @@ public:
 private:
 
 	GLuint m_texture;
+
 	const char* m_filePath;
+
+	unsigned char* m_localBuffer;
+
+	int m_width, m_height, m_BPP;
 
 };
 

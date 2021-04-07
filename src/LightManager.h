@@ -33,8 +33,8 @@ struct DirectionalLight
 	}
 	glm::vec3 Direction;
 
-	glm::vec3 Ambient { 0.1f, 0.1f, 0.1f };
-	glm::vec3 Diffuse { 0.3f, 0.3f, 0.3f };
+	glm::vec3 Ambient { 1.0f, 1.0f, 1.0f };
+	glm::vec3 Diffuse { 1.0f, 1.0f, 1.0f };
 	glm::vec3 Specular{ 0.7f, 0.7f, 0.7f };
 
 };
@@ -46,6 +46,9 @@ struct SpotLight
 		Position.x = x;
 		Position.y = y;
 		Position.z = z;
+		Direction.x = 0.0f;
+		Direction.y = 0.0f;
+		Direction.z = 0.0f;
 	}
 	glm::vec3 Position;
 	glm::vec3 Direction;

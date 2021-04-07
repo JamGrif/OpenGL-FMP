@@ -73,18 +73,30 @@ void main(void)
 
 	vec3 norm = normalize(normal);
 	vec3 viewDir = normalize(viewPos - fragPos);
+	vec3 result;
 
 	//Directional Light
-	vec3 result = calculateDirLight(dLight, norm, viewDir);
-
+	if (dLight.diffuse.x != 0.0) //Ensure a directional light exists by checking if it has a diffuse value
+	{
+		result = calculateDirLight(dLight, norm, viewDir);
+	}
+	
 	//Point Light
 	for (int i = 0; i < NUMBER_OF_POINT_LIGHTS; i++)
 	{
-		result += calculatePointLight(pLight[i], norm, fragPos, viewDir);
+		if (pLight[i].diffuse.x != 0.0)
+		{
+			result += calculatePointLight(pLight[i], norm, fragPos, viewDir);
+		}
+		
 	}
 
 	//Spot Light
-	result += calculateSpotLight(sLight, norm, fragPos, viewDir);
+	if (sLight.diffuse.x != 0.0) //Ensure a spotlight exists by checking if it has a diffuse value
+	{
+		result += calculateSpotLight(sLight, norm, fragPos, viewDir);
+	}
+	
 
 	fragColor = vec4(result, 1.0);
 

@@ -5,7 +5,7 @@
 #include "EngineStatics.h"
 #include "LightManager.h"
 #include "Camera.h"
-#include "Mesh.h"
+#include "Model.h"
 
 class Scene
 {
@@ -20,13 +20,13 @@ public:
 
 private:
 
-	std::vector<Mesh*> m_sceneMeshes;
+	std::vector<Model*> m_sceneMeshes;
 
 	Camera* m_sceneCamera;
 
 	LightManager* m_sceneLightManager;
 
-	Mesh* cube;
+	Model* cube;
 
 
 };

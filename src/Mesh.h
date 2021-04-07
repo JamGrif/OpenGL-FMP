@@ -1,90 +1,73 @@
 #pragma once
 
-
-#include "ModelLoader.h"
-#include "Shader.h"
-#include "Texture.h"
-#include "EngineStatics.h"
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-#include <glm\glm.hpp>
-#include <glm\gtc\type_ptr.hpp>
-#include <glm\gtc\matrix_transform.hpp>
-#include <glm\gtx\transform.hpp>
-
-#include <SOIL2.h>
+#include <vector>
+#include <iostream>
+#include "glm/glm.hpp"
 
 
 class Mesh
 {
 public:
-	Mesh(const char* meshFilePath);
-	~Mesh();
+	Mesh(const char* filePath);
 
-	void initMesh(const char* meshFilePath);
-	void updateMesh();
-	void drawMesh();
+	int getNumVertices() const;
 
-	void loadDiffuseTexture(const char* texturePath);
-	void loadSpecularTexture(const char* texturePath);
+	std::vector<glm::vec3> getVertices() const;
+	std::vector<glm::vec2> getTextureCoords() const;
+	std::vector<glm::vec3> getNormals() const;
 
-	void		SetXPos(float num), SetYPos(float num), SetZPos(float num);
-	float		GetXPos(), GetYPos(), GetZPos();
-
-	void		SetXRot(float num), SetYRot(float num), SetZRot(float num);
-	float		GetXRot(), GetYRot(), GetZRot();
-
-	void		SetXScale(float num), SetYScale(float num), SetZScale(float num);
-	float		GetXScale(), GetYScale(), GetZScale();
-
-	void		IncXPos(float num), IncYPos(float num), IncZPos(float num);
-	void		DecXPos(float num), DecYPos(float num), DecZPos(float num);
-
-	void		IncXRot(float num), IncYRot(float num), IncZRot(float num);
-	void		DecXRot(float num), DecYRot(float num), DecZRot(float num);
-
-	void		IncXScale(float num), IncYScale(float num), IncZScale(float num);
-	void		DecXScale(float num), DecYScale(float num), DecZScale(float num);
+	const char* getFilePath() const;
 
 private:
+
+	const char* m_filePath;
+
+	int numVertices;
+
+	std::vector<glm::vec3> vertices;
+	std::vector<glm::vec2> texCoords;
+	std::vector<glm::vec3> normalVecs;
+
+};
+
+
+class MeshLoader
+{
+public:
+	MeshLoader();
 	
-	//Mesh properties
-	ImportedModel*	m_meshModel;
-	Shader*			m_meshShader;
-	Texture*		m_meshDiffuseTexture;
-	Texture*		m_meshSpecularTexture;
+	void parseOBJ(const char* filePath);
 
-	//GLuint meshDiffuseTexture;
-	//GLuint meshSpecularTexture;
+	int getNumVertices() const;
 
-	GLuint m_VBO[3];
+	std::vector<float> getVertices() const;
+	std::vector<float> getTextureCoordinates() const;
+	std::vector<float> getNormals() const;
 
-	//Space
-	glm::vec3 m_position;
-	glm::vec3 m_rotation;
-	glm::vec3 m_scale;
+private:
 
-	glm::mat4 m_mMat;     //Model
-	glm::mat4 m_vMat;     //View
-	glm::mat4 m_tMat;     //Translation
-	glm::mat4 m_rMat;     //Rotation
-	glm::mat4 m_sMat;		//Scale
-	glm::mat4 m_invTrMat; //Inverse transpose
-	
+	//Values read in from .OBJ file
+	std::vector<float> vertVals;
+	std::vector<float> stVals;
+	std::vector<float> normVals;
 
-	//Uniforms
-	//Vertex Shader
-	//GLuint mLoc, vLoc, projLoc;
+	//Values stored for later use as vertex attributes
+	std::vector<float> triangleVerts;
+	std::vector<float> textureCoords;
+	std::vector<float> normals;
 
-	//Fragment Shader
-	GLuint lightAmbLoc, lightDiffLoc, lightSpecLoc, lightPosLoc, viewPosLoc;
+};
 
+class MeshManager
+{
+public:
 
-	//Cached other classes
-	LightManager* m_localLightManager;
+	static Mesh* loadModel(const char* filePath);
 
+private:
 
+	static std::vector<Mesh*> loadedModels;
+
+	MeshManager();
 };
 

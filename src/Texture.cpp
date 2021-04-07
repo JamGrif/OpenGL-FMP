@@ -1,24 +1,28 @@
 #include "Texture.h"
 
+#include "stb_image.h"
+
 std::vector<Texture*> TextureManager::loadedTextures;
 
 Texture::Texture(const char* filePath)
+	:m_filePath(filePath), m_localBuffer(nullptr), m_width(0), m_height(0), m_BPP(0)
 {
-	m_filePath = filePath;
-	GLuint textureID;
-	textureID = SOIL_load_OGL_texture(filePath, SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y); //Generates texture object
 
-	if (textureID == 0)
-	{
-		std::cout << "Could not find requested texture! " << filePath << std::endl;
-		return;
-	}
+	stbi_set_flip_vertically_on_load(1); //Flips texture on Y-Axis
+	m_localBuffer = stbi_load(filePath, &m_width, &m_height, &m_BPP, 4);
 
-	glBindTexture(GL_TEXTURE_2D, textureID); //Activate texture
+	//Generate texture buffer
+	glGenTextures(1, &m_texture);
 
-	//Mipmap
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); //Apply Mipmapping
-	glGenerateMipmap(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, m_texture);
+	
+	//Specify what happens if texture is renderered on a different sized surface
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	//Specify what happens to texCoords outside 0-1 range
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 
 	//Anisotropic filtering
 	if (glewIsSupported("GL_EXT_texture_filter_anisotropic")) //Ensure supported
@@ -28,22 +32,36 @@ Texture::Texture(const char* filePath)
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisoSetting); //Apply Anisotropic Filtering
 	}
 
-	//Specify what happens to texture coords outside 0-1 range
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	//Define the texture
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_localBuffer); 
+	glGenerateMipmap(GL_TEXTURE_2D);
 
-	m_filePath = filePath;
-	m_texture = textureID;
+	//Unbind
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	if (m_localBuffer)
+	{
+		stbi_image_free(m_localBuffer);
+	}
+
 }
 
 Texture::~Texture()
 {
+	glDeleteTextures(1, &m_texture);
 }
 
-void Texture::loadTexture(const char* filePath)
+void Texture::Bind(unsigned int slot) const
 {
-	
+	glActiveTexture(GL_TEXTURE0 + slot);
+	glBindTexture(GL_TEXTURE_2D, m_texture);
 }
+
+void Texture::Unbind() const
+{
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 
 const char* Texture::getFilePath() const
 {
