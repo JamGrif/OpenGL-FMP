@@ -18,7 +18,7 @@
 class Model
 {
 public:
-	Model();
+	Model(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f));
 	~Model();
 
 	void setMesh(const char* meshFilePath);
@@ -49,10 +49,10 @@ public:
 private:
 	
 	//Mesh properties
-	Mesh*			m_meshModel;
-	Shader*			m_meshShader;
-	Texture*		m_meshDiffuseTexture;
-	Texture*		m_meshSpecularTexture;
+	Mesh*			m_modelMesh;
+	Shader*			m_modelShader;
+	Texture*		m_modelDiffuseTexture;
+	Texture*		m_modelSpecularTexture;
 
 	GLuint m_VBO[3];
 
@@ -66,7 +66,6 @@ private:
 	glm::mat4 m_tMat;		//Translation
 	glm::mat4 m_rMat;		//Rotation
 	glm::mat4 m_sMat;		//Scale
-	glm::mat4 m_invTrMat;	//Inverse transpose
 	
 
 	//Cached other classes

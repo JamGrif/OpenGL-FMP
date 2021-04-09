@@ -49,6 +49,7 @@ Texture::Texture(const char* filePath)
 Texture::~Texture()
 {
 	glDeleteTextures(1, &m_texture);
+	std::cout << "deleted texture" << std::endl;
 }
 
 void Texture::Bind(unsigned int slot) const

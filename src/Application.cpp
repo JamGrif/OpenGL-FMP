@@ -21,7 +21,6 @@ Application::~Application()
 
 	glDeleteVertexArrays(1, &m_appVAO);
 
-
 	glfwDestroyWindow(m_appWindow);
 	glfwTerminate();
 }
@@ -38,14 +37,15 @@ int Application::appInit()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	m_appWindow = glfwCreateWindow(m_defaultWindowWidth, m_defaultWindowHeight, "OpenGL - Jamie", NULL, NULL);
 
-	//GLFWimage icons[1];
-	//icons[0].pixels = SOIL_load_image("res/Icon.jpg", &icons[0].width, &icons[0].height, 0, SOIL_LOAD_RGBA);
-	//glfwSetWindowIcon(m_appWindow, 1, icons);
-	//SOIL_free_image_data(icons[0].pixels);
+	//Set Icon
+	GLFWimage images[1];
+	images[0].pixels = stbi_load("res/Icon.jpg", &images[0].width, &images[0].height, 0, 4); //rgba channels 
+	glfwSetWindowIcon(m_appWindow, 1, images);
+	stbi_image_free(images[0].pixels);
 
 	glfwMakeContextCurrent(m_appWindow);
 	EngineStatics::setAppWindow(m_appWindow);

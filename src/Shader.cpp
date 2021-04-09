@@ -3,6 +3,7 @@
 std::vector<Shader*> ShaderManager::loadedShaders;
 
 Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
+	:m_vertexPath(vertexPath), m_fragmentPath(fragmentPath), m_shaderProgram(0)
 {
 	std::cout << "Shader Initialized" << std::endl;
 
@@ -94,27 +95,54 @@ Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 	//Delete the shaders as they're linked into our program now and no longer neccessery
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);
-
-	m_vertexPath = vertexPath;
-	m_fragmentPath = fragmentPath;
 }
 
 Shader::~Shader()
 {
 	std::cout << "Shader Destroyed" << std::endl;
 
-	glUseProgram(0);
 	glDeleteProgram(m_shaderProgram);
 }
 
-void Shader::Use() const
+void Shader::Bind() const
 {
 	glUseProgram(m_shaderProgram);
 }
 
+void Shader::Unbind() const
+{
+	glUseProgram(0);
+}
+
+void Shader::setUniform1i(const std::string& name, int v0) 
+{
+	glUniform1i(getUniformLocation(name), v0);
+}
+
+void Shader::setUniform1f(const std::string& name, float v0) 
+{
+	glUniform1f(getUniformLocation(name), v0);
+}
+
+void Shader::setUniform3f(const std::string& name, const glm::vec3& v0) 
+{
+	glUniform3f(getUniformLocation(name), v0.x, v0.y, v0.z);
+}
+
+void Shader::setUniform4f(const std::string& name, const glm::vec4& v0) 
+{
+	glUniform4f(getUniformLocation(name), v0.x, v0.y, v0.z, v0.w);
+}
+
+void Shader::setUniformMatrix4fv(const std::string& name, const glm::mat4& v0) 
+{
+	glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(v0));
+}
+
+
 GLuint Shader::getProgram() const
 {
-	return this->m_shaderProgram;
+	return m_shaderProgram;
 }
 
 const GLchar* Shader::getVertexPath() const
@@ -125,6 +153,23 @@ const GLchar* Shader::getVertexPath() const
 const GLchar* Shader::getFragmentPath() const
 {
 	return m_fragmentPath;
+}
+
+int Shader::getUniformLocation(const std::string& name) 
+{
+	if (m_locationCache.find(name) != m_locationCache.end())
+	{
+		return m_locationCache[name];
+	}
+
+	int location = glGetUniformLocation(m_shaderProgram, name.c_str());
+	if (location == -1)
+	{
+		std::cout << "SHADER->Uniform location " << name << " does not exist!" << std::endl;
+	}
+	m_locationCache[name] = location;
+	
+	return location;
 }
 
 Shader* ShaderManager::loadShader(const GLchar* vertexPath, const GLchar* fragmentPath)

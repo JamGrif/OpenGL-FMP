@@ -8,10 +8,14 @@
 #include <glm\gtc\matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
+#include "stb_image.h"
+
 #include <iostream>
 
 #include "Input.h"
 #include "Scene.h"
+
+
 
 
 

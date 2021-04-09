@@ -8,17 +8,16 @@ uniform mat4 m_matrix;
 uniform mat4 v_matrix;
 uniform mat4 proj_matrix;
 
-
-out vec3 fragPos; //Fragment positions sent out from vertex shader
-out vec2 texCoords;
-out vec3 normal;	
+out vec3 varyingFragPos; //Fragment positions sent out from vertex shader
+out vec2 varyingTexCoords;
+out vec3 varyingNormal;	
 
 
 void main(void) 
 {
 	gl_Position = proj_matrix * v_matrix * m_matrix * vec4(vertPos,1.0); //Position of vertex in 3D space
-	fragPos = vec3(m_matrix * vec4(vertPos, 1.0f));
-	normal = mat3(transpose(inverse(m_matrix))) * vertNormal;
-	texCoords = vertTex;
 
+	varyingFragPos = vec3(m_matrix * vec4(vertPos, 1.0f));
+	varyingTexCoords = vertTex;
+	varyingNormal = mat3(transpose(inverse(m_matrix))) * vertNormal;
 }
