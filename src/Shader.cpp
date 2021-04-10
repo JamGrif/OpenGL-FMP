@@ -5,7 +5,7 @@ std::vector<Shader*> ShaderManager::loadedShaders;
 Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 	:m_vertexPath(vertexPath), m_fragmentPath(fragmentPath), m_shaderProgram(0)
 {
-	std::cout << "Shader Initialized" << std::endl;
+	//std::cout << "Shader Initialized" << std::endl;
 
 	//Retrieve the vertex/fragment source code from filePath
 	std::string vertexCode;

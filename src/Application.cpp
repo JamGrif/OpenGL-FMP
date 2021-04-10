@@ -1,5 +1,7 @@
 #include "Application.h"
 
+#include <string>
+
 Application::Application()
 	:m_defaultWindowWidth(1280), m_defaultWindowHeight(720), m_currentWindowWidth(0), m_currentWindowHeight(0), m_aspectRatio(0.0),
 	m_appWindow(nullptr), m_projMatrix{ 1.0f }, m_appVAO(0), m_demoScene(nullptr), m_input(nullptr),
@@ -100,12 +102,27 @@ int Application::appInit()
 
 void Application::appLoop()
 {
+	double previousTime = glfwGetTime();
+	int frameCount = 0;
 	while (!glfwWindowShouldClose(m_appWindow))
 	{
-		//Delta time
-		GLfloat currentFrame = glfwGetTime();
-		m_deltaTime = currentFrame - m_lastFrame;
-		m_lastFrame = currentFrame;
+		////Delta time
+		//GLfloat currentFrame = glfwGetTime();
+		//m_deltaTime = currentFrame - m_lastFrame;
+		//m_lastFrame = currentFrame;
+
+		// Measure speed
+		double currentTime = glfwGetTime();
+		frameCount++;
+		// If a second has passed.
+		if (currentTime - previousTime >= 1.0)
+		{
+			// Display the frame count here any way you want.
+			glfwSetWindowTitle(m_appWindow, std::to_string(frameCount).c_str());
+
+			frameCount = 0;
+			previousTime = currentTime;
+		}
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clears the screen buffers
 		glfwPollEvents();

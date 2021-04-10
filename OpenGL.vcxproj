@@ -178,11 +178,6 @@
     <ClInclude Include="src\Texture.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\DEFAULT-fragmentShader.glsl" />
-    <None Include="res\shaders\DEFAULT-vertexShader.glsl" />
-    <None Include="res\shaders\White-fragmentShader.glsl" />
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="res\textures\jeff.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

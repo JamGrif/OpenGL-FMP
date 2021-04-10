@@ -10,6 +10,14 @@ Texture::Texture(const char* filePath)
 
 	stbi_set_flip_vertically_on_load(1); //Flips texture on Y-Axis
 	m_localBuffer = stbi_load(filePath, &m_width, &m_height, &m_BPP, 4);
+	
+	//Check if file loaded successfully
+	if (stbi_failure_reason() == "can't fopen")
+	{
+		std::cout << "TEXTURE->" << m_filePath << " failed to load, loading default texture" << std::endl;
+		m_localBuffer = stbi_load("res/textures/missingtexture.png", &m_width, &m_height, &m_BPP, 4);
+		m_filePath = "res/textures/missingtexture.png";
+	}
 
 	//Generate texture buffer
 	glGenTextures(1, &m_texture);
@@ -85,6 +93,7 @@ Texture* TextureManager::loadTexture(const char* filePath)
 			return t;
 		}
 	}
+
 
 	//Otherwise, create new texture and add it to vector
 	std::cout << "TEXTUREMANAGER->" << filePath << " is being loaded" << std::endl;

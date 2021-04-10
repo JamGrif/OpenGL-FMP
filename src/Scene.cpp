@@ -28,55 +28,143 @@ Scene::~Scene()
 
 void Scene::initScene()
 {
-	addSceneCamera(0.0f, 3.0f, 0.0f);
+	addSceneCamera(0.0f, 2.0f, 0.0f);
 	addSceneLightManager();
 	
-	m_sceneLightManager->addDirectionalLight(0.0f, -10.0f, -10.0f);
-	m_sceneLightManager->addPointLight(-10.0f, 5.0f, 0.0f);
-	m_sceneLightManager->addPointLight(20.0f, 5.0f, 10.0f);
-	m_sceneLightManager->addPointLight(-15.0f, 5.0f, -10.0f);
-	m_sceneLightManager->addPointLight(4.0f, 4.0f, -20.0f);
-	 
+	//m_sceneLightManager->addDirectionalLight(0.0f, -10.0f, -10.0f);
+	
 	//m_sceneLightManager->addSpotLight(0.0f, 0.0f, 0.0f);
 
-	
-
 	//Floor
-	for (int i = -5; i < 5; i+=1)
+	std::vector<glm::vec3> FloorPosRot =
 	{
-		for (int j = -5; j < 5; j += 1)
-		{
-			Model* Floor = new Model();
-			Floor->setMesh("res/meshes/plane.obj");
-			Floor->setDiffuseTexture("res/textures/grass_diff.png");
-			Floor->setSpecularTexture("res/textures/grass_spec.png");
-			Floor->SetXPos(i * 12);
-			Floor->SetZPos(j * 12);
-			Floor->SetYPos(0.1);
-			m_sceneMeshes.push_back(Floor);
-		}
+		glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(6.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-6.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 0.0f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(6.0f, 0.0f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-6.0f, 0.0f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 0.0f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(6.0f, 0.0f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-6.0f, 0.0f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f)
+	};
+
+	
+	for (int i = 0; i < FloorPosRot.size(); i += 2)
+	{
+		Model* Floor = new Model(FloorPosRot.at(i), FloorPosRot.at(i + 1));
+		Floor->setMesh("res/meshes/plane.obj");
+		Floor->setShader("res/shaders/lighting-vertex.glsl", "res/shaders/lighting-fragment.glsl");
+		Floor->setDiffuseTexture("res/textures/wood_diff.png");
+		Floor->setSpecularTexture("res/textures/wood_spec.png");
+		m_sceneMeshes.push_back(Floor);
+	}
+	
+	//Z wall
+	//std::vector<glm::vec3> WallPosRot =
+	//{
+	//	glm::vec3(-6.0f, 3.0f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
+	//	glm::vec3(0.0f, 3.0f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
+	//	glm::vec3(6.0f, 3.0f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
+	//	glm::vec3(-6.0f, 3.0f, 9.0f), glm::vec3(180.0f, 90.0f, 90.0f),
+	//	glm::vec3(0.0f, 3.0f, 9.0f), glm::vec3(180.0f, 90.0f, 90.0f),
+	//	glm::vec3(6.0f, 3.0f, 9.0f), glm::vec3(180.0f, 90.0f, 90.0f)
+	//
+	//};
+	//
+	//for (int i = 0; i < WallPosRot.size(); i += 2)
+	//{
+	//	Model* wall = new Model(WallPosRot.at(i), WallPosRot.at(i+1));
+	//	wall->setMesh("res/meshes/plane.obj");
+	//	wall->setShader("res/shaders/lighting-vertex.glsl", "res/shaders/lighting-fragment.glsl");
+	//	wall->setDiffuseTexture("res/textures/metal_diff.png");
+	//	wall->setSpecularTexture("res/textures/metal_spec.png");
+	//	m_sceneMeshes.push_back(wall);
+	//}
+
+	////Side wall
+	//std::vector<glm::vec3> SideWallPosRot =
+	//{
+	//	glm::vec3(-9.0f, 3.0f, -6.0f), glm::vec3(90.0f, 0.0f, -90.0f),
+	//	glm::vec3(-9.0f, 3.0f, 0.0f), glm::vec3(90.0f, 0.0f, -90.0f),
+	//	glm::vec3(-9.0f, 3.0f, 6.0f), glm::vec3(90.0f, 0.0f, -90.0f),
+	//	glm::vec3(9.0f, 3.0f, -6.0f), glm::vec3(90.0f, 0.0f, 90.0f),
+	//	glm::vec3(9.0f, 3.0f, 0.0f), glm::vec3(90.0f, 0.0f, 90.0f),
+	//	glm::vec3(9.0f, 3.0f, 6.0f), glm::vec3(90.0f, 0.0f, 90.0f)
+	//};
+	//
+	//for (int i = 0; i < SideWallPosRot.size(); i += 2)
+	//{
+	//	Model* wall = new Model(SideWallPosRot.at(i), SideWallPosRot.at(i + 1));
+	//	wall->setMesh("res/meshes/plane.obj");
+	//	wall->setShader("res/shaders/lighting-vertex.glsl", "res/shaders/lighting-fragment.glsl");
+	//	wall->setDiffuseTexture("res/textures/brick_diff.png");
+	//	wall->setSpecularTexture("res/textures/brick_spec.png");
+	//	m_sceneMeshes.push_back(wall);
+	//}
+	
+	////Roof
+	//std::vector<glm::vec3> RoofPosRot =
+	//{
+	//	glm::vec3(0.0f, 6.0f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(6.0f, 6.0f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(-6.0f, 6.0f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(0.0f, 6.0f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(6.0f, 6.0f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(-6.0f, 6.0f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(0.0f, 6.0f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(6.0f, 6.0f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(-6.0f, 6.0f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f)
+	//};
+	//
+	//for (int i = 0; i < RoofPosRot.size(); i += 2)
+	//{
+	//	Model* Floor = new Model(RoofPosRot.at(i), RoofPosRot.at(i + 1));
+	//	Floor->setMesh("res/meshes/plane.obj");
+	//	Floor->setShader("res/shaders/lighting-vertex.glsl", "res/shaders/lighting-fragment.glsl");
+	//	Floor->setDiffuseTexture("res/textures/concrete_diff.png");
+	//	Floor->setSpecularTexture("res/textures/concrete_spec.png");
+	//	m_sceneMeshes.push_back(Floor);
+	//}
+
+	//Crates
+	std::vector<glm::vec3> CratePosRot =
+	{
+		glm::vec3(4.0f, 0.0f, -2.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+
+	};
+
+	for (int i = 0; i < CratePosRot.size(); i += 2)
+	{
+		Model* Crate = new Model(CratePosRot.at(i), CratePosRot.at(i + 1));
+		Crate->setMesh("res/meshes/crate.obj");
+		Crate->setShader("res/shaders/lighting-vertex.glsl", "res/shaders/lighting-fragment.glsl");
+		Crate->setDiffuseTexture("res/textures/crate_diff.png");
+		Crate->setSpecularTexture("res/textures/crate_spec.png");
+		m_sceneMeshes.push_back(Crate);
 	}
 
-	//Cottage
-	for (int i = 0; i < CottagePosRot.size(); i += 2)
+
+	//Light
+	std::vector<glm::vec3> LightPos =
 	{
-		Model* cottage = new Model(CottagePosRot.at(i), CottagePosRot.at(i+1));
-		cottage->setMesh("res/meshes/cottage.obj");
-		cottage->setDiffuseTexture("res/textures/cottage_diff.png");
-		cottage->setSpecularTexture("res/textures/cottage_spec.png");
-		m_sceneMeshes.push_back(cottage);
+		glm::vec3(6.0f, 3.0f, -6.0f),
+		//glm::vec3(-6.0f, 3.0f, 6.0f)
+	};
+
+	for (int i = 0; i < LightPos.size(); i++)
+	{
+		Model* light = new Model(LightPos.at(i));
+		light->setMesh("res/meshes/cube.obj");
+		light->setShader("res/shaders/basic-vertex.glsl", "res/shaders/basic-fragment.glsl");
+		light->SetXScale(0.3);
+		light->SetYScale(0.3);
+		light->SetZScale(0.3);
+		m_sceneMeshes.push_back(light);
+		m_sceneLightManager->addPointLight(LightPos.at(i).x, LightPos.at(i).y, LightPos.at(i).z);
 	}
 
 
-	//Shack
-	for (int i = 0; i < ShackPosRot.size(); i += 2)
-	{
-		Model* shack = new Model(ShackPosRot.at(i), ShackPosRot.at(i + 1));
-		shack->setMesh("res/meshes/shack.obj");
-		shack->setDiffuseTexture("res/textures/shack_diff.png");
-		shack->setSpecularTexture("res/textures/shack_spec.png");
-		m_sceneMeshes.push_back(shack);
-	}
 
 }
 

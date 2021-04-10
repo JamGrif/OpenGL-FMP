@@ -21,13 +21,13 @@ public:
 	Model(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f));
 	~Model();
 
-	void setMesh(const char* meshFilePath);
-
 	void drawModel();
 
+	void setMesh(const char* meshFilePath);
+	void setShader(const char* vertexPath, const char* fragmentPath);
 	void setDiffuseTexture(const char* texturePath);
 	void setSpecularTexture(const char* texturePath);
-
+	
 	void		SetXPos(float num), SetYPos(float num), SetZPos(float num);
 	float		GetXPos(), GetYPos(), GetZPos();
 
@@ -47,8 +47,11 @@ public:
 	void		DecXScale(float num), DecYScale(float num), DecZScale(float num);
 
 private:
+
+	void setMatrixValues();
+	void setVBOAttrib(bool shaderPos = false, bool shaderTex = false, bool shaderNorm = false);
 	
-	//Mesh properties
+	//Model properties
 	Mesh*			m_modelMesh;
 	Shader*			m_modelShader;
 	Texture*		m_modelDiffuseTexture;
