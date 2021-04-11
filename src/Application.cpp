@@ -90,6 +90,7 @@ int Application::appInit()
 	glEnable(GL_MULTISAMPLE);
 
 
+
 	//Create Input object
 	m_input = new Input();
 

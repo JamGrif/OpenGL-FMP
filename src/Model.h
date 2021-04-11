@@ -27,6 +27,7 @@ public:
 	void setShader(const char* vertexPath, const char* fragmentPath);
 	void setDiffuseTexture(const char* texturePath);
 	void setSpecularTexture(const char* texturePath);
+	void setEmissionTexture(const char* texturePath);
 	
 	void		SetXPos(float num), SetYPos(float num), SetZPos(float num);
 	float		GetXPos(), GetYPos(), GetZPos();
@@ -56,6 +57,7 @@ private:
 	Shader*			m_modelShader;
 	Texture*		m_modelDiffuseTexture;
 	Texture*		m_modelSpecularTexture;
+	Texture*		m_modelEmissionTexture;
 
 	GLuint m_VBO[3];
 

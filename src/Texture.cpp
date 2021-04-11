@@ -5,17 +5,18 @@
 std::vector<Texture*> TextureManager::loadedTextures;
 
 Texture::Texture(const char* filePath)
-	:m_filePath(filePath), m_localBuffer(nullptr), m_width(0), m_height(0), m_BPP(0)
+	:m_filePath(filePath), m_width(0), m_height(0), m_BPP(0)
 {
+	unsigned char* localBuffer;
 
 	stbi_set_flip_vertically_on_load(1); //Flips texture on Y-Axis
-	m_localBuffer = stbi_load(filePath, &m_width, &m_height, &m_BPP, 4);
+	localBuffer = stbi_load(filePath, &m_width, &m_height, &m_BPP, 4);
 	
 	//Check if file loaded successfully
 	if (stbi_failure_reason() == "can't fopen")
 	{
 		std::cout << "TEXTURE->" << m_filePath << " failed to load, loading default texture" << std::endl;
-		m_localBuffer = stbi_load("res/textures/missingtexture.png", &m_width, &m_height, &m_BPP, 4);
+		localBuffer = stbi_load("res/textures/missingtexture.png", &m_width, &m_height, &m_BPP, 4);
 		m_filePath = "res/textures/missingtexture.png";
 	}
 
@@ -41,15 +42,15 @@ Texture::Texture(const char* filePath)
 	}
 
 	//Define the texture
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_localBuffer); 
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, localBuffer);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	//Unbind
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	if (m_localBuffer)
+	if (localBuffer)
 	{
-		stbi_image_free(m_localBuffer);
+		stbi_image_free(localBuffer);
 	}
 
 }
@@ -57,7 +58,6 @@ Texture::Texture(const char* filePath)
 Texture::~Texture()
 {
 	glDeleteTextures(1, &m_texture);
-	std::cout << "deleted texture" << std::endl;
 }
 
 void Texture::Bind(unsigned int slot) const

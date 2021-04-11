@@ -28,7 +28,7 @@ private:
 
 	const char* m_filePath;
 
-	unsigned char* m_localBuffer;
+	
 
 	int m_width, m_height, m_BPP;
 

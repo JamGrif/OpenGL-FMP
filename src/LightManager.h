@@ -33,8 +33,8 @@ struct DirectionalLight
 	}
 	glm::vec3 Direction;
 
-	glm::vec3 Ambient { 0.2f, 0.2f, 0.2f };
-	glm::vec3 Diffuse { 0.4f, 0.4f, 0.4f };
+	glm::vec3 Ambient { 0.3f, 0.3f, 0.3f };
+	glm::vec3 Diffuse { 0.5f, 0.5f, 0.5f };
 	glm::vec3 Specular{ 0.7f, 0.7f, 0.7f };
 
 };

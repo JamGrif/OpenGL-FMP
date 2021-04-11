@@ -146,6 +146,7 @@ void Model::drawModel()
 		//Material properties
 		m_modelShader->setUniform1i("material.diffuse", 0);
 		m_modelShader->setUniform1i("material.specular", 1);
+		m_modelShader->setUniform1i("material.emission", 2);
 		m_modelShader->setUniform1f("material.shininess", 32.0f);
 
 		//Camera Position
@@ -164,6 +165,11 @@ void Model::drawModel()
 			m_modelSpecularTexture->Bind(1);
 		}
 
+		if (m_modelEmissionTexture != nullptr)
+		{
+			m_modelEmissionTexture->Bind(2);
+		}
+
 	}
 
 	/*
@@ -179,6 +185,8 @@ void Model::drawModel()
 		setVBOAttrib(true, false, false);
 	}
 
+
+	//Draw
 	glDrawArrays(GL_TRIANGLES, 0, m_modelMesh->getNumVertices());
 
 	if (m_modelDiffuseTexture != nullptr)
@@ -189,6 +197,11 @@ void Model::drawModel()
 	if (m_modelSpecularTexture != nullptr)
 	{
 		m_modelSpecularTexture->Unbind();
+	}
+
+	if (m_modelEmissionTexture != nullptr)
+	{
+		m_modelEmissionTexture->Unbind();
 	}
 
 	if (m_modelShader != nullptr)
@@ -250,6 +263,11 @@ void Model::setDiffuseTexture(const char* texturePath)
 void Model::setSpecularTexture(const char* texturePath)
 {
 	m_modelSpecularTexture = TextureManager::loadTexture(texturePath);
+}
+
+void Model::setEmissionTexture(const char* texturePath)
+{
+	m_modelEmissionTexture = TextureManager::loadTexture(texturePath);
 }
 
 void Model::SetXPos(float num) { m_position.x = num; }

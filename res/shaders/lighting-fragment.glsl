@@ -6,6 +6,7 @@ struct Material
 {
 	sampler2D diffuse;
 	sampler2D specular;
+	sampler2D emission;
 	float shininess;
 };
 
@@ -96,11 +97,13 @@ void main(void)
 	{
 		result += calculateSpotLight(sLight, norm, varyingFragPos, viewDir);
 	}
-	
+
+	//emission
+	vec3 emission = texture(material.emission, varyingTexCoords).rgb;
+	result += emission;
 
 	fragColor = vec4(result, 1.0);
 
-	
 }
 
 vec3 calculateDirLight(DirectionalLight dl, vec3 normal, vec3 viewDir)
@@ -141,9 +144,9 @@ vec3 calculatePointLight(PointLight pl, vec3 normal, vec3 fragPos, vec3 viewDir)
 	float attenuation = 1.0f / (pl.constant + pl.linear * distance + pl.quadratic * (distance * distance));
 
 	//Combine
-	vec3 ambient = pl.ambient * vec3(texture(material.diffuse, varyingTexCoords));
-	vec3 diffuse = pl.diffuse * diff * vec3(texture(material.diffuse, varyingTexCoords));
-	vec3 specular = pl.specular * spec * vec3(texture(material.specular, varyingTexCoords));
+	vec3 ambient = pl.ambient * texture(material.diffuse, varyingTexCoords).rgb;
+	vec3 diffuse = pl.diffuse * diff * texture(material.diffuse, varyingTexCoords).rgb;
+	vec3 specular = pl.specular * spec * texture(material.specular, varyingTexCoords).rgb;
 
 	ambient *= attenuation;
 	diffuse *= attenuation;
@@ -176,9 +179,9 @@ vec3 calculateSpotLight(SpotLight sl, vec3 normal, vec3 fragPos, vec3 viewDir)
 	float intensity = clamp((theta - sl.outerCutOff) / epsilon, 0.0, 1.0);
 
 	//Combine
-	vec3 ambient = sl.ambient * vec3(texture(material.diffuse, varyingTexCoords));
-	vec3 diffuse = sl.diffuse * diff * vec3(texture(material.diffuse, varyingTexCoords));
-	vec3 specular = sl.specular * spec * vec3(texture(material.specular, varyingTexCoords));
+	vec3 ambient = sl.ambient * texture(material.diffuse, varyingTexCoords).rgb;
+	vec3 diffuse = sl.diffuse * diff * texture(material.diffuse, varyingTexCoords).rgb;
+	vec3 specular = sl.specular * spec * texture(material.specular, varyingTexCoords).rgb;
 
 	ambient *= attenuation * intensity;
 	diffuse *= attenuation * intensity;
