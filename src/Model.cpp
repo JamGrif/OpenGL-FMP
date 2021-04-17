@@ -1,7 +1,7 @@
 #include "Model.h"
 
 Model::Model(glm::vec3 position, glm::vec3 rotation)
-	:m_modelMesh(nullptr), m_modelShader(nullptr), m_modelDiffuseTexture(nullptr), m_modelSpecularTexture(nullptr),
+	:m_modelMesh(nullptr), m_modelShaderPassOne(nullptr), m_modelShaderPassTwo(nullptr), m_modelDiffuseTexture(nullptr), m_modelSpecularTexture(nullptr),
 	m_position{ position }, m_rotation{ rotation }, m_scale{ 1.0f,1.0f,1.0f },
 	m_mMat{ 1.0f }, m_vMat{ 1.0f }, m_tMat{ 1.0f }, m_rMat{ 1.0f }, m_sMat{ 1.0f }
 {
@@ -9,20 +9,28 @@ Model::Model(glm::vec3 position, glm::vec3 rotation)
 
 	m_localLightManager = EngineStatics::getLightManager();
 
+	
+
+
 }
 
 Model::~Model()
 {
-	std::cout << "MESH->Destroyed" << std::endl;
+	//std::cout << "MESH->Destroyed" << std::endl;
 
 	if (m_modelMesh != nullptr)
 	{
 		m_modelMesh = nullptr;
 	}
 
-	if (m_modelShader != nullptr)
+	if (m_modelShaderPassOne != nullptr)
 	{
-		m_modelShader = nullptr;
+		m_modelShaderPassOne = nullptr;
+	}
+
+	if (m_modelShaderPassTwo != nullptr)
+	{
+		m_modelShaderPassTwo = nullptr;
 	}
 
 	if (m_modelDiffuseTexture != nullptr)
@@ -37,45 +45,73 @@ Model::~Model()
 
 }
 
-void Model::drawModel()
+void Model::drawPassOne(glm::mat4 lightVmatrix, glm::mat4 lightPmatrix, glm::mat4 shadowMVP1)
 {
 	//If no valid model or shader attached
-	if (m_modelMesh == nullptr || m_modelShader == nullptr)
+	if (m_modelMesh == nullptr || m_modelShaderPassOne == nullptr)
 	{
 		return;
 	}
 
-	/*
-		Set matrix values
-	*/
-
 	setMatrixValues();
 
+
 	/*
-		Set Shader Vertex values
+		First pass (shadows)
 	*/
 
 	//Bind shader
-	m_modelShader->Bind();
+	m_modelShaderPassOne->Bind();
 
-	m_modelShader->setUniformMatrix4fv("m_matrix", m_mMat);
-	m_modelShader->setUniformMatrix4fv("v_matrix", m_vMat);
-	m_modelShader->setUniformMatrix4fv("proj_matrix", *EngineStatics::getProjectionMatrix());
+	//Renders object in position of the light to establish depth buffer
+	shadowMVP1 = lightPmatrix * lightVmatrix * m_mMat;
+	m_modelShaderPassOne->setUniformMatrix4fv("shadowMVP1", shadowMVP1);
+	setVBOAttrib(true, false, false); //only needs vertices buffer for first pass
+
+	glClear(GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_CULL_FACE);
+	glFrontFace(GL_CCW);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+
+	glDrawArrays(GL_TRIANGLES, 0, m_modelMesh->getNumVertices());
+}
+
+void Model::drawPassTwo(glm::mat4 shadowMVP2, glm::mat4 b, glm::mat4 lightPmatrix, glm::mat4 lightVmatrix)
+{
+	//If no valid model or shader attached
+	if (m_modelMesh == nullptr || m_modelShaderPassOne == nullptr)
+	{
+		return;
+	}
+
+
+	//Bind shader
+	m_modelShaderPassTwo->Bind();
+
+	//Set Vertex values
+
+	shadowMVP2 = b * lightPmatrix * lightVmatrix * m_mMat;
+
+	m_modelShaderPassTwo->setUniformMatrix4fv("m_matrix", m_mMat);
+	m_modelShaderPassTwo->setUniformMatrix4fv("v_matrix", m_vMat);
+	m_modelShaderPassTwo->setUniformMatrix4fv("proj_matrix", *EngineStatics::getProjectionMatrix());
+	m_modelShaderPassTwo->setUniformMatrix4fv("shadowMVP2", shadowMVP2);
 
 	/*
-		Set Shader Fragment values
+		Set Fragment values
 	*/
 
-	if (m_modelShader->getVertexPath() == "res/shaders/lighting-vertex.glsl")
+	if (m_modelShaderPassTwo->getFragmentPath() == "res/shaders/lightingPassTwo-fragment.glsl")
 	{
 
 		//Ensure a directional light exists
 		if (m_localLightManager->getCurrentDirectionalLights() > 0)
 		{
-			m_modelShader->setUniform3f("dLight.ambient", m_localLightManager->getDirectionalLight(0)->Ambient);
-			m_modelShader->setUniform3f("dLight.diffuse", m_localLightManager->getDirectionalLight(0)->Diffuse);
-			m_modelShader->setUniform3f("dLight.specular", m_localLightManager->getDirectionalLight(0)->Specular);
-			m_modelShader->setUniform3f("dLight.direction", m_localLightManager->getDirectionalLight(0)->Direction);
+			m_modelShaderPassTwo->setUniform3f("dLight.ambient", m_localLightManager->getDirectionalLight(0)->Ambient);
+			m_modelShaderPassTwo->setUniform3f("dLight.diffuse", m_localLightManager->getDirectionalLight(0)->Diffuse);
+			m_modelShaderPassTwo->setUniform3f("dLight.specular", m_localLightManager->getDirectionalLight(0)->Specular);
+			m_modelShaderPassTwo->setUniform3f("dLight.direction", m_localLightManager->getDirectionalLight(0)->Direction);
 		}
 
 		//Ensure a point light exists
@@ -84,73 +120,73 @@ void Model::drawModel()
 			//Point lights
 			if (m_localLightManager->getCurrentPointLights() >= 1)
 			{
-				m_modelShader->setUniform3f("pLight[0].ambient", m_localLightManager->getPointLight(0)->Ambient);
-				m_modelShader->setUniform3f("pLight[0].diffuse", m_localLightManager->getPointLight(0)->Diffuse);
-				m_modelShader->setUniform3f("pLight[0].specular", m_localLightManager->getPointLight(0)->Specular);
-				m_modelShader->setUniform3f("pLight[0].position", m_localLightManager->getPointLight(0)->Position);
-				m_modelShader->setUniform1f("pLight[0].constant", m_localLightManager->getPointLight(0)->Constant);
-				m_modelShader->setUniform1f("pLight[0].linear", m_localLightManager->getPointLight(0)->Linear);
-				m_modelShader->setUniform1f("pLight[0].quadratic", m_localLightManager->getPointLight(0)->Quadratic);
+				m_modelShaderPassTwo->setUniform3f("pLight[0].ambient", m_localLightManager->getPointLight(0)->Ambient);
+				m_modelShaderPassTwo->setUniform3f("pLight[0].diffuse", m_localLightManager->getPointLight(0)->Diffuse);
+				m_modelShaderPassTwo->setUniform3f("pLight[0].specular", m_localLightManager->getPointLight(0)->Specular);
+				m_modelShaderPassTwo->setUniform3f("pLight[0].position", m_localLightManager->getPointLight(0)->Position);
+				m_modelShaderPassTwo->setUniform1f("pLight[0].constant", m_localLightManager->getPointLight(0)->Constant);
+				m_modelShaderPassTwo->setUniform1f("pLight[0].linear", m_localLightManager->getPointLight(0)->Linear);
+				m_modelShaderPassTwo->setUniform1f("pLight[0].quadratic", m_localLightManager->getPointLight(0)->Quadratic);
 			}
 
 			if (m_localLightManager->getCurrentPointLights() >= 2)
 			{
-				m_modelShader->setUniform3f("pLight[1].ambient", m_localLightManager->getPointLight(1)->Ambient);
-				m_modelShader->setUniform3f("pLight[1].diffuse", m_localLightManager->getPointLight(1)->Diffuse);
-				m_modelShader->setUniform3f("pLight[1].specular", m_localLightManager->getPointLight(1)->Specular);
-				m_modelShader->setUniform3f("pLight[1].position", m_localLightManager->getPointLight(1)->Position);
-				m_modelShader->setUniform1f("pLight[1].constant", m_localLightManager->getPointLight(1)->Constant);
-				m_modelShader->setUniform1f("pLight[1].linear", m_localLightManager->getPointLight(1)->Linear);
-				m_modelShader->setUniform1f("pLight[1].quadratic", m_localLightManager->getPointLight(1)->Quadratic);
+				m_modelShaderPassTwo->setUniform3f("pLight[1].ambient", m_localLightManager->getPointLight(1)->Ambient);
+				m_modelShaderPassTwo->setUniform3f("pLight[1].diffuse", m_localLightManager->getPointLight(1)->Diffuse);
+				m_modelShaderPassTwo->setUniform3f("pLight[1].specular", m_localLightManager->getPointLight(1)->Specular);
+				m_modelShaderPassTwo->setUniform3f("pLight[1].position", m_localLightManager->getPointLight(1)->Position);
+				m_modelShaderPassTwo->setUniform1f("pLight[1].constant", m_localLightManager->getPointLight(1)->Constant);
+				m_modelShaderPassTwo->setUniform1f("pLight[1].linear", m_localLightManager->getPointLight(1)->Linear);
+				m_modelShaderPassTwo->setUniform1f("pLight[1].quadratic", m_localLightManager->getPointLight(1)->Quadratic);
 			}
 
 			if (m_localLightManager->getCurrentPointLights() >= 3)
 			{
-				m_modelShader->setUniform3f("pLight[2].ambient", m_localLightManager->getPointLight(2)->Ambient);
-				m_modelShader->setUniform3f("pLight[2].diffuse", m_localLightManager->getPointLight(2)->Diffuse);
-				m_modelShader->setUniform3f("pLight[2].specular", m_localLightManager->getPointLight(2)->Specular);
-				m_modelShader->setUniform3f("pLight[2].position", m_localLightManager->getPointLight(2)->Position);
-				m_modelShader->setUniform1f("pLight[2].constant", m_localLightManager->getPointLight(2)->Constant);
-				m_modelShader->setUniform1f("pLight[2].linear", m_localLightManager->getPointLight(2)->Linear);
-				m_modelShader->setUniform1f("pLight[2].quadratic", m_localLightManager->getPointLight(2)->Quadratic);
+				m_modelShaderPassTwo->setUniform3f("pLight[2].ambient", m_localLightManager->getPointLight(2)->Ambient);
+				m_modelShaderPassTwo->setUniform3f("pLight[2].diffuse", m_localLightManager->getPointLight(2)->Diffuse);
+				m_modelShaderPassTwo->setUniform3f("pLight[2].specular", m_localLightManager->getPointLight(2)->Specular);
+				m_modelShaderPassTwo->setUniform3f("pLight[2].position", m_localLightManager->getPointLight(2)->Position);
+				m_modelShaderPassTwo->setUniform1f("pLight[2].constant", m_localLightManager->getPointLight(2)->Constant);
+				m_modelShaderPassTwo->setUniform1f("pLight[2].linear", m_localLightManager->getPointLight(2)->Linear);
+				m_modelShaderPassTwo->setUniform1f("pLight[2].quadratic", m_localLightManager->getPointLight(2)->Quadratic);
 			}
 
 			if (m_localLightManager->getCurrentPointLights() >= 4)
 			{
-				m_modelShader->setUniform3f("pLight[3].ambient", m_localLightManager->getPointLight(3)->Ambient);
-				m_modelShader->setUniform3f("pLight[3].diffuse", m_localLightManager->getPointLight(3)->Diffuse);
-				m_modelShader->setUniform3f("pLight[3].specular", m_localLightManager->getPointLight(3)->Specular);
-				m_modelShader->setUniform3f("pLight[3].position", m_localLightManager->getPointLight(3)->Position);
-				m_modelShader->setUniform1f("pLight[3].constant", m_localLightManager->getPointLight(3)->Constant);
-				m_modelShader->setUniform1f("pLight[3].linear", m_localLightManager->getPointLight(3)->Linear);
-				m_modelShader->setUniform1f("pLight[3].quadratic", m_localLightManager->getPointLight(3)->Quadratic);
+				m_modelShaderPassTwo->setUniform3f("pLight[3].ambient", m_localLightManager->getPointLight(3)->Ambient);
+				m_modelShaderPassTwo->setUniform3f("pLight[3].diffuse", m_localLightManager->getPointLight(3)->Diffuse);
+				m_modelShaderPassTwo->setUniform3f("pLight[3].specular", m_localLightManager->getPointLight(3)->Specular);
+				m_modelShaderPassTwo->setUniform3f("pLight[3].position", m_localLightManager->getPointLight(3)->Position);
+				m_modelShaderPassTwo->setUniform1f("pLight[3].constant", m_localLightManager->getPointLight(3)->Constant);
+				m_modelShaderPassTwo->setUniform1f("pLight[3].linear", m_localLightManager->getPointLight(3)->Linear);
+				m_modelShaderPassTwo->setUniform1f("pLight[3].quadratic", m_localLightManager->getPointLight(3)->Quadratic);
 			}
 		}
 
 		//Ensure a spot light exists
 		if (m_localLightManager->getCurrentSpotLights() > 0)
 		{
-			m_modelShader->setUniform3f("sLight.ambient", m_localLightManager->getSpotLight(0)->Ambient);
-			m_modelShader->setUniform3f("sLight.diffuse", m_localLightManager->getSpotLight(0)->Diffuse);
-			m_modelShader->setUniform3f("sLight.specular", m_localLightManager->getSpotLight(0)->Specular);
-			m_modelShader->setUniform3f("sLight.position", EngineStatics::getCamera()->getPosition());
-			m_modelShader->setUniform3f("sLight.direction", EngineStatics::getCamera()->getFront());
-			m_modelShader->setUniform1f("sLight.cutOff", glm::cos(glm::radians(m_localLightManager->getSpotLight(0)->cutOff)));
-			m_modelShader->setUniform1f("sLight.outerCutOff", glm::cos(glm::radians(m_localLightManager->getSpotLight(0)->outerCutOff)));
-			m_modelShader->setUniform1f("sLight.constant", m_localLightManager->getSpotLight(0)->Constant);
-			m_modelShader->setUniform1f("sLight.linear", m_localLightManager->getSpotLight(0)->Linear);
-			m_modelShader->setUniform1f("sLight.quadratic", m_localLightManager->getSpotLight(0)->Quadratic);
+			m_modelShaderPassTwo->setUniform3f("sLight.ambient", m_localLightManager->getSpotLight(0)->Ambient);
+			m_modelShaderPassTwo->setUniform3f("sLight.diffuse", m_localLightManager->getSpotLight(0)->Diffuse);
+			m_modelShaderPassTwo->setUniform3f("sLight.specular", m_localLightManager->getSpotLight(0)->Specular);
+			m_modelShaderPassTwo->setUniform3f("sLight.position", EngineStatics::getCamera()->getPosition());
+			m_modelShaderPassTwo->setUniform3f("sLight.direction", EngineStatics::getCamera()->getFront());
+			m_modelShaderPassTwo->setUniform1f("sLight.cutOff", glm::cos(glm::radians(m_localLightManager->getSpotLight(0)->cutOff)));
+			m_modelShaderPassTwo->setUniform1f("sLight.outerCutOff", glm::cos(glm::radians(m_localLightManager->getSpotLight(0)->outerCutOff)));
+			m_modelShaderPassTwo->setUniform1f("sLight.constant", m_localLightManager->getSpotLight(0)->Constant);
+			m_modelShaderPassTwo->setUniform1f("sLight.linear", m_localLightManager->getSpotLight(0)->Linear);
+			m_modelShaderPassTwo->setUniform1f("sLight.quadratic", m_localLightManager->getSpotLight(0)->Quadratic);
 		}
 
 
 		//Material properties
-		m_modelShader->setUniform1i("material.diffuse", 0);
-		m_modelShader->setUniform1i("material.specular", 1);
-		m_modelShader->setUniform1i("material.emission", 2);
-		m_modelShader->setUniform1f("material.shininess", 32.0f);
+		m_modelShaderPassTwo->setUniform1i("material.diffuse", 0);
+		m_modelShaderPassTwo->setUniform1i("material.specular", 1);
+		m_modelShaderPassTwo->setUniform1i("material.emission", 2);
+		m_modelShaderPassTwo->setUniform1f("material.shininess", 32.0f);
 
 		//Camera Position
-		m_modelShader->setUniform3f("viewPos", EngineStatics::getCamera()->getPosition());
+		m_modelShaderPassTwo->setUniform3f("viewPos", EngineStatics::getCamera()->getPosition());
 
 
 
@@ -175,16 +211,10 @@ void Model::drawModel()
 	/*
 		Bind VBOs and vertex attributes
 	*/
+	setVBOAttrib(true, true, true);
 
-	if (m_modelShader->getFragmentPath() == "res/shaders/lighting-fragment.glsl")
-	{
-		setVBOAttrib(true, true, true);
-	}
-	else 
-	{
-		setVBOAttrib(true, false, false);
-	}
-
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
 
 	//Draw
 	glDrawArrays(GL_TRIANGLES, 0, m_modelMesh->getNumVertices());
@@ -193,21 +223,53 @@ void Model::drawModel()
 	{
 		m_modelDiffuseTexture->Unbind();
 	}
-
+	
 	if (m_modelSpecularTexture != nullptr)
 	{
 		m_modelSpecularTexture->Unbind();
 	}
-
+	
 	if (m_modelEmissionTexture != nullptr)
 	{
 		m_modelEmissionTexture->Unbind();
 	}
-
-	if (m_modelShader != nullptr)
+	
+	if (m_modelShaderPassOne != nullptr)
 	{
-		m_modelShader->Unbind();
+		m_modelShaderPassOne->Unbind();
 	}
+	
+	if (m_modelShaderPassTwo != nullptr)
+	{
+		m_modelShaderPassTwo->Unbind();
+	}
+}
+
+void Model::drawModel()
+{
+	//If no valid model or shader attached
+	if (m_modelMesh == nullptr || m_modelShaderPassOne == nullptr)
+	{
+		return;
+	}
+
+	/*
+		Set matrix values
+	*/
+
+	
+
+	/*
+		Restore default drawing
+	*/
+
+	
+
+	/*
+		Second pass (drawing)
+	*/
+
+	
 
 }
 
@@ -250,9 +312,14 @@ void Model::setMesh(const char* meshFilePath)
 	glBufferData(GL_ARRAY_BUFFER, nvalues.size() * 4, &nvalues[0], GL_STATIC_DRAW);
 }
 
-void Model::setShader(const char* vertexPath, const char* fragmentPath)
+void Model::setShaderOne(const char* vertexPath, const char* fragmentPath)
 {
-	m_modelShader = ShaderManager::loadShader(vertexPath, fragmentPath);
+	m_modelShaderPassOne = ShaderManager::loadShader(vertexPath, fragmentPath);
+}
+
+void Model::setShaderTwo(const char* vertexPath, const char* fragmentPath)
+{
+	m_modelShaderPassTwo = ShaderManager::loadShader(vertexPath, fragmentPath);
 }
 
 void Model::setDiffuseTexture(const char* texturePath)

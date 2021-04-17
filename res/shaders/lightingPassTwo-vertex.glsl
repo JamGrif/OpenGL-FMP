@@ -4,13 +4,16 @@ layout(location=1) in vec2 vertTex;
 layout(location=2) in vec3 vertNormal;
 
 
+
 uniform mat4 m_matrix;
 uniform mat4 v_matrix;
 uniform mat4 proj_matrix;
+uniform mat4 shadowMVP2;
 
 out vec3 varyingFragPos; //Fragment positions sent out from vertex shader
 out vec2 varyingTexCoords;
 out vec3 varyingNormal;	
+out vec4 shadow_coord;
 
 
 void main(void) 
@@ -20,4 +23,6 @@ void main(void)
 	varyingFragPos = vec3(m_matrix * vec4(vertPos, 1.0f));
 	varyingTexCoords = vertTex;
 	varyingNormal = mat3(transpose(inverse(m_matrix))) * vertNormal;
+
+	shadow_coord = shadowMVP2 * vec4(vertPos,1.0);
 }

@@ -21,10 +21,14 @@ public:
 	Model(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f));
 	~Model();
 
+	void drawPassOne(glm::mat4 lightVmatrix, glm::mat4 lightPmatrix, glm::mat4 shadowMVP1);
+	void drawPassTwo(glm::mat4 shadowMVP2, glm::mat4 b, glm::mat4 lightPmatrix, glm::mat4 lightVmatrix);
+
 	void drawModel();
 
 	void setMesh(const char* meshFilePath);
-	void setShader(const char* vertexPath, const char* fragmentPath);
+	void setShaderOne(const char* vertexPath, const char* fragmentPath);
+	void setShaderTwo(const char* vertexPath, const char* fragmentPath);
 	void setDiffuseTexture(const char* texturePath);
 	void setSpecularTexture(const char* texturePath);
 	void setEmissionTexture(const char* texturePath);
@@ -54,7 +58,8 @@ private:
 	
 	//Model properties
 	Mesh*			m_modelMesh;
-	Shader*			m_modelShader;
+	Shader*			m_modelShaderPassOne;
+	Shader*			m_modelShaderPassTwo;
 	Texture*		m_modelDiffuseTexture;
 	Texture*		m_modelSpecularTexture;
 	Texture*		m_modelEmissionTexture;
@@ -75,6 +80,10 @@ private:
 
 	//Cached other classes
 	LightManager* m_localLightManager;
+
+
+	//Shadows
+
 
 
 };

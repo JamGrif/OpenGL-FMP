@@ -16,6 +16,8 @@ public:
 	void initScene();
 	void updateScene();
 
+	void setupShadowObjects();
+
 	
 
 private:
@@ -40,6 +42,16 @@ private:
 		glm::vec3(4.5f, 0.5f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(-4.5f, 0.5f, 10.0f), glm::vec3(0.0f, 180.0f, 0.0f)
 	};
+
+
+	//Shadows
+	int screenSizeX, screenSizeY;
+	GLuint shadowTex, shadowBuffer;
+	glm::mat4 lightVmatrix;
+	glm::mat4 lightPmatrix;
+	glm::mat4 shadowMVP1;
+	glm::mat4 shadowMVP2;
+	glm::mat4 b;
 
 
 };

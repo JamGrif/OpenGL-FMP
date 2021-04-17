@@ -64,9 +64,9 @@ int LightManager::getCurrentDirectionalLights() const
 //Changes the position of a specified point light in vector
 void LightManager::setPointLight(float x, float y, float z, int index)
 {
-	m_scenePointLights.at(index)->Position.x = x;
-	m_scenePointLights.at(index)->Position.y = y;
-	m_scenePointLights.at(index)->Position.z = z;
+	m_scenePointLights.at(index)->Position.x += x;
+	m_scenePointLights.at(index)->Position.y += y;
+	m_scenePointLights.at(index)->Position.z += z;
 }
 
 //Add a new point light at specificed position

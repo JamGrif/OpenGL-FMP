@@ -1,6 +1,7 @@
 #version 430 
 #define NUMBER_OF_POINT_LIGHTS 4
-//layout(binding=0) uniform sampler2D samp;
+
+layout(binding=3) uniform sampler2DShadow shadowTex;
 
 struct Material
 {
@@ -54,7 +55,7 @@ out vec4 fragColor;
 in vec3 varyingFragPos;
 in vec3 varyingNormal;
 in vec2 varyingTexCoords;
-
+in vec4 shadow_coord;
 
 
 uniform vec3 viewPos;				//Camera position
@@ -111,6 +112,8 @@ vec3 calculateDirLight(DirectionalLight dl, vec3 normal, vec3 viewDir)
 	vec3 lightDir = normalize(-dl.direction); // "-" as its from the surface, not from the light
 	vec3 halfwayDir = normalize(lightDir + viewDir);
 
+	
+
 	//Diffuse
 	float diff = max(dot(normal, lightDir), 0.0);
 
@@ -131,6 +134,7 @@ vec3 calculatePointLight(PointLight pl, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
 	vec3 lightDir = normalize(pl.position - fragPos);
 	vec3 halfwayDir = normalize(lightDir + viewDir);
+	float notInShadow = textureProj(shadowTex, shadow_coord);
 
 	//Diffuse
 	float diff = max(dot(normal, lightDir), 0.0);
@@ -152,7 +156,17 @@ vec3 calculatePointLight(PointLight pl, vec3 normal, vec3 fragPos, vec3 viewDir)
 	diffuse *= attenuation;
 	specular *= attenuation;
 
-	return (ambient + diffuse + specular);
+
+	if (notInShadow == 1.0)
+	{
+		return (ambient + diffuse + specular);
+	}
+	else 
+	{
+		return ambient;
+	}
+
+	//return (ambient + diffuse + specular);
 
 }
 
