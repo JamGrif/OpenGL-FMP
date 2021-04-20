@@ -44,10 +44,10 @@ int Application::appInit()
 	m_appWindow = glfwCreateWindow(m_defaultWindowWidth, m_defaultWindowHeight, "OpenGL - Jamie", NULL, NULL);
 
 	//Set Icon
-	GLFWimage images[1];
-	images[0].pixels = stbi_load("res/Icon.jpg", &images[0].width, &images[0].height, 0, 4); //rgba channels 
-	glfwSetWindowIcon(m_appWindow, 1, images);
-	stbi_image_free(images[0].pixels);
+	//GLFWimage images[1];
+	//images[0].pixels = stbi_load("res/Icon.jpg", &images[0].width, &images[0].height, 0, 4); //rgba channels 
+	//glfwSetWindowIcon(m_appWindow, 1, images);
+	//stbi_image_free(images[0].pixels);
 
 	glfwMakeContextCurrent(m_appWindow);
 	EngineStatics::setAppWindow(m_appWindow);
