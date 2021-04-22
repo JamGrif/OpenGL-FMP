@@ -1,7 +1,6 @@
 #version 430 
 #define NUMBER_OF_POINT_LIGHTS 4
 
-layout(binding=3) uniform sampler2DShadow shadowTex;
 
 struct Material
 {
@@ -134,7 +133,6 @@ vec3 calculatePointLight(PointLight pl, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
 	vec3 lightDir = normalize(pl.position - fragPos);
 	vec3 halfwayDir = normalize(lightDir + viewDir);
-	float notInShadow = textureProj(shadowTex, shadow_coord);
 
 	//Diffuse
 	float diff = max(dot(normal, lightDir), 0.0);
@@ -157,16 +155,9 @@ vec3 calculatePointLight(PointLight pl, vec3 normal, vec3 fragPos, vec3 viewDir)
 	specular *= attenuation;
 
 
-	if (notInShadow == 1.0)
-	{
-		return (ambient + diffuse + specular);
-	}
-	else 
-	{
-		return ambient;
-	}
+	
 
-	//return (ambient + diffuse + specular);
+	return (ambient + diffuse + specular);
 
 }
 

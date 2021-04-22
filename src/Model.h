@@ -21,17 +21,12 @@ public:
 	Model(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f));
 	~Model();
 
-	void drawPassOne(glm::mat4 lightVmatrix, glm::mat4 lightPmatrix, glm::mat4 shadowMVP1);
-	void drawPassTwo(glm::mat4 shadowMVP2, glm::mat4 b, glm::mat4 lightPmatrix, glm::mat4 lightVmatrix);
-
-	void drawModel();
+	virtual void drawPassOne() = 0;
+	virtual void drawPassTwo() = 0;
 
 	void setMesh(const char* meshFilePath);
 	void setShaderOne(const char* vertexPath, const char* fragmentPath);
 	void setShaderTwo(const char* vertexPath, const char* fragmentPath);
-	void setDiffuseTexture(const char* texturePath);
-	void setSpecularTexture(const char* texturePath);
-	void setEmissionTexture(const char* texturePath);
 	
 	void		SetXPos(float num), SetYPos(float num), SetZPos(float num);
 	float		GetXPos(), GetYPos(), GetZPos();
@@ -51,7 +46,7 @@ public:
 	void		IncXScale(float num), IncYScale(float num), IncZScale(float num);
 	void		DecXScale(float num), DecYScale(float num), DecZScale(float num);
 
-private:
+protected:
 
 	void setMatrixValues();
 	void setVBOAttrib(bool shaderPos = false, bool shaderTex = false, bool shaderNorm = false);
@@ -60,9 +55,6 @@ private:
 	Mesh*			m_modelMesh;
 	Shader*			m_modelShaderPassOne;
 	Shader*			m_modelShaderPassTwo;
-	Texture*		m_modelDiffuseTexture;
-	Texture*		m_modelSpecularTexture;
-	Texture*		m_modelEmissionTexture;
 
 	GLuint m_VBO[3];
 
@@ -77,14 +69,5 @@ private:
 	glm::mat4 m_rMat;		//Rotation
 	glm::mat4 m_sMat;		//Scale
 	
-
-	//Cached other classes
-	LightManager* m_localLightManager;
-
-
-	//Shadows
-
-
-
 };
 

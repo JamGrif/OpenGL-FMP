@@ -5,7 +5,8 @@
 #include "EngineStatics.h"
 #include "LightManager.h"
 #include "Camera.h"
-#include "Model.h"
+#include "ModelBasic.h"
+#include "ModelLighting.h"
 
 class Scene
 {
@@ -44,14 +45,7 @@ private:
 	};
 
 
-	//Shadows
-	int screenSizeX, screenSizeY;
-	GLuint shadowTex, shadowBuffer;
-	glm::mat4 lightVmatrix;
-	glm::mat4 lightPmatrix;
-	glm::mat4 shadowMVP1;
-	glm::mat4 shadowMVP2;
-	glm::mat4 b;
+
 
 
 };

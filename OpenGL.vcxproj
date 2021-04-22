@@ -160,6 +160,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\stb_image\stb_image.cpp" />
+    <ClCompile Include="src\ModelBasic.cpp" />
+    <ClCompile Include="src\ModelLighting.cpp" />
     <ClCompile Include="src\LightManager.cpp" />
     <ClCompile Include="src\EngineStatics.cpp" />
     <ClCompile Include="src\Model.cpp" />
@@ -174,6 +176,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\stb_image\stb_image.h" />
+    <ClInclude Include="src\ModelBasic.h" />
+    <ClInclude Include="src\ModelLighting.h" />
     <ClInclude Include="res\icon\resource.h" />
     <ClInclude Include="src\LightManager.h" />
     <ClInclude Include="src\EngineStatics.h" />
