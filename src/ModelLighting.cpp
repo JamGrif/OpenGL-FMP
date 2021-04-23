@@ -143,6 +143,7 @@ void ModelLighting::drawPassTwo()
 	m_modelShaderPassTwo->setUniform1i("material.diffuse", 0);
 	m_modelShaderPassTwo->setUniform1i("material.specular", 1);
 	m_modelShaderPassTwo->setUniform1i("material.emission", 2);
+	m_modelShaderPassTwo->setUniform1i("material.normal", 3);
 	m_modelShaderPassTwo->setUniform1f("material.shininess", 32.0f);
 
 	//Camera Position
@@ -170,23 +171,19 @@ void ModelLighting::drawPassTwo()
 		m_modelNormalTexture->Bind(3);
 	}
 
-	
-
 	/*
 		Bind VBOs and vertex attributes
 	*/
 
-	if (m_modelShaderPassTwo->getFragmentPath() == "res/shaders/lightingPassTwo-fragment.glsl")
+	if (m_modelNormalTexture != nullptr)
 	{
-		setVBOAttrib(true, true, true);
+		setVBOAttrib(true, true, true, true, true);
 	}
 	else
 	{
-		setVBOAttrib(true, false, false);
+		setVBOAttrib(true, true, true, false, false);
 	}
-
-
-
+	
 	//Draw
 	glDrawArrays(GL_TRIANGLES, 0, m_modelMesh->getNumVertices());
 
@@ -215,7 +212,6 @@ void ModelLighting::drawPassTwo()
 		m_modelShaderPassTwo->Unbind();
 	}
 
-
 }
 
 
@@ -237,4 +233,59 @@ void ModelLighting::setEmissionTexture(const char* texturePath)
 void ModelLighting::setNormalTexture(const char* texturePath)
 {
 	m_modelNormalTexture = TextureManager::loadTexture(texturePath);
+
+	if (m_modelNormalTexture == nullptr)
+		return;
+
+	//Create normal 
+	for (int i = 0; i < m_modelMesh->getVertices().size(); i += 3)
+	{
+		//std::cout << "norm pass" << std::endl;
+		//Vertices
+		glm::vec3& v0 = m_modelMesh->getVertices()[i + 0];
+		glm::vec3& v1 = m_modelMesh->getVertices()[i + 1];
+		glm::vec3& v2 = m_modelMesh->getVertices()[i + 2];
+		
+		glm::vec2& uv0 = m_modelMesh->getTextureCoords()[i + 0];
+		glm::vec2& uv1 = m_modelMesh->getTextureCoords()[i + 1];
+		glm::vec2& uv2 = m_modelMesh->getTextureCoords()[i + 2];
+		
+		//Edge of triangle
+		glm::vec3 deltaPos1 = v1 - v0;
+		glm::vec3 deltaPos2 = v2 - v0;
+		
+		//UV delta
+		float deltaU1 = uv1.x - uv0.y;
+		float deltaV1 = uv1.y - uv0.y;
+		float deltaU2 = uv2.x - uv0.x;
+		float deltaV2 = uv2.y - uv0.y;
+		
+		float f = 1.0f / (deltaU1 * deltaV2 - deltaU2 * deltaV1);
+		
+		glm::vec3 tangent;
+		tangent.x = f * (deltaV2 * deltaPos1.x - deltaV1 * deltaPos2.x);
+		tangent.y = f * (deltaV2 * deltaPos1.y - deltaV1 * deltaPos2.y);
+		tangent.z = f * (deltaV2 * deltaPos1.z - deltaV1 * deltaPos2.z);
+		
+		glm::vec3 bitangent;
+		bitangent.x = f * (-deltaU2 * deltaPos1.x + deltaU1 * deltaPos2.x);
+		bitangent.y = f * (-deltaU2 * deltaPos1.y + deltaU1 * deltaPos2.y);
+		bitangent.z = f * (-deltaU2 * deltaPos1.z + deltaU1 * deltaPos2.z);
+		
+		m_tangents.push_back(tangent);
+		m_tangents.push_back(tangent);
+		m_tangents.push_back(tangent);
+		
+		m_bitangents.push_back(bitangent);
+		m_bitangents.push_back(bitangent);
+		m_bitangents.push_back(bitangent);
+
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[3]);
+	glBufferData(GL_ARRAY_BUFFER, m_tangents.size() * sizeof(glm::vec3), &m_tangents[0], GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[4]);
+	glBufferData(GL_ARRAY_BUFFER, m_bitangents.size() * sizeof(glm::vec3), &m_bitangents[0], GL_STATIC_DRAW);
+
 }

@@ -42,7 +42,7 @@ void ModelBasic::drawPassTwo()
 
 
 
-	setVBOAttrib(true, false, false);
+	setVBOAttrib(true, false, false, false, false);
 
 	//Draw
 	glDrawArrays(GL_TRIANGLES, 0, m_modelMesh->getNumVertices());

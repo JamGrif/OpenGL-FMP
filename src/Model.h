@@ -49,14 +49,14 @@ public:
 protected:
 
 	void setMatrixValues();
-	void setVBOAttrib(bool shaderPos = false, bool shaderTex = false, bool shaderNorm = false);
+	void setVBOAttrib(bool shaderPos = false, bool shaderTex = false, bool shaderNorm = false, bool shaderTan = false, bool shaderBiTan = false);
 	
 	//Model properties
 	Mesh*			m_modelMesh;
 	Shader*			m_modelShaderPassOne;
 	Shader*			m_modelShaderPassTwo;
 
-	GLuint m_VBO[3];
+	GLuint m_VBO[5];
 
 	//Space
 	glm::vec3 m_position;

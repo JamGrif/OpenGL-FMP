@@ -53,7 +53,7 @@ void Model::setMesh(const char* meshFilePath)
 		nvalues.push_back((norm[i]).z);
 	}
 
-	glGenBuffers(3, m_VBO);
+	glGenBuffers(5, m_VBO);
 
 	//Vertex locations
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
@@ -169,32 +169,52 @@ void Model::setMatrixValues()
 
 	m_mMat = m_tMat * m_rMat * m_sMat;
 	m_vMat = EngineStatics::getCamera()->getViewMatrix();
+
 }
 
-void Model::setVBOAttrib(bool shaderPos, bool shaderTex, bool shaderNorm)
+void Model::setVBOAttrib(bool shaderPos, bool shaderTex, bool shaderNorm, bool shaderTan, bool shaderBiTan)
 {
 	if (shaderPos)
 	{
 		//Position
+		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-		glEnableVertexAttribArray(0);
+		
 	}
 	
 	if (shaderTex)
 	{
 		//Texture
+		glEnableVertexAttribArray(1);
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
-		glEnableVertexAttribArray(1);
+		
 	}
 	
 	if (shaderNorm)
 	{
 		//Normal
+		glEnableVertexAttribArray(2);
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO[2]);
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
-		glEnableVertexAttribArray(2);
+		
+	}
+
+	if (shaderTan)
+	{
+		glEnableVertexAttribArray(3);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO[3]);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+		
+	}
+
+	if (shaderBiTan)
+	{
+		glEnableVertexAttribArray(4);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO[4]);
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+		
 	}
 }
 

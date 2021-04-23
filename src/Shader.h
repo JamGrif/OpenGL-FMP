@@ -29,6 +29,7 @@ public:
 	void setUniform3f(const std::string& name, const glm::vec3& v0);
 	void setUniform4f(const std::string& name, const glm::vec4& v0);
 	void setUniformMatrix4fv(const std::string& name, const glm::mat4& v0);
+	void setUniformMatrix3fv(const std::string& name, const glm::mat3& v0);
 
 	GLuint getProgram() const;
 	const GLchar* getVertexPath() const;

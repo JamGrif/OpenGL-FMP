@@ -25,5 +25,8 @@ private:
     Texture* m_modelEmissionTexture;
     Texture* m_modelNormalTexture;
 
+    std::vector<glm::vec3> m_tangents;
+    std::vector<glm::vec3> m_bitangents;
+
 };
 
