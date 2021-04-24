@@ -45,7 +45,7 @@ void ModelBasic::drawPassTwo()
 	setVBOAttrib(true, false, false, false, false);
 
 	//Draw
-	glDrawArrays(GL_TRIANGLES, 0, m_modelMesh->getNumVertices());
+	glDrawElements(GL_TRIANGLES, m_modelMesh->getIndices().size(), GL_UNSIGNED_INT, 0);
 
 	m_modelShaderPassTwo->Unbind();
 	

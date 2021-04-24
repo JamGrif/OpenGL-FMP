@@ -33,39 +33,34 @@ void Model::setMesh(const char* meshFilePath)
 {
 	m_modelMesh = MeshManager::loadModel(meshFilePath);
 
-	std::vector<glm::vec3> vert = m_modelMesh->getVertices();
-	std::vector<glm::vec2> tex = m_modelMesh->getTextureCoords();
-	std::vector<glm::vec3> norm = m_modelMesh->getNormals();
+	//std::vector<glm::vec3> vert = m_modelMesh->getVertices();
+	//std::vector<glm::vec2> tex = m_modelMesh->getTextureCoords();
+	//std::vector<glm::vec3> norm = m_modelMesh->getNormals();
+	//
+	//std::vector<float> pvalues;     //Vertex positions
+	//std::vector<float> tvalues;     //Texture coordinates
+	//std::vector<float> nvalues;     //normal vectors
+	//
+	//for (int i = 0; i < m_modelMesh->getNumVertices(); i++)
+	//{
+	//	pvalues.push_back((vert[i]).x);
+	//	pvalues.push_back((vert[i]).y);
+	//	pvalues.push_back((vert[i]).z);
+	//	tvalues.push_back((tex[i]).s);
+	//	tvalues.push_back((tex[i]).t);
+	//	nvalues.push_back((norm[i]).x);
+	//	nvalues.push_back((norm[i]).y);
+	//	nvalues.push_back((norm[i]).z);
+	//}
 
-	std::vector<float> pvalues;     //Vertex positions
-	std::vector<float> tvalues;     //Texture coordinates
-	std::vector<float> nvalues;     //normal vectors
+	glGenBuffers(1, &m_VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+	glBufferData(GL_ARRAY_BUFFER, m_modelMesh->getVertices().size() * sizeof(Vertex), &m_modelMesh->getVertices()[0], GL_STATIC_DRAW);
 
-	for (int i = 0; i < m_modelMesh->getNumVertices(); i++)
-	{
-		pvalues.push_back((vert[i]).x);
-		pvalues.push_back((vert[i]).y);
-		pvalues.push_back((vert[i]).z);
-		tvalues.push_back((tex[i]).s);
-		tvalues.push_back((tex[i]).t);
-		nvalues.push_back((norm[i]).x);
-		nvalues.push_back((norm[i]).y);
-		nvalues.push_back((norm[i]).z);
-	}
+	glGenBuffers(1, &EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_modelMesh->getIndices().size() * sizeof(unsigned int), &m_modelMesh->getIndices()[0], GL_STATIC_DRAW);
 
-	glGenBuffers(5, m_VBO);
-
-	//Vertex locations
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
-	glBufferData(GL_ARRAY_BUFFER, pvalues.size() * 4, &pvalues[0], GL_STATIC_DRAW);
-
-	//Texture coordinates
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
-	glBufferData(GL_ARRAY_BUFFER, tvalues.size() * 4, &tvalues[0], GL_STATIC_DRAW);
-
-	//Normal vectors
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[2]);
-	glBufferData(GL_ARRAY_BUFFER, nvalues.size() * 4, &nvalues[0], GL_STATIC_DRAW);
 }
 
 void Model::setShaderOne(const char* vertexPath, const char* fragmentPath)
@@ -172,50 +167,47 @@ void Model::setMatrixValues()
 
 }
 
-void Model::setVBOAttrib(bool shaderPos, bool shaderTex, bool shaderNorm, bool shaderTan, bool shaderBiTan)
+void Model::setVBOAttrib(bool shaderPos, bool shaderNorm, bool shaderTex, bool shaderTan, bool shaderBiTan)
 {
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
 	if (shaderPos)
 	{
 		//Position
 		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-		
-	}
-	
-	if (shaderTex)
-	{
-		//Texture
-		glEnableVertexAttribArray(1);
-		glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
-		
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 	}
 	
 	if (shaderNorm)
 	{
 		//Normal
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+	}
+
+	if (shaderTex)
+	{
+		//Texture
 		glEnableVertexAttribArray(2);
-		glBindBuffer(GL_ARRAY_BUFFER, m_VBO[2]);
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
-		
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
 	}
 
-	if (shaderTan)
-	{
-		glEnableVertexAttribArray(3);
-		glBindBuffer(GL_ARRAY_BUFFER, m_VBO[3]);
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-		
-	}
-
-	if (shaderBiTan)
-	{
-		glEnableVertexAttribArray(4);
-		glBindBuffer(GL_ARRAY_BUFFER, m_VBO[4]);
-		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-		
-	}
+	//if (shaderTan)
+	//{
+	//	glEnableVertexAttribArray(3);
+	//	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[3]);
+	//	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	//	
+	//}
+	//
+	//if (shaderBiTan)
+	//{
+	//	glEnableVertexAttribArray(4);
+	//	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[4]);
+	//	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	//	
+	//}
 }
 
 

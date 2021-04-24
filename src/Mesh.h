@@ -5,58 +5,39 @@
 #include "glm/glm.hpp"
 
 
+
+struct Vertex
+{
+	glm::vec3 Position;
+	glm::vec3 Normal;
+	glm::vec2 TexCoords;
+};
+
+
 class Mesh
 {
 public:
 	Mesh(const char* filePath);
 
-	int getNumVertices() const;
+	
 
-	std::vector<glm::vec3> getVertices() const;
-	std::vector<glm::vec2> getTextureCoords() const;
-	std::vector<glm::vec3> getNormals() const;
-
+	std::vector<Vertex> getVertices();
+	std::vector<unsigned int> getIndices();
 	const char* getFilePath() const;
 
 private:
 
 	const char* m_filePath;
 
-	int numVertices;
+	std::vector<Vertex> vertices;
+	std::vector<unsigned int> indices;
 
-	std::vector<glm::vec3> vertices;
-	std::vector<glm::vec2> texCoords;
-	std::vector<glm::vec3> normalVecs;
-
-};
-
-
-class MeshLoader
-{
-public:
-	MeshLoader();
 	
-	void parseOBJ(const char* filePath);
-
-	int getNumVertices() const;
-
-	std::vector<float> getVertices() const;
-	std::vector<float> getTextureCoordinates() const;
-	std::vector<float> getNormals() const;
-
-private:
-
-	//Values read in from .OBJ file
-	std::vector<float> vertVals;
-	std::vector<float> stVals;
-	std::vector<float> normVals;
-
-	//Values stored for later use as vertex attributes
-	std::vector<float> triangleVerts;
-	std::vector<float> textureCoords;
-	std::vector<float> normals;
 
 };
+
+
+
 
 class MeshManager
 {
