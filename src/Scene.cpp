@@ -60,11 +60,11 @@ void Scene::initScene()
 	for (int i = 0; i < FloorPosRot.size(); i += 2)
 	{
 		ModelLighting* Floor = new ModelLighting(FloorPosRot.at(i), FloorPosRot.at(i + 1));
-		Floor->setMesh("res/assets/meshes/plane.obj");
-		Floor->setDiffuseTexture("res/assets/textures/concrete_diff.png");
-		Floor->setSpecularTexture("res/assets/textures/concrete_spec.png");
-		//Floor->setNormalTexture("res/assets/textures/concrete_norm.png");
-		//Floor->setEmissionTexture("res/assets/textures/matrix_emis.png");
+		Floor->setMesh("res/meshes/plane.obj");
+		Floor->setDiffuseTexture("res/textures/concrete_diff.png");
+		Floor->setSpecularTexture("res/textures/concrete_spec.png");
+		//Floor->setNormalTexture("res/textures/concrete_norm.png");
+		//Floor->setEmissionTexture("res/textures/matrix_emis.png");
 		m_sceneMeshes.push_back(Floor);
 	}
 	
@@ -83,10 +83,10 @@ void Scene::initScene()
 	for (int i = 0; i < WallPosRot.size(); i += 2)
 	{
 		ModelLighting* wall = new ModelLighting(WallPosRot.at(i), WallPosRot.at(i+1));
-		wall->setMesh("res/assets/meshes/plane.obj");
-		wall->setDiffuseTexture("res/assets/textures/brick_diff.png");
-		wall->setSpecularTexture("res/assets/textures/brick_spec.png");
-		//wall->setNormalTexture("res/assets/textures/concrete_norm.png");
+		wall->setMesh("res/meshes/plane.obj");
+		wall->setDiffuseTexture("res/textures/brick_diff.png");
+		wall->setSpecularTexture("res/textures/brick_spec.png");
+		//wall->setNormalTexture("res/textures/concrete_norm.png");
 		m_sceneMeshes.push_back(wall);
 	}
 
@@ -104,10 +104,10 @@ void Scene::initScene()
 	for (int i = 0; i < SideWallPosRot.size(); i += 2)
 	{
 		ModelLighting* wall = new ModelLighting(SideWallPosRot.at(i), SideWallPosRot.at(i + 1));
-		wall->setMesh("res/assets/meshes/plane.obj");
-		wall->setDiffuseTexture("res/assets/textures/wood_diff.png");
-		wall->setSpecularTexture("res/assets/textures/wood_spec.png");
-		//wall->setNormalTexture("res/assets/textures/wood_norm.png");
+		wall->setMesh("res/meshes/plane.obj");
+		wall->setDiffuseTexture("res/textures/wood_diff.png");
+		wall->setSpecularTexture("res/textures/wood_spec.png");
+		//wall->setNormalTexture("res/textures/wood_norm.png");
 		m_sceneMeshes.push_back(wall);
 	}
 	
@@ -128,10 +128,10 @@ void Scene::initScene()
 	for (int i = 0; i < RoofPosRot.size(); i += 2)
 	{
 		ModelLighting* Floor = new ModelLighting(RoofPosRot.at(i), RoofPosRot.at(i + 1));
-		Floor->setMesh("res/assets/meshes/plane.obj");
-		Floor->setDiffuseTexture("res/assets/textures/metal_diff.png");
-		Floor->setSpecularTexture("res/assets/textures/metal_spec.png");
-		//Floor->setNormalTexture("res/assets/textures/wood_norm.png");
+		Floor->setMesh("res/meshes/plane.obj");
+		Floor->setDiffuseTexture("res/textures/metal_diff.png");
+		Floor->setSpecularTexture("res/textures/metal_spec.png");
+		//Floor->setNormalTexture("res/textures/wood_norm.png");
 		m_sceneMeshes.push_back(Floor);
 	}
 
@@ -145,10 +145,10 @@ void Scene::initScene()
 	for (int i = 0; i < CratePosRot.size(); i += 2)
 	{
 		ModelLighting* Crate = new ModelLighting(CratePosRot.at(i), CratePosRot.at(i + 1));
-		Crate->setMesh("res/assets/meshes/crate.obj");
-		Crate->setDiffuseTexture("res/assets/textures/crate_diff.png");
-		Crate->setSpecularTexture("res/assets/textures/crate_spec.png");
-		//Crate->setNormalTexture("res/assets/textures/crate_norm.png");
+		Crate->setMesh("res/meshes/crate.obj");
+		Crate->setDiffuseTexture("res/textures/crate_diff.png");
+		Crate->setSpecularTexture("res/textures/crate_spec.png");
+		//Crate->setNormalTexture("res/textures/crate_norm.png");
 		m_sceneMeshes.push_back(Crate);
 	}
 
@@ -162,7 +162,7 @@ void Scene::initScene()
 	for (int i = 0; i < LightPos.size(); i++)
 	{
 		Model* light = new ModelBasic(LightPos.at(i));
-		light->setMesh("res/assets/meshes/cube.obj");
+		light->setMesh("res/meshes/cube.obj");
 		light->SetXScale(0.3);
 		light->SetYScale(0.3);
 		light->SetZScale(0.3);
