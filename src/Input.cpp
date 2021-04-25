@@ -1,16 +1,18 @@
 #include "Input.h"
 
+#include <iostream>
+
 #include "EngineStatics.h"
 
 //Keyboard
 bool Input::keys[1024];
 
 //Mouse
-GLfloat Input::lastX = 0;
-GLfloat Input::lastY = 0;
+double Input::lastX = 0;
+double Input::lastY = 0;
 bool Input::firstMouse = true;
-GLfloat Input::xOffset = 0;
-GLfloat Input::yOffset = 0;
+double Input::xOffset = 0;
+double Input::yOffset = 0;
 
 
 Input::Input()
@@ -29,6 +31,14 @@ Input::~Input()
 	std::cout << "Input Destroyed" << std::endl;
 }
 
+/// <summary>
+/// Function is called everytime application detects keyboard input
+/// </summary>
+/// <param name="window">The window that has input</param>
+/// <param name="key">Key pressed</param>
+/// <param name="scancode"></param>
+/// <param name="action"></param>
+/// <param name="mode"></param>
 void Input::keyCALLBACK(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -48,6 +58,11 @@ void Input::keyCALLBACK(GLFWwindow* window, int key, int scancode, int action, i
     }
 }
 
+/// <summary>
+/// Returns whether the specified key is pressed or not
+/// </summary>
+/// <param name="key">Specified key to query</param>
+/// <returns>If the key is pressed or not</returns>
 bool Input::getKeyPressed(int key)
 {
     if (keys[key])
@@ -58,6 +73,12 @@ bool Input::getKeyPressed(int key)
 	return false;
 }
 
+/// <summary>
+/// Function is called everytime application detects mouse input
+/// </summary>
+/// <param name="window">The window that has input</param>
+/// <param name="xPos">New mouse X position</param>
+/// <param name="yPos">New mouse Y position</param>
 void Input::mouseCALLBACK(GLFWwindow* window, double xPos, double yPos)
 {
     //std::cout << "mousecallback" << std::endl;

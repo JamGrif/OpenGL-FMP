@@ -1,6 +1,9 @@
 #include "Application.h"
 
+#include <iostream>
 #include <string>
+
+#include "EngineStatics.h"
 
 Application::Application()
 	:m_defaultWindowWidth(1280), m_defaultWindowHeight(720), m_currentWindowWidth(0), m_currentWindowHeight(0), m_aspectRatio(0.0),
@@ -27,6 +30,10 @@ Application::~Application()
 	glfwTerminate();
 }
 
+/// <summary>
+/// Initalizes OpenGL libraries, creates the window, enables rendering options and creates class objects
+/// </summary>
+/// <returns>Returns success or failure of initialization</returns>
 int Application::appInit()
 {
 	//Initalize GLFW
@@ -101,6 +108,9 @@ int Application::appInit()
 	return 0;
 }
 
+/// <summary>
+/// Entire application loop of program
+/// </summary>
 void Application::appLoop()
 {
 	double previousTime = glfwGetTime();
@@ -136,6 +146,12 @@ void Application::appLoop()
 	
 }
 
+/// <summary>
+/// Function is called everytime the window is resized
+/// </summary>
+/// <param name="window">The resized window</param>
+/// <param name="newWidth">New width of the window after resizing</param>
+/// <param name="newHeight">New height of the window after resizing</param>
 void Application::windowResizeCALLBACK(GLFWwindow* window, int newWidth, int newHeight)
 {
 

@@ -2,7 +2,6 @@
 
 #include <vector>
 
-#include "EngineStatics.h"
 #include "LightManager.h"
 #include "Camera.h"
 #include "ModelBasic.h"
@@ -43,10 +42,6 @@ private:
 		glm::vec3(4.5f, 0.5f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(-4.5f, 0.5f, 10.0f), glm::vec3(0.0f, 180.0f, 0.0f)
 	};
-
-
-
-
 
 };
 

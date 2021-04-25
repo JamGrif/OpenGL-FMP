@@ -1,5 +1,7 @@
 #include "Camera.h"
 
+#include <iostream>
+
 Camera::Camera(glm::vec3 position, glm::vec3 up, GLfloat yaw, GLfloat pitch)
     : m_front(glm::vec3(0.0f, 0.0f, -1.0f)), m_movementSpeed(SPEED), m_mouseSensitivity(SENSITIVTY), m_zoom(ZOOM),
     m_position(position), m_worldUp(up), m_yaw(yaw), m_pitch(pitch)
@@ -18,6 +20,10 @@ Camera::~Camera()
     //EngineStatics::Setcamera(nullptr);
 }
 
+/// <summary>
+/// Updates the camera depending on input from the keyboard or mouse
+/// </summary>
+/// <param name="deltaTime"></param>
 void Camera::Update(GLfloat deltaTime)
 {
     if (Input::getKeyPressed(GLFW_KEY_W)) { processKeyboard(FORWARD, deltaTime); }
@@ -59,6 +65,11 @@ glm::vec3 Camera::getFront() const
     return m_front;
 }
 
+/// <summary>
+/// Moves the camera depending on user keyboard input
+/// </summary>
+/// <param name="direction">Direction the camera is moving</param>
+/// <param name="deltaTime"></param>
 void Camera::processKeyboard(Camera_Movement direction, GLfloat deltaTime)
 {
     //std::cout << "process keyboard" << std::endl;
@@ -87,6 +98,12 @@ void Camera::processKeyboard(Camera_Movement direction, GLfloat deltaTime)
     }
 }
 
+/// <summary>
+/// Moves the camera depending on user mouse input
+/// </summary>
+/// <param name="xOffset"></param>
+/// <param name="yOffset"></param>
+/// <param name="constrainPitch">Decides if the camera should loop around when reaching maximum pitch</param>
 void Camera::processMouse(GLfloat xOffset, GLfloat yOffset, GLboolean constrainPitch)
 {
     if (xOffset > 100 && xOffset > 0)
@@ -124,6 +141,9 @@ void Camera::processMouse(GLfloat xOffset, GLfloat yOffset, GLboolean constrainP
 
 }
 
+/// <summary>
+/// Updates the vectors of the camera after camera moves from input
+/// </summary>
 void Camera::updateCameraVectors()
 {
     // Calculate the new Front vector

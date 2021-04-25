@@ -1,28 +1,24 @@
 #pragma once
 
 #include <vector>
-#include <iostream>
 #include "glm/glm.hpp"
-
-
 
 struct Vertex
 {
 	glm::vec3 Position;
 	glm::vec3 Normal;
 	glm::vec2 TexCoords;
+	glm::vec3 Tangent;
+	glm::vec3 Bitangent;
 };
-
 
 class Mesh
 {
 public:
 	Mesh(const char* filePath);
 
-	
-
-	std::vector<Vertex> getVertices();
-	std::vector<unsigned int> getIndices();
+	std::vector<Vertex> getVertices() const;
+	std::vector<unsigned int> getIndices() const;
 	const char* getFilePath() const;
 
 private:
@@ -32,12 +28,7 @@ private:
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 
-	
-
 };
-
-
-
 
 class MeshManager
 {

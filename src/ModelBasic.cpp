@@ -13,6 +13,9 @@ ModelBasic::~ModelBasic()
 
 }
 
+/// <summary>
+/// First draw pass
+/// </summary>
 void ModelBasic::drawPassOne()
 {
 	//If no valid model or shader attached
@@ -22,6 +25,9 @@ void ModelBasic::drawPassOne()
 	}
 }
 
+/// <summary>
+/// Second draw pass
+/// </summary>
 void ModelBasic::drawPassTwo()
 {
 	//If no valid model or shader attached

@@ -33,6 +33,9 @@ ModelLighting::~ModelLighting()
 	}
 }
 
+/// <summary>
+/// First draw pass
+/// </summary>
 void ModelLighting::drawPassOne()
 {
 	//If no valid model or shader attached
@@ -42,6 +45,9 @@ void ModelLighting::drawPassOne()
 	}
 }
 
+/// <summary>
+/// Second draw pass
+/// </summary>
 void ModelLighting::drawPassTwo()
 {
 	//If no valid model or shader attached
@@ -186,7 +192,6 @@ void ModelLighting::drawPassTwo()
 	
 	//Draw
 	glDrawElements(GL_TRIANGLES, m_modelMesh->getIndices().size(), GL_UNSIGNED_INT, 0);
-	//glDrawArrays(GL_TRIANGLES, 0, m_modelMesh->getNumVertices());
 
 	if (m_modelDiffuseTexture != nullptr)
 	{
@@ -215,22 +220,37 @@ void ModelLighting::drawPassTwo()
 
 }
 
-
+/// <summary>
+/// Assigns specified texture to the model to be used for diffuse
+/// </summary>
+/// <param name="texturePath"></param>
 void ModelLighting::setDiffuseTexture(const char* texturePath)
 {
 	m_modelDiffuseTexture = TextureManager::loadTexture(texturePath);
 }
 
+/// <summary>
+/// Assigns specified texture to the model to be used for specular
+/// </summary>
+/// <param name="texturePath"></param>
 void ModelLighting::setSpecularTexture(const char* texturePath)
 {
 	m_modelSpecularTexture = TextureManager::loadTexture(texturePath);
 }
 
+/// <summary>
+/// Assigns specified texture to the model to be used for emission
+/// </summary>
+/// <param name="texturePath"></param>
 void ModelLighting::setEmissionTexture(const char* texturePath)
 {
 	m_modelEmissionTexture = TextureManager::loadTexture(texturePath);
 }
 
+/// <summary>
+/// Assigns specified texture to the model to be used for normal
+/// </summary>
+/// <param name="texturePath"></param>
 void ModelLighting::setNormalTexture(const char* texturePath)
 {
 	//m_modelNormalTexture = TextureManager::loadTexture(texturePath);

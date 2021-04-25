@@ -60,12 +60,19 @@ Texture::~Texture()
 	glDeleteTextures(1, &m_texture);
 }
 
+/// <summary>
+/// Binds the texture to the rendering pipeline and to specified texture slot
+/// </summary>
+/// <param name="slot">Texture slot to bind to</param>
 void Texture::Bind(unsigned int slot) const
 {
 	glActiveTexture(GL_TEXTURE0 + slot);
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 }
 
+/// <summary>
+/// Unbinds texture from the pipeline
+/// </summary>
 void Texture::Unbind() const
 {
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -82,6 +89,12 @@ GLuint Texture::getTexture() const
 	return m_texture;
 }
 
+/// <summary>
+/// Loads the specified texture, if texture already exists it returns a pointer to it instead of reloading the same texture
+/// </summary>
+/// <param name="vertexPath">Vertex shader file path</param>
+/// <param name="fragmentPath">Fragment shader file path</param>
+/// <returns>Pointer to the created texture</returns>
 Texture* TextureManager::loadTexture(const char* filePath)
 {
 	//Check if texture is already loaded

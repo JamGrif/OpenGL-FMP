@@ -2,18 +2,12 @@
 
 #include <string>
 #include <unordered_map>
-#include <fstream>
-#include <sstream>
-#include <iostream>
 #include <vector>
 
 #include <GL/glew.h>
 
 #include <glm\glm.hpp>
 #include <glm\gtc\type_ptr.hpp>
-
-
-
 
 class Shader
 {
@@ -47,8 +41,6 @@ private:
 	std::unordered_map<std::string, int> m_locationCache;
 
 };
-
-
 
 class ShaderManager
 {

@@ -3,9 +3,6 @@
 #include "Camera.h"
 #include "LightManager.h"
 
-
-//Camera camera;
-
 class EngineStatics
 {
 public:

@@ -3,10 +3,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include <iostream>
-
-//#include "EngineStatics.h"
-
 class Input
 {
 public:
@@ -26,11 +22,11 @@ private:
 	static bool keys[1024];
 
 	//Mouse
-	static GLfloat lastX;
-	static GLfloat lastY;
+	static double lastX;
+	static double lastY;
 	static bool firstMouse;
-	static GLfloat xOffset;
-	static GLfloat yOffset;
+	static double xOffset;
+	static double yOffset;
 
 };
 

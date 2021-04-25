@@ -3,21 +3,10 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include <glm\glm.hpp>
-#include <glm\gtc\type_ptr.hpp>
 #include <glm\gtc\matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
-
-#include "stb_image.h"
-
-#include <iostream>
 
 #include "Input.h"
 #include "Scene.h"
-
-
-
-
 
 class Application
 {
@@ -29,7 +18,6 @@ public:
 	void appLoop();
 
 	static void windowResizeCALLBACK(GLFWwindow* window, int newWidth, int newHeight);
-
 
 private:
 
@@ -55,11 +43,7 @@ private:
 	Input* m_input;
 
 	//Delta time
-
-
 	GLfloat m_deltaTime;
 	GLfloat m_lastFrame;
-
-
 };
 

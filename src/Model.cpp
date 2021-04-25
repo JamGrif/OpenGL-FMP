@@ -1,5 +1,7 @@
 #include "Model.h"
 
+
+
 Model::Model(glm::vec3 position, glm::vec3 rotation)
 	:m_modelMesh(nullptr), m_modelShaderPassOne(nullptr), m_modelShaderPassTwo(nullptr), 
 	m_position{ position }, m_rotation{ rotation }, m_scale{ 1.0f,1.0f,1.0f },
@@ -28,30 +30,13 @@ Model::~Model()
 
 }
 
-
+/// <summary>
+/// Loads the specified mesh and creates the VBO and EBO buffers
+/// </summary>
+/// <param name="meshFilePath">Mesh file path</param>
 void Model::setMesh(const char* meshFilePath)
 {
 	m_modelMesh = MeshManager::loadModel(meshFilePath);
-
-	//std::vector<glm::vec3> vert = m_modelMesh->getVertices();
-	//std::vector<glm::vec2> tex = m_modelMesh->getTextureCoords();
-	//std::vector<glm::vec3> norm = m_modelMesh->getNormals();
-	//
-	//std::vector<float> pvalues;     //Vertex positions
-	//std::vector<float> tvalues;     //Texture coordinates
-	//std::vector<float> nvalues;     //normal vectors
-	//
-	//for (int i = 0; i < m_modelMesh->getNumVertices(); i++)
-	//{
-	//	pvalues.push_back((vert[i]).x);
-	//	pvalues.push_back((vert[i]).y);
-	//	pvalues.push_back((vert[i]).z);
-	//	tvalues.push_back((tex[i]).s);
-	//	tvalues.push_back((tex[i]).t);
-	//	nvalues.push_back((norm[i]).x);
-	//	nvalues.push_back((norm[i]).y);
-	//	nvalues.push_back((norm[i]).z);
-	//}
 
 	glGenBuffers(1, &m_VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
@@ -63,17 +48,98 @@ void Model::setMesh(const char* meshFilePath)
 
 }
 
+/// <summary>
+/// Sets the models shader used in its first drawing pass
+/// </summary>
+/// <param name="vertexPath">Vertex shader file path</param>
+/// <param name="fragmentPath">Fragment shader file path</param>
 void Model::setShaderOne(const char* vertexPath, const char* fragmentPath)
 {
 	m_modelShaderPassOne = ShaderManager::loadShader(vertexPath, fragmentPath);
 }
 
+/// <summary>
+/// Sets the models shader used in its second drawing pass
+/// </summary>
+/// <param name="vertexPath">Vertex shader file path</param>
+/// <param name="fragmentPath">Fragment shader file path</param>
 void Model::setShaderTwo(const char* vertexPath, const char* fragmentPath)
 {
 	m_modelShaderPassTwo = ShaderManager::loadShader(vertexPath, fragmentPath);
 }
 
+/// <summary>
+/// Resets and sets the matrix values of the model
+/// </summary>
+void Model::setMatrixValues()
+{
+	//Reset matrix values
+	m_mMat = glm::mat4(1.0f);
+	m_tMat = glm::mat4(1.0f);
+	m_rMat = glm::mat4(1.0f);
+	m_sMat = glm::mat4(1.0f);
 
+	//Set meshes matrices
+	m_tMat = glm::translate(m_tMat, m_position);
+	m_rMat = glm::rotate(m_rMat, glm::radians(m_rotation.x), glm::vec3(1.0, 0.0f, 0.0f));
+	m_rMat = glm::rotate(m_rMat, glm::radians(m_rotation.y), glm::vec3(0.0f, 1.0, 0.0f));
+	m_rMat = glm::rotate(m_rMat, glm::radians(m_rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+	m_sMat = glm::scale(m_sMat, m_scale);
+
+	m_mMat = m_tMat * m_rMat * m_sMat;
+	m_vMat = EngineStatics::getCamera()->getViewMatrix();
+
+}
+
+/// <summary>
+/// Sets the layout vertex attributes of the models shader
+/// </summary>
+/// <param name="shaderPos">Does the shader use position vertices?</param>
+/// <param name="shaderNorm">Does the shader use normal vertices?</param>
+/// <param name="shaderTex">Does the shader use texture coordinates vertices?</param>
+/// <param name="shaderTan">Does the shader use tangents vertices?</param>
+/// <param name="shaderBiTan">Does the shader use bitangents vertices?</param>
+void Model::setVBOAttrib(bool shaderPos, bool shaderNorm, bool shaderTex, bool shaderTan, bool shaderBiTan)
+{
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
+	if (shaderPos)
+	{
+		//Position
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+	}
+
+	if (shaderNorm)
+	{
+		//Normal
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+	}
+
+	if (shaderTex)
+	{
+		//Texture
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+	}
+
+	if (shaderTan)
+	{
+		//Tangents
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
+
+	}
+
+	if (shaderBiTan)
+	{
+		//Bitangents
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
+	}
+}
 
 void Model::SetXPos(float num) { m_position.x = num; }
 
@@ -147,68 +213,7 @@ void Model::DecYScale(float num) { m_scale.y -= num; }
 
 void Model::DecZScale(float num) { m_scale.z -= num; }
 
-void Model::setMatrixValues()
-{
-	//Reset matrix values
-	m_mMat = glm::mat4(1.0f);
-	m_tMat = glm::mat4(1.0f);
-	m_rMat = glm::mat4(1.0f);
-	m_sMat = glm::mat4(1.0f);
 
-	//Set meshes matrices
-	m_tMat = glm::translate(m_tMat, m_position);
-	m_rMat = glm::rotate(m_rMat, glm::radians(m_rotation.x), glm::vec3(1.0, 0.0f, 0.0f));
-	m_rMat = glm::rotate(m_rMat, glm::radians(m_rotation.y), glm::vec3(0.0f, 1.0, 0.0f));
-	m_rMat = glm::rotate(m_rMat, glm::radians(m_rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-	m_sMat = glm::scale(m_sMat, m_scale);
-
-	m_mMat = m_tMat * m_rMat * m_sMat;
-	m_vMat = EngineStatics::getCamera()->getViewMatrix();
-
-}
-
-void Model::setVBOAttrib(bool shaderPos, bool shaderNorm, bool shaderTex, bool shaderTan, bool shaderBiTan)
-{
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
-	if (shaderPos)
-	{
-		//Position
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-	}
-	
-	if (shaderNorm)
-	{
-		//Normal
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
-	}
-
-	if (shaderTex)
-	{
-		//Texture
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
-	}
-
-	//if (shaderTan)
-	//{
-	//	glEnableVertexAttribArray(3);
-	//	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[3]);
-	//	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	//	
-	//}
-	//
-	//if (shaderBiTan)
-	//{
-	//	glEnableVertexAttribArray(4);
-	//	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[4]);
-	//	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	//	
-	//}
-}
 
 
 

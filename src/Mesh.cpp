@@ -1,7 +1,6 @@
-#include <fstream>
-#include <sstream>
-
 #include "Mesh.h"
+
+#include <iostream>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -13,7 +12,7 @@ Mesh::Mesh(const char* filePath)
 	:m_filePath(filePath)
 {
 	Assimp::Importer import;
-	const aiScene* scene = import.ReadFile(filePath, aiProcess_Triangulate );
+	const aiScene* scene = import.ReadFile(filePath, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
@@ -45,6 +44,18 @@ Mesh::Mesh(const char* filePath)
 		vec.y = mesh->mTextureCoords[0][i].y;
 		vertex.TexCoords = vec;
 
+		//Tangent
+		vector.x = mesh->mTangents[i].x;
+		vector.y = mesh->mTangents[i].y;
+		vector.z = mesh->mTangents[i].z;
+		vertex.Tangent = vector;
+
+		//Bitangent
+		vector.x = mesh->mBitangents[i].x;
+		vector.y = mesh->mBitangents[i].y;
+		vector.z = mesh->mBitangents[i].z;
+		vertex.Bitangent = vector;
+
 		vertices.push_back(vertex);
 	}
 
@@ -61,13 +72,12 @@ Mesh::Mesh(const char* filePath)
 }
 
 
-
-std::vector<Vertex> Mesh::getVertices()
+std::vector<Vertex> Mesh::getVertices() const
 {
 	return vertices;
 }
 
-std::vector<unsigned int> Mesh::getIndices()
+std::vector<unsigned int> Mesh::getIndices() const
 {
 	return indices;
 }
@@ -77,7 +87,11 @@ const char* Mesh::getFilePath() const
 	return m_filePath;
 }
 
-
+/// <summary>
+/// Loads the specified mesh, if mesh already exists it returns a pointer to it instead of reloading the same mesh
+/// </summary>
+/// <param name="filePath">Mesh file path</param>
+/// <returns>Pointer to the loaded mesh</returns>
 Mesh* MeshManager::loadModel(const char* filePath)
 {
 	//Check if model is already loaded loaded

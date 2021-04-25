@@ -2,6 +2,8 @@
 layout(location=0) in vec3 vertPos; //location=0 is used for the glVertexAttribPointer (first param) and glEnableVertexAttribArray(0)
 layout(location=1) in vec3 vertNormal;
 layout(location=2) in vec2 vertTex;
+layout(location=3) in vec3 vertTangent;
+layout(location=4) in vec3 vertBitangent;
 
 
 uniform mat4 m_matrix;

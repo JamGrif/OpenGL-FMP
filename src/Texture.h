@@ -3,8 +3,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-
-
 #include <vector>
 #include <iostream>
 
@@ -33,8 +31,6 @@ private:
 	int m_width, m_height, m_BPP;
 
 };
-
-
 
 class TextureManager
 {

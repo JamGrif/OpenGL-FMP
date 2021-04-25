@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "Mesh.h"
 #include "Shader.h"
 #include "Texture.h"
@@ -13,7 +12,6 @@
 #include <glm\gtc\type_ptr.hpp>
 #include <glm\gtc\matrix_transform.hpp>
 #include <glm\gtx\transform.hpp>
-
 
 class Model
 {
@@ -59,7 +57,7 @@ protected:
 	GLuint m_VBO;
 	GLuint EBO;
 
-	//Space
+	//World Space
 	glm::vec3 m_position;
 	glm::vec3 m_rotation;
 	glm::vec3 m_scale;

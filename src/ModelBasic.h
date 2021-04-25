@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Model.h"
+
 class ModelBasic :
     public Model
 {

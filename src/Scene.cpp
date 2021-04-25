@@ -1,5 +1,7 @@
 #include "Scene.h"
 
+#include "EngineStatics.h"
+
 Scene::Scene()
 	:m_sceneCamera(nullptr), m_sceneLightManager(nullptr)
 {
@@ -26,6 +28,9 @@ Scene::~Scene()
 
 }
 
+/// <summary>
+/// Initalizes the scene objects and creates the scenes models
+/// </summary>
 void Scene::initScene()
 {
 	setupShadowObjects();
@@ -170,6 +175,9 @@ void Scene::initScene()
 
 }
 
+/// <summary>
+/// Updates scene objects and models
+/// </summary>
 void Scene::updateScene()
 {
 	m_sceneCamera->Update(0.025);
@@ -193,6 +201,12 @@ void Scene::setupShadowObjects()
 	
 }
 
+/// <summary>
+/// Creates the scene camera, remakes it if one already exists
+/// </summary>
+/// <param name="x">Starting X position of camera</param>
+/// <param name="y">Starting Y position of camera</param>
+/// <param name="z">Starting Z position of camera</param>
 void Scene::addSceneCamera(float x, float y, float z)
 {
 	if (m_sceneCamera != nullptr)
@@ -205,6 +219,9 @@ void Scene::addSceneCamera(float x, float y, float z)
 	EngineStatics::setCamera(m_sceneCamera);
 }
 
+/// <summary>
+/// Creates the scene light mananger, remaking it if one already exists
+/// </summary>
 void Scene::addSceneLightManager()
 {
 	if (m_sceneLightManager != nullptr)

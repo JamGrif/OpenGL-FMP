@@ -18,6 +18,13 @@ LightManager::~LightManager()
 	}
 }
 
+/// <summary>
+/// Sets the XYZ direction of a specified directional light
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="z"></param>
+/// <param name="index">Index of the light within the directional light vector</param>
 void LightManager::setDirectionalLight(float x, float y, float z, int index)
 {
 	m_sceneDirectionalLights.at(index)->Direction.x = x;
@@ -25,6 +32,12 @@ void LightManager::setDirectionalLight(float x, float y, float z, int index)
 	m_sceneDirectionalLights.at(index)->Direction.z = z;
 }
 
+/// <summary>
+/// Creates a new directional light if max limit has not been reached
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="z"></param>
 void LightManager::addDirectionalLight(float x, float y, float z)
 {
 	//Ensure new directional lights don't exceed the maximum amount allowed
@@ -38,6 +51,11 @@ void LightManager::addDirectionalLight(float x, float y, float z)
 	}
 }
 
+/// <summary>
+/// Gets a specified directional light from the vector
+/// </summary>
+/// <param name="index"></param>
+/// <returns></returns>
 DirectionalLight* LightManager::getDirectionalLight(int index) const
 {
 	//No directional lights exists
@@ -56,12 +74,22 @@ DirectionalLight* LightManager::getDirectionalLight(int index) const
 	
 }
 
+/// <summary>
+/// Returns the amount of directional lights active in scene
+/// </summary>
+/// <returns></returns>
 int LightManager::getCurrentDirectionalLights() const
 {
 	return m_currentDirectionalLights;
 }
 
-//Changes the position of a specified point light in vector
+/// <summary>
+/// Sets the XYZ position of a specified point light
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="z"></param>
+/// <param name="index">Index of the light within the point light vector</param>
 void LightManager::setPointLight(float x, float y, float z, int index)
 {
 	m_scenePointLights.at(index)->Position.x += x;
@@ -69,7 +97,12 @@ void LightManager::setPointLight(float x, float y, float z, int index)
 	m_scenePointLights.at(index)->Position.z += z;
 }
 
-//Add a new point light at specificed position
+/// <summary>
+/// Creates a new point light if max limit has not been reached
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="z"></param>
 void LightManager::addPointLight(float x, float y, float z)
 {
 	//Ensure new point lights don't exceed the maximum amount allowed
@@ -83,7 +116,11 @@ void LightManager::addPointLight(float x, float y, float z)
 	}
 }
 
-//Returns the pointlight at specified index in vector
+/// <summary>
+/// Gets a specified directional light from the vector
+/// </summary>
+/// <param name="index"></param>
+/// <returns></returns>
 PointLight* LightManager::getPointLight(int index) const
 {
 	//No point lights exists
@@ -102,11 +139,22 @@ PointLight* LightManager::getPointLight(int index) const
 	
 }
 
+/// <summary>
+/// Returns the amount of point lights active in scene
+/// </summary>
+/// <returns></returns>
 int LightManager::getCurrentPointLights() const
 {
 	return m_currentPointLights;
 }
 
+/// <summary>
+/// Sets the XYZ position of a specified spot light
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="z"></param>
+/// <param name="index">Index of the light within the spot light vector</param>
 void LightManager::setSpotLight(float x, float y, float z, int index)
 {
 	m_sceneSpotLights.at(index)->Position.x = x;
@@ -114,6 +162,12 @@ void LightManager::setSpotLight(float x, float y, float z, int index)
 	m_sceneSpotLights.at(index)->Position.z = z;
 }
 
+/// <summary>
+/// Creates a new spot light if max limit has not been reached
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="z"></param>
 void LightManager::addSpotLight(float x, float y, float z)
 {
 	//Ensure new point lights don't exceed the maximum amount allowed
@@ -127,6 +181,11 @@ void LightManager::addSpotLight(float x, float y, float z)
 	}
 }
 
+/// <summary>
+/// Gets a specified spot light from the vector
+/// </summary>
+/// <param name="index"></param>
+/// <returns></returns>
 SpotLight* LightManager::getSpotLight(int index) const
 {
 	//No point lights exists
@@ -144,6 +203,10 @@ SpotLight* LightManager::getSpotLight(int index) const
 	return nullptr;
 }
 
+/// <summary>
+/// Returns the amount of spot lights active in scene
+/// </summary>
+/// <returns></returns>
 int LightManager::getCurrentSpotLights() const
 {
 	return m_currentSpotLights;

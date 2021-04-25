@@ -1,5 +1,9 @@
 #include "Shader.h"
 
+#include <fstream>
+#include <sstream>
+#include <iostream>
+
 std::vector<Shader*> ShaderManager::loadedShaders;
 
 Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
@@ -104,41 +108,77 @@ Shader::~Shader()
 	glDeleteProgram(m_shaderProgram);
 }
 
+/// <summary>
+/// Binds the shader to the rendering pipeline
+/// </summary>
 void Shader::Bind() const
 {
 	glUseProgram(m_shaderProgram);
 }
 
+/// <summary>
+/// Unbinds the shader to the rendering pipeline
+/// </summary>
 void Shader::Unbind() const
 {
 	glUseProgram(0);
 }
 
+/// <summary>
+/// Sets 1 int uniform value
+/// </summary>
+/// <param name="name">Name of uniform in shader</param>
+/// <param name="v0">Value of int</param>
 void Shader::setUniform1i(const std::string& name, int v0) 
 {
 	glUniform1i(getUniformLocation(name), v0);
 }
 
+/// <summary>
+/// Sets 1 float uniform value
+/// </summary>
+/// <param name="name">Name of the uniform in shader</param>
+/// <param name="v0">Value of float</param>
 void Shader::setUniform1f(const std::string& name, float v0) 
 {
 	glUniform1f(getUniformLocation(name), v0);
 }
 
+/// <summary>
+/// Sets 3 float uniform values
+/// </summary>
+/// <param name="name">Name of the uniform in shader</param>
+/// <param name="v0">Value of the float 3</param>
 void Shader::setUniform3f(const std::string& name, const glm::vec3& v0) 
 {
 	glUniform3f(getUniformLocation(name), v0.x, v0.y, v0.z);
 }
 
+/// <summary>
+/// Sets 4 float uniform value
+/// </summary>
+/// <param name="name">Name of the uniform in shader</param>
+/// <param name="v0">Value of the float 4</param>
 void Shader::setUniform4f(const std::string& name, const glm::vec4& v0) 
 {
 	glUniform4f(getUniformLocation(name), v0.x, v0.y, v0.z, v0.w);
 }
 
+/// <summary>
+/// Sets a 4x4 matrix uniform value
+/// </summary>
+/// <param name="name">Name of the uniform in shader</param>
+/// <param name="v0">Value of the 4x4 matrix</param>
 void Shader::setUniformMatrix4fv(const std::string& name, const glm::mat4& v0) 
 {
 	glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(v0));
 }
 
+/// <summary>
+/// Sets a 3x3 matrix uniform value
+/// </summary>
+/// <param name="name">Name of the uniform in shader</param>
+/// <param name="v0">Value of the 4x4 matrix</param>
 void Shader::setUniformMatrix3fv(const std::string& name, const glm::mat3& v0)
 {
 	glUniformMatrix3fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(v0));
@@ -160,6 +200,11 @@ const GLchar* Shader::getFragmentPath() const
 	return m_fragmentPath;
 }
 
+/// <summary>
+/// Cache system that only finds the location of a uniform once and then stores it location.
+/// </summary>
+/// <param name="name">Name of the uniform in shader</param>
+/// <returns>Location of the uniform value</returns>
 int Shader::getUniformLocation(const std::string& name) 
 {
 	if (m_locationCache.find(name) != m_locationCache.end())
@@ -177,6 +222,12 @@ int Shader::getUniformLocation(const std::string& name)
 	return location;
 }
 
+/// <summary>
+/// Loads the specified shader, if shader already exists it returns a pointer to it instead of reloading the same shader
+/// </summary>
+/// <param name="vertexPath">Vertex shader file path</param>
+/// <param name="fragmentPath">Fragment shader file path</param>
+/// <returns>Pointer to the created shader</returns>
 Shader* ShaderManager::loadShader(const GLchar* vertexPath, const GLchar* fragmentPath)
 {
 	//Check if shader program is already loaded
