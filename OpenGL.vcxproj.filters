@@ -111,7 +111,7 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="res\icon\Resource.rc">
+    <ResourceCompile Include="res\assets\icon\Resource.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

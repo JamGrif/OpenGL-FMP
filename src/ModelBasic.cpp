@@ -5,7 +5,7 @@ ModelBasic::ModelBasic(glm::vec3 position, glm::vec3 rotation)
 {
 
 	//setShaderOne
-	setShaderTwo("res/shaders/basic-vertex.glsl", "res/shaders/basic-fragment.glsl");
+	setShaderTwo("res/assets/shaders/basic-vertex.glsl", "res/assets/shaders/basic-fragment.glsl");
 }
 
 ModelBasic::~ModelBasic()
