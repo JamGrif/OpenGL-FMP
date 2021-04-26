@@ -226,7 +226,7 @@ void Scene::addSceneCamera(float x, float y, float z)
 }
 
 /// <summary>
-/// Creates the scene light mananger, remaking it if one already exists
+/// Creates the scene light mananger, remakes it if one already exists
 /// </summary>
 void Scene::addSceneLightManager()
 {

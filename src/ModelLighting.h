@@ -16,6 +16,7 @@ public:
     void setSpecularTexture(const char* texturePath);
     void setEmissionTexture(const char* texturePath);
     void setNormalTexture(const char* texturePath, bool normalize);
+    void setDisplacementTexture(const char* texturePath);
 
 
 
@@ -28,10 +29,12 @@ private:
     Texture* m_modelSpecularTexture;
     Texture* m_modelEmissionTexture;
     Texture* m_modelNormalTexture;
-    bool m_normalizeTexture;
+    Texture* m_modelDisplacementTexture;
 
+    bool m_normalizeTexture;
     bool m_usingEmission;
     bool m_usingNormal;
+    bool m_usingDisplacement;
 
     std::vector<glm::vec3> m_tangents;
     std::vector<glm::vec3> m_bitangents;

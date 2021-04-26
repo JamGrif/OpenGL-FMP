@@ -1,8 +1,8 @@
 #include "ModelLighting.h"
 
 ModelLighting::ModelLighting(glm::vec3 position, glm::vec3 rotation)
-	:Model(position, rotation), m_modelDiffuseTexture(nullptr), m_modelSpecularTexture(nullptr), m_modelEmissionTexture(nullptr), m_modelNormalTexture(nullptr),
-	m_normalizeTexture(false), m_usingEmission(false), m_usingNormal(false)
+	:Model(position, rotation), m_modelDiffuseTexture(nullptr), m_modelSpecularTexture(nullptr), m_modelEmissionTexture(nullptr), m_modelNormalTexture(nullptr), m_modelDisplacementTexture(nullptr),
+	m_normalizeTexture(false), m_usingEmission(false), m_usingNormal(false), m_usingDisplacement(false)
 {
 
 	m_localLightManager = EngineStatics::getLightManager();
@@ -31,6 +31,11 @@ ModelLighting::~ModelLighting()
 	if (m_modelNormalTexture != nullptr)
 	{
 		m_modelNormalTexture = nullptr;
+	}
+
+	if (m_modelDisplacementTexture != nullptr)
+	{
+		m_modelDisplacementTexture = nullptr;
 	}
 }
 
@@ -151,11 +156,13 @@ void ModelLighting::drawPassTwo()
 	m_modelShaderPassTwo->setUniform1i("material.specular", 1);
 	m_modelShaderPassTwo->setUniform1i("material.emission", 2);
 	m_modelShaderPassTwo->setUniform1i("material.normal", 3);
+	m_modelShaderPassTwo->setUniform1i("material.displacement", 4);
 	m_modelShaderPassTwo->setUniform1f("material.shininess", 48.0f);
 
 	m_modelShaderPassTwo->setUniform1i("material.normalizeTex", m_normalizeTexture);
 	m_modelShaderPassTwo->setUniform1i("material.usingNormal", m_usingNormal);
 	m_modelShaderPassTwo->setUniform1i("material.usingEmission", m_usingEmission);
+	m_modelShaderPassTwo->setUniform1i("material.usingDisplacement", m_usingDisplacement);
 
 	//Camera Position
 	m_modelShaderPassTwo->setUniform3f("viewPos", EngineStatics::getCamera()->getPosition());
@@ -263,4 +270,10 @@ void ModelLighting::setNormalTexture(const char* texturePath, bool normalize)
 	m_modelNormalTexture = TextureManager::loadTexture(texturePath);
 	m_normalizeTexture = normalize;
 	m_usingNormal = true;
+}
+
+void ModelLighting::setDisplacementTexture(const char* texturePath)
+{
+	m_modelDisplacementTexture = TextureManager::loadTexture(texturePath);
+	m_usingDisplacement = true;
 }
