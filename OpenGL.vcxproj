@@ -207,6 +207,14 @@ xcopy /y /d $(ProjectDir)res $(TargetDir)\res /S</Command>
   <ItemGroup>
     <ResourceCompile Include="res\icon\Resource.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\basic-fragment.glsl" />
+    <None Include="res\shaders\basic-vertex.glsl" />
+    <None Include="res\shaders\lightingPassOne-fragment.glsl" />
+    <None Include="res\shaders\lightingPassOne-vertex.glsl" />
+    <None Include="res\shaders\lightingPassTwo-fragment.glsl" />
+    <None Include="res\shaders\lightingPassTwo-vertex.glsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

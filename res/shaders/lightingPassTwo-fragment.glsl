@@ -11,6 +11,8 @@ struct Material
 	float shininess;
 
 	int normalizeTex;
+	bool usingNormal;
+	bool usingEmission;
 };
 
 struct PointLight
@@ -56,6 +58,7 @@ out vec4 fragColor;
 
 in vec3 varyingFragPos; //Fragment positions sent out from vertex shader
 in vec2 varyingTexCoords;
+in vec3 varyingNormal;
 in mat3 TBN;
 in vec3 TangentViewPos;
 in vec3 TangentFragPos;
@@ -67,7 +70,7 @@ uniform PointLight pLight[NUMBER_OF_POINT_LIGHTS];
 uniform DirectionalLight dLight;
 uniform SpotLight sLight;
 
-vec3 calculateDirLight(DirectionalLight dl, vec3 normal, vec3 viewDir);
+vec3 calculateDirLight(DirectionalLight dl, vec3 normal);
 vec3 calculatePointLight(PointLight pl, vec3 normal);
 vec3 calculateSpotLight(SpotLight sl, vec3 normal, vec3 fragPos, vec3 viewDir);
 
@@ -76,15 +79,23 @@ vec3 calculateSpotLight(SpotLight sl, vec3 normal, vec3 fragPos, vec3 viewDir);
 void main(void)
 {
 	vec3 norm;
-	if (material.normalizeTex == 1)
+	if (material.usingNormal)
 	{
-		norm = normalize(texture(material.normal, varyingTexCoords).rgb);
+		if (material.normalizeTex == 1)
+		{
+			norm = normalize(texture(material.normal, varyingTexCoords).rgb);
+		}
+		else if (material.normalizeTex == 0)
+		{
+			norm = texture(material.normal, varyingTexCoords).rgb;
+		}
+		norm = normalize(norm * 2.0 - 1.0);
 	}
-	else if (material.normalizeTex == 0)
+	else 
 	{
-		norm = texture(material.normal, varyingTexCoords).rgb;
-	}
-	norm = normalize(norm * 2.0 - 1.0);
+		norm = normalize(varyingNormal);
+	}	
+	
 	
 
 	vec3 result;
@@ -92,7 +103,7 @@ void main(void)
 	//Directional Light
 	if (dLight.diffuse.x != 0.0) //Ensure a directional light exists by checking if it has a diffuse value
 	{
-		//result = calculateDirLight(dLight, norm, viewDir);
+		result = calculateDirLight(dLight, norm);
 	}
 	
 	//Point Light
@@ -112,23 +123,38 @@ void main(void)
 	}
 
 	//emission
-	vec3 emission = texture(material.emission, varyingTexCoords).rgb;
-	result += emission;
+	if (material.usingEmission)
+	{
+		vec3 emission = texture(material.emission, varyingTexCoords).rgb;
+		result += emission;
+	}
+	
 
 	fragColor = vec4(result, 1.0);
 
 }
 
-vec3 calculateDirLight(DirectionalLight dl, vec3 normal, vec3 viewDir)
+vec3 calculateDirLight(DirectionalLight dl, vec3 normal)
 {
-	vec3 lightDir = normalize(-dl.direction); // "-" as its from the surface, not from the light
-	vec3 halfwayDir = normalize(lightDir + viewDir);
+	vec3 lightDir;  // "-" as its from the surface, not from the light
+	vec3 viewDir;
+
+	if(material.usingNormal)
+	{
+		lightDir = normalize((TBN)*-dl.direction);
+		viewDir = normalize(TangentViewPos - TangentFragPos);
+	}
+	else
+	{
+		lightDir = normalize(-dl.direction);
+		viewDir = normalize(viewPos - varyingFragPos);
+	}
 
 	//Diffuse
 	float diff = max(dot(normal, lightDir), 0.0);
 
 	//Specular 
-	vec3 reflectDir = reflect(-lightDir, normal);
+	vec3 halfwayDir = normalize(lightDir + viewDir);
 	float spec = pow(max(dot(normal, halfwayDir),0.0),material.shininess);
 
 	//Combine
@@ -142,17 +168,32 @@ vec3 calculateDirLight(DirectionalLight dl, vec3 normal, vec3 viewDir)
 
 vec3 calculatePointLight(PointLight pl, vec3 normal)
 {
+	//Determine light space
+	vec3 lightDir;
+	vec3 viewDir;
+	float distance;
+
+	if (material.usingNormal)
+	{
+		lightDir = normalize((TBN*pl.position) - TangentFragPos);
+		viewDir = normalize(TangentViewPos - TangentFragPos);
+		distance = length((TBN*pl.position) - TangentFragPos);
+	}
+	else
+	{
+		lightDir = normalize(pl.position - varyingFragPos);
+		viewDir = normalize(viewPos - varyingFragPos);
+		distance = length(pl.position - varyingFragPos);
+	}
+
 	//Diffuse
-	vec3 lightDir = normalize((TBN*pl.position) - TangentFragPos);
 	float diff = max(dot(lightDir, normal), 0.0);
 
 	//Specular
-	vec3 viewDir = normalize(TangentViewPos - TangentFragPos);
 	vec3 halfwayDir = normalize(lightDir + viewDir);
 	float spec = pow(max(dot(normal, halfwayDir), 0.0), material.shininess);
 
 	//Attenuation
-	float distance = length(pl.position - varyingFragPos);
 	float attenuation = 1.0f / (pl.constant + pl.linear * distance + pl.quadratic * (distance * distance));
 
 	//Combine

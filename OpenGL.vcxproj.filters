@@ -115,4 +115,12 @@
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\lightingPassTwo-vertex.glsl" />
+    <None Include="res\shaders\lightingPassTwo-fragment.glsl" />
+    <None Include="res\shaders\lightingPassOne-vertex.glsl" />
+    <None Include="res\shaders\lightingPassOne-fragment.glsl" />
+    <None Include="res\shaders\basic-vertex.glsl" />
+    <None Include="res\shaders\basic-fragment.glsl" />
+  </ItemGroup>
 </Project>

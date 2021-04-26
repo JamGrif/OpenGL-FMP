@@ -63,7 +63,7 @@ void Scene::initScene()
 		Floor->setMesh("res/meshes/plane.obj");
 		Floor->setDiffuseTexture("res/textures/concrete_diff.png");
 		Floor->setSpecularTexture("res/textures/concrete_spec.png");
-		Floor->setNormalTexture("res/textures/concrete_norm.png", 1);
+		Floor->setNormalTexture("res/textures/concrete_norm.png", true);
 		//Floor->setEmissionTexture("res/textures/matrix_emis.png");
 		m_sceneMeshes.push_back(Floor);
 	}
@@ -76,9 +76,9 @@ void Scene::initScene()
 		glm::vec3(-6.0f, 3.0f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 3.0f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
 		glm::vec3(6.0f, 3.0f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f, 3.0f, 9.0f), glm::vec3(-180.0f, 90.0f, 90.0f),
-		glm::vec3(0.0f, 3.0f, 9.0f), glm::vec3(180.0f, 90.0f, 90.0f),
-		glm::vec3(6.0f, 3.0f, 9.0f), glm::vec3(180.0f, 90.0f, 90.0f)
+		glm::vec3(-6.0f, 3.0f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
+		glm::vec3(0.0f, 3.0f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
+		glm::vec3(6.0f, 3.0f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f)
 	
 	};
 	
@@ -88,7 +88,8 @@ void Scene::initScene()
 		wall->setMesh("res/meshes/plane.obj");
 		wall->setDiffuseTexture("res/textures/cartoonBrick_diff.png");
 		wall->setSpecularTexture("res/textures/cartoonBrick_spec.png");
-		wall->setNormalTexture("res/textures/cartoonBrick_norm.png", 0);
+		wall->setNormalTexture("res/textures/cartoonBrick_norm.png", false);
+		wall->setEmissionTexture("res/textures/cartoonBrick_emis.png");
 		m_sceneMeshes.push_back(wall);
 	}
 
@@ -107,9 +108,9 @@ void Scene::initScene()
 	{
 		ModelLighting* wall = new ModelLighting(SideWallPosRot.at(i), SideWallPosRot.at(i + 1));
 		wall->setMesh("res/meshes/plane.obj");
-		wall->setDiffuseTexture("res/textures/wood_diff.png");
-		wall->setSpecularTexture("res/textures/wood_spec.png");
-		wall->setNormalTexture("res/textures/wood_norm.png", 1);
+		wall->setDiffuseTexture("res/textures/wood2_diff.png");
+		wall->setSpecularTexture("res/textures/wood2_spec.png");
+		wall->setNormalTexture("res/textures/wood2_norm.png", false);
 		m_sceneMeshes.push_back(wall);
 	}
 	
@@ -131,9 +132,9 @@ void Scene::initScene()
 	{
 		ModelLighting* Floor = new ModelLighting(RoofPosRot.at(i), RoofPosRot.at(i + 1));
 		Floor->setMesh("res/meshes/plane.obj");
-		Floor->setDiffuseTexture("res/textures/metal_diff.png");
-		Floor->setSpecularTexture("res/textures/metal_spec.png");
-		Floor->setNormalTexture("res/textures/metal_norm.png", 0);
+		Floor->setDiffuseTexture("res/textures/metal2_diff.png");
+		Floor->setSpecularTexture("res/textures/metal2_spec.png");
+		Floor->setNormalTexture("res/textures/metal2_norm.png", false);
 		m_sceneMeshes.push_back(Floor);
 	}
 
@@ -150,9 +151,10 @@ void Scene::initScene()
 		Crate->setMesh("res/meshes/crate.obj");
 		Crate->setDiffuseTexture("res/textures/crate_diff.png");
 		Crate->setSpecularTexture("res/textures/crate_spec.png");
-		Crate->setNormalTexture("res/textures/crate_norm.png", 0);
+		Crate->setNormalTexture("res/textures/crate_norm.png", false);
 		m_sceneMeshes.push_back(Crate);
 	}
+
 
 	//Light
 	std::vector<glm::vec3> LightPos =
@@ -171,7 +173,7 @@ void Scene::initScene()
 		light->SetYScale(0.3);
 		light->SetZScale(0.3);
 		m_sceneMeshes.push_back(light);
-
+	
 		m_sceneLightManager->addPointLight(LightPos.at(i).x, LightPos.at(i).y, LightPos.at(i).z);
 	}
 

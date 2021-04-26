@@ -1,7 +1,8 @@
 #include "ModelLighting.h"
 
 ModelLighting::ModelLighting(glm::vec3 position, glm::vec3 rotation)
-	:Model(position, rotation), m_modelDiffuseTexture(nullptr), m_modelSpecularTexture(nullptr), m_modelEmissionTexture(nullptr), m_modelNormalTexture(nullptr)
+	:Model(position, rotation), m_modelDiffuseTexture(nullptr), m_modelSpecularTexture(nullptr), m_modelEmissionTexture(nullptr), m_modelNormalTexture(nullptr),
+	m_normalizeTexture(false), m_usingEmission(false), m_usingNormal(false)
 {
 
 	m_localLightManager = EngineStatics::getLightManager();
@@ -150,9 +151,11 @@ void ModelLighting::drawPassTwo()
 	m_modelShaderPassTwo->setUniform1i("material.specular", 1);
 	m_modelShaderPassTwo->setUniform1i("material.emission", 2);
 	m_modelShaderPassTwo->setUniform1i("material.normal", 3);
-	m_modelShaderPassTwo->setUniform1f("material.shininess", 32.0f);
+	m_modelShaderPassTwo->setUniform1f("material.shininess", 48.0f);
 
 	m_modelShaderPassTwo->setUniform1i("material.normalizeTex", m_normalizeTexture);
+	m_modelShaderPassTwo->setUniform1i("material.usingNormal", m_usingNormal);
+	m_modelShaderPassTwo->setUniform1i("material.usingEmission", m_usingEmission);
 
 	//Camera Position
 	m_modelShaderPassTwo->setUniform3f("viewPos", EngineStatics::getCamera()->getPosition());
@@ -247,6 +250,7 @@ void ModelLighting::setSpecularTexture(const char* texturePath)
 void ModelLighting::setEmissionTexture(const char* texturePath)
 {
 	m_modelEmissionTexture = TextureManager::loadTexture(texturePath);
+	m_usingEmission = true;
 }
 
 /// <summary>
@@ -254,9 +258,9 @@ void ModelLighting::setEmissionTexture(const char* texturePath)
 /// </summary>
 /// <param name="texturePath"></param>
 /// <param name="normalize">Should the texture be normalized in the fragment shader</param>
-void ModelLighting::setNormalTexture(const char* texturePath, int normalize)
+void ModelLighting::setNormalTexture(const char* texturePath, bool normalize)
 {
 	m_modelNormalTexture = TextureManager::loadTexture(texturePath);
 	m_normalizeTexture = normalize;
-
+	m_usingNormal = true;
 }
