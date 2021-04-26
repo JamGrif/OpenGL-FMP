@@ -9,6 +9,8 @@ struct Material
 	sampler2D emission;
 	sampler2D normal;
 	float shininess;
+
+	int normalizeTex;
 };
 
 struct PointLight
@@ -52,10 +54,11 @@ struct SpotLight
 
 out vec4 fragColor;
 
-in vec3 varyingFragPos;
-in vec3 varyingNormal;
+in vec3 varyingFragPos; //Fragment positions sent out from vertex shader
 in vec2 varyingTexCoords;
-in vec4 shadow_coord;
+in mat3 TBN;
+in vec3 TangentViewPos;
+in vec3 TangentFragPos;
 
 
 uniform vec3 viewPos;				//Camera position
@@ -65,22 +68,31 @@ uniform DirectionalLight dLight;
 uniform SpotLight sLight;
 
 vec3 calculateDirLight(DirectionalLight dl, vec3 normal, vec3 viewDir);
-vec3 calculatePointLight(PointLight pl, vec3 normal, vec3 fragPos, vec3 viewDir);
+vec3 calculatePointLight(PointLight pl, vec3 normal);
 vec3 calculateSpotLight(SpotLight sl, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 
 
 void main(void)
 {
+	vec3 norm;
+	if (material.normalizeTex == 1)
+	{
+		norm = normalize(texture(material.normal, varyingTexCoords).rgb);
+	}
+	else if (material.normalizeTex == 0)
+	{
+		norm = texture(material.normal, varyingTexCoords).rgb;
+	}
+	norm = normalize(norm * 2.0 - 1.0);
+	
 
-	vec3 norm = normalize(varyingNormal);
-	vec3 viewDir = normalize(viewPos - varyingFragPos);
 	vec3 result;
 
 	//Directional Light
 	if (dLight.diffuse.x != 0.0) //Ensure a directional light exists by checking if it has a diffuse value
 	{
-		result = calculateDirLight(dLight, norm, viewDir);
+		//result = calculateDirLight(dLight, norm, viewDir);
 	}
 	
 	//Point Light
@@ -88,7 +100,7 @@ void main(void)
 	{
 		if (pLight[i].diffuse.x != 0.0)
 		{
-			result += calculatePointLight(pLight[i], norm, varyingFragPos, viewDir);
+			result += calculatePointLight(pLight[i], norm);
 		}
 		
 	}
@@ -96,7 +108,7 @@ void main(void)
 	//Spot Light
 	if (sLight.diffuse.x != 0.0) //Ensure a spotlight exists by checking if it has a diffuse value
 	{
-		result += calculateSpotLight(sLight, norm, varyingFragPos, viewDir);
+		//result += calculateSpotLight(sLight, norm, varyingFragPos, viewDir);
 	}
 
 	//emission
@@ -111,8 +123,6 @@ vec3 calculateDirLight(DirectionalLight dl, vec3 normal, vec3 viewDir)
 {
 	vec3 lightDir = normalize(-dl.direction); // "-" as its from the surface, not from the light
 	vec3 halfwayDir = normalize(lightDir + viewDir);
-
-	
 
 	//Diffuse
 	float diff = max(dot(normal, lightDir), 0.0);
@@ -130,20 +140,19 @@ vec3 calculateDirLight(DirectionalLight dl, vec3 normal, vec3 viewDir)
 
 }
 
-vec3 calculatePointLight(PointLight pl, vec3 normal, vec3 fragPos, vec3 viewDir)
+vec3 calculatePointLight(PointLight pl, vec3 normal)
 {
-	vec3 lightDir = normalize(pl.position - fragPos);
-	vec3 halfwayDir = normalize(lightDir + viewDir);
-
 	//Diffuse
-	float diff = max(dot(normal, lightDir), 0.0);
+	vec3 lightDir = normalize((TBN*pl.position) - TangentFragPos);
+	float diff = max(dot(lightDir, normal), 0.0);
 
 	//Specular
-	vec3 reflectDir = reflect(-lightDir, normal);
+	vec3 viewDir = normalize(TangentViewPos - TangentFragPos);
+	vec3 halfwayDir = normalize(lightDir + viewDir);
 	float spec = pow(max(dot(normal, halfwayDir), 0.0), material.shininess);
 
 	//Attenuation
-	float distance = length(pl.position - fragPos);
+	float distance = length(pl.position - varyingFragPos);
 	float attenuation = 1.0f / (pl.constant + pl.linear * distance + pl.quadratic * (distance * distance));
 
 	//Combine
@@ -154,9 +163,6 @@ vec3 calculatePointLight(PointLight pl, vec3 normal, vec3 fragPos, vec3 viewDir)
 	ambient *= attenuation;
 	diffuse *= attenuation;
 	specular *= attenuation;
-
-
-	
 
 	return (ambient + diffuse + specular);
 
