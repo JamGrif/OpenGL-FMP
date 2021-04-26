@@ -42,7 +42,7 @@ Texture::Texture(const char* filePath)
 	}
 
 	//Define the texture
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, localBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, localBuffer);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	//Unbind

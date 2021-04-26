@@ -86,7 +86,7 @@ void Scene::initScene()
 		wall->setMesh("res/meshes/plane.obj");
 		wall->setDiffuseTexture("res/textures/brick_diff.png");
 		wall->setSpecularTexture("res/textures/brick_spec.png");
-		//wall->setNormalTexture("res/textures/concrete_norm.png");
+		//wall->setNormalTexture("res/textures/brick_norm.png");
 		m_sceneMeshes.push_back(wall);
 	}
 
@@ -131,32 +131,34 @@ void Scene::initScene()
 		Floor->setMesh("res/meshes/plane.obj");
 		Floor->setDiffuseTexture("res/textures/metal_diff.png");
 		Floor->setSpecularTexture("res/textures/metal_spec.png");
-		//Floor->setNormalTexture("res/textures/wood_norm.png");
+		//Floor->setNormalTexture("res/textures/metal_norm.png");
 		m_sceneMeshes.push_back(Floor);
 	}
 
 	//Crates
-	std::vector<glm::vec3> CratePosRot =
-	{
-		glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-3.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-	};
-	
-	for (int i = 0; i < CratePosRot.size(); i += 2)
-	{
-		ModelLighting* Crate = new ModelLighting(CratePosRot.at(i), CratePosRot.at(i + 1));
-		Crate->setMesh("res/meshes/crate.obj");
-		Crate->setDiffuseTexture("res/textures/crate_diff.png");
-		Crate->setSpecularTexture("res/textures/crate_spec.png");
-		//Crate->setNormalTexture("res/textures/crate_norm.png");
-		m_sceneMeshes.push_back(Crate);
-	}
+	//std::vector<glm::vec3> CratePosRot =
+	//{
+	//	glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-3.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//};
+	//
+	//for (int i = 0; i < CratePosRot.size(); i += 2)
+	//{
+	//	ModelLighting* Crate = new ModelLighting(CratePosRot.at(i), CratePosRot.at(i + 1));
+	//	Crate->setMesh("res/meshes/crate.obj");
+	//	Crate->setDiffuseTexture("res/textures/crate_diff.png");
+	//	Crate->setSpecularTexture("res/textures/crate_spec.png");
+	//	//Crate->setNormalTexture("res/textures/crate_norm.png");
+	//	m_sceneMeshes.push_back(Crate);
+	//}
 
 	//Light
 	std::vector<glm::vec3> LightPos =
 	{
 		glm::vec3(3.0f, 3.0f, -5.0f),
-		//glm::vec3(-5.0f, 3.0f, 5.0f)
+		//glm::vec3(-3.0f, 3.0f, -5.0f),
+		//glm::vec3(-3.0f, 3.0f, 5.0f),
+		//glm::vec3(3.0f, 3.0f, 5.0f)
 	};
 	
 	for (int i = 0; i < LightPos.size(); i++)

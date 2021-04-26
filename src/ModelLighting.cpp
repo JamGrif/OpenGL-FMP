@@ -149,7 +149,7 @@ void ModelLighting::drawPassTwo()
 	m_modelShaderPassTwo->setUniform1i("material.diffuse", 0);
 	m_modelShaderPassTwo->setUniform1i("material.specular", 1);
 	m_modelShaderPassTwo->setUniform1i("material.emission", 2);
-	//m_modelShaderPassTwo->setUniform1i("material.normal", 3);
+	m_modelShaderPassTwo->setUniform1i("material.normal", 3);
 	m_modelShaderPassTwo->setUniform1f("material.shininess", 32.0f);
 
 	//Camera Position
@@ -183,11 +183,11 @@ void ModelLighting::drawPassTwo()
 
 	if (m_modelNormalTexture != nullptr)
 	{
-		setVBOAttrib(true, true, true, true, true);
+		setVBOAttrib(true, true, true, true, true); 
 	}
 	else
 	{
-		setVBOAttrib(true, true, true, false, false);
+		setVBOAttrib(true, true, true, false, false); //No use for tangents / bitangents if no normal map
 	}
 	
 	//Draw
