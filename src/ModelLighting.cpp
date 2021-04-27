@@ -1,8 +1,9 @@
 #include "ModelLighting.h"
 
 ModelLighting::ModelLighting(glm::vec3 position, glm::vec3 rotation)
-	:Model(position, rotation), m_modelDiffuseTexture(nullptr), m_modelSpecularTexture(nullptr), m_modelEmissionTexture(nullptr), m_modelNormalTexture(nullptr), m_modelDisplacementTexture(nullptr),
-	m_normalizeTexture(false), m_usingEmission(false), m_usingNormal(false), m_usingDisplacement(false)
+	:Model(position, rotation), m_modelDiffuseTexture(nullptr), m_modelSpecularTexture(nullptr),
+	m_modelEmissionTexture(nullptr), m_modelNormalTexture(nullptr), m_modelHeightTexture(nullptr),
+	m_normalizeTexture(false), m_usingEmission(false), m_usingNormal(false), m_usingHeight(false)
 {
 
 	m_localLightManager = EngineStatics::getLightManager();
@@ -33,9 +34,9 @@ ModelLighting::~ModelLighting()
 		m_modelNormalTexture = nullptr;
 	}
 
-	if (m_modelDisplacementTexture != nullptr)
+	if (m_modelHeightTexture != nullptr)
 	{
-		m_modelDisplacementTexture = nullptr;
+		m_modelHeightTexture = nullptr;
 	}
 }
 
@@ -156,13 +157,13 @@ void ModelLighting::drawPassTwo()
 	m_modelShaderPassTwo->setUniform1i("material.specular", 1);
 	m_modelShaderPassTwo->setUniform1i("material.emission", 2);
 	m_modelShaderPassTwo->setUniform1i("material.normal", 3);
-	m_modelShaderPassTwo->setUniform1i("material.displacement", 4);
+	m_modelShaderPassTwo->setUniform1i("material.height", 4);
 	m_modelShaderPassTwo->setUniform1f("material.shininess", 48.0f);
 
 	m_modelShaderPassTwo->setUniform1i("material.normalizeTex", m_normalizeTexture);
 	m_modelShaderPassTwo->setUniform1i("material.usingNormal", m_usingNormal);
 	m_modelShaderPassTwo->setUniform1i("material.usingEmission", m_usingEmission);
-	m_modelShaderPassTwo->setUniform1i("material.usingDisplacement", m_usingDisplacement);
+	//m_modelShaderPassTwo->setUniform1i("material.usingDisplacement", m_usingDisplacement);
 
 	//Camera Position
 	m_modelShaderPassTwo->setUniform3f("viewPos", EngineStatics::getCamera()->getPosition());
@@ -187,6 +188,11 @@ void ModelLighting::drawPassTwo()
 	if (m_modelNormalTexture != nullptr)
 	{
 		m_modelNormalTexture->Bind(3);
+	}
+
+	if (m_modelHeightTexture != nullptr)
+	{
+		m_modelHeightTexture->Bind(4);
 	}
 
 	/*
@@ -225,15 +231,22 @@ void ModelLighting::drawPassTwo()
 		m_modelNormalTexture->Unbind();
 	}
 
+	if (m_modelHeightTexture != nullptr)
+	{
+		m_modelHeightTexture->Unbind();
+	}
+
 	if (m_modelShaderPassTwo != nullptr)
 	{
 		m_modelShaderPassTwo->Unbind();
 	}
 
+	
+
 }
 
 /// <summary>
-/// Assigns specified texture to the model to be used for diffuse
+/// Assigns specified texture to the model to be used for a diffuse map
 /// </summary>
 /// <param name="texturePath"></param>
 void ModelLighting::setDiffuseTexture(const char* texturePath)
@@ -242,7 +255,7 @@ void ModelLighting::setDiffuseTexture(const char* texturePath)
 }
 
 /// <summary>
-/// Assigns specified texture to the model to be used for specular
+/// Assigns specified texture to the model to be used for a specular map
 /// </summary>
 /// <param name="texturePath"></param>
 void ModelLighting::setSpecularTexture(const char* texturePath)
@@ -251,7 +264,7 @@ void ModelLighting::setSpecularTexture(const char* texturePath)
 }
 
 /// <summary>
-/// Assigns specified texture to the model to be used for emission
+/// Assigns specified texture to the model to be used for an emission map
 /// </summary>
 /// <param name="texturePath"></param>
 void ModelLighting::setEmissionTexture(const char* texturePath)
@@ -261,7 +274,7 @@ void ModelLighting::setEmissionTexture(const char* texturePath)
 }
 
 /// <summary>
-/// Assigns specified texture to the model to be used for normal
+/// Assigns specified texture to the model to be used for a normal map
 /// </summary>
 /// <param name="texturePath"></param>
 /// <param name="normalize">Should the texture be normalized in the fragment shader</param>
@@ -272,8 +285,12 @@ void ModelLighting::setNormalTexture(const char* texturePath, bool normalize)
 	m_usingNormal = true;
 }
 
-void ModelLighting::setDisplacementTexture(const char* texturePath)
+/// <summary>
+/// Assigns specified texture to the model to be used for a height map
+/// </summary>
+/// <param name="texturePath"></param>
+void ModelLighting::setHeightTexture(const char* texturePath)
 {
-	m_modelDisplacementTexture = TextureManager::loadTexture(texturePath);
-	m_usingDisplacement = true;
+	m_modelHeightTexture = TextureManager::loadTexture(texturePath);
+	m_usingHeight = true;
 }

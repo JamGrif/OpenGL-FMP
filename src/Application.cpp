@@ -17,7 +17,7 @@ Application::Application()
 
 Application::~Application()
 {
-	std::cout << "Application Destroyed" << std::endl;
+	EngineStatics::setProjectionMatrix(nullptr);
 
 	delete m_demoScene;
 	m_demoScene = nullptr;
@@ -27,8 +27,11 @@ Application::~Application()
 
 	glDeleteVertexArrays(1, &m_appVAO);
 
+	EngineStatics::setAppWindow(nullptr);
 	glfwDestroyWindow(m_appWindow);
 	glfwTerminate();
+
+	std::cout << "Application Destroyed" << std::endl;
 }
 
 /// <summary>

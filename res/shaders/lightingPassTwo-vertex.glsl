@@ -12,13 +12,13 @@ struct Material
 	sampler2D specular;
 	sampler2D emission;
 	sampler2D normal;
-	sampler2D displacement;
+	sampler2D height;
 	float shininess;
 
 	int normalizeTex;
 	bool usingNormal;
 	bool usingEmission;
-	bool usingDisplacement;
+	//bool usingDisplacement;
 };
 uniform Material material;			//Surface material
 

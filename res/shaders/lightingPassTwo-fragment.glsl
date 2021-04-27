@@ -8,13 +8,13 @@ struct Material
 	sampler2D specular;
 	sampler2D emission;
 	sampler2D normal;
-	sampler2D displacement;
+	sampler2D height;
 	float shininess;
 
 	int normalizeTex;
 	bool usingNormal;
 	bool usingEmission;
-	bool usingDisplacement;
+	//bool usingDisplacement;
 };
 
 struct PointLight
@@ -72,20 +72,24 @@ uniform PointLight pLight[NUMBER_OF_POINT_LIGHTS];
 uniform DirectionalLight dLight;
 uniform SpotLight sLight;
 
+
 vec3 calculateDirLight(DirectionalLight dl, vec3 normal);
-vec3 calculatePointLight(PointLight pl, vec3 normal);
+vec3 calculatePointLight(PointLight pl, vec3 normal, vec3 viewDir, vec2 ParallaxTexCoords);
 vec3 calculateSpotLight(SpotLight sl, vec3 normal, vec3 fragPos, vec3 viewDir);
 
-
+vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir);
 
 void main(void)
 {
 	vec3 norm;
+	vec3 viewDir = normalize(TangentViewPos - TangentFragPos);
+	vec2 ParallaxTexCoords = ParallaxMapping(varyingTexCoords, viewDir);
+
 	if (material.usingNormal)
 	{
 		if (material.normalizeTex == 1)
 		{
-			norm = normalize(texture(material.normal, varyingTexCoords).rgb);
+			norm = normalize(texture(material.normal, ParallaxTexCoords).rgb);
 		}
 		else if (material.normalizeTex == 0)
 		{
@@ -105,7 +109,7 @@ void main(void)
 	//Directional Light
 	if (dLight.diffuse.x != 0.0) //Ensure a directional light exists by checking if it has a diffuse value
 	{
-		result = calculateDirLight(dLight, norm);
+		//result = calculateDirLight(dLight, norm);
 	}
 	
 	//Point Light
@@ -113,7 +117,7 @@ void main(void)
 	{
 		if (pLight[i].diffuse.x != 0.0)
 		{
-			result += calculatePointLight(pLight[i], norm);
+			result += calculatePointLight(pLight[i], norm, viewDir, ParallaxTexCoords);
 		}
 		
 	}
@@ -168,23 +172,23 @@ vec3 calculateDirLight(DirectionalLight dl, vec3 normal)
 
 }
 
-vec3 calculatePointLight(PointLight pl, vec3 normal)
+vec3 calculatePointLight(PointLight pl, vec3 normal, vec3 viewDir, vec2 ParallaxTexCoords)
 {
 	//Determine light space
 	vec3 lightDir;
-	vec3 viewDir;
+	//vec3 viewDir;
 	float distance;
 
 	if (material.usingNormal)
 	{
 		lightDir = normalize((TBN*pl.position) - TangentFragPos);
-		viewDir = normalize(TangentViewPos - TangentFragPos);
+		//viewDir = normalize(TangentViewPos - TangentFragPos);
 		distance = length((TBN*pl.position) - TangentFragPos);
 	}
 	else
 	{
 		lightDir = normalize(pl.position - varyingFragPos);
-		viewDir = normalize(viewPos - varyingFragPos);
+		//viewDir = normalize(viewPos - varyingFragPos);
 		distance = length(pl.position - varyingFragPos);
 	}
 
@@ -199,9 +203,9 @@ vec3 calculatePointLight(PointLight pl, vec3 normal)
 	float attenuation = 1.0f / (pl.constant + pl.linear * distance + pl.quadratic * (distance * distance));
 
 	//Combine
-	vec3 ambient = pl.ambient * texture(material.diffuse, varyingTexCoords).rgb;
-	vec3 diffuse = pl.diffuse * diff * texture(material.diffuse, varyingTexCoords).rgb;
-	vec3 specular = pl.specular * spec * texture(material.specular, varyingTexCoords).rgb;
+	vec3 ambient = pl.ambient * texture(material.diffuse, ParallaxTexCoords).rgb;
+	vec3 diffuse = pl.diffuse * diff * texture(material.diffuse, ParallaxTexCoords).rgb;
+	vec3 specular = pl.specular * spec * texture(material.specular, ParallaxTexCoords).rgb;
 
 	ambient *= attenuation;
 	diffuse *= attenuation;
@@ -243,4 +247,12 @@ vec3 calculateSpotLight(SpotLight sl, vec3 normal, vec3 fragPos, vec3 viewDir)
 	specular *= attenuation * intensity;
 
 	return (ambient + diffuse + specular);
+}
+
+
+vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
+{
+	float height = texture(material.height, texCoords).r;
+	vec2 p = viewDir.xy / viewDir.z * (height * 0.05);
+	return texCoords - p;
 }

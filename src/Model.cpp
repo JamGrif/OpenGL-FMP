@@ -12,7 +12,6 @@ Model::Model(glm::vec3 position, glm::vec3 rotation)
 
 Model::~Model()
 {
-
 	if (m_modelMesh != nullptr)
 	{
 		m_modelMesh = nullptr;
@@ -28,6 +27,10 @@ Model::~Model()
 		m_modelShaderPassTwo = nullptr;
 	}
 
+	//glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+	glDeleteBuffers(1, &m_VBO);
+	glDeleteBuffers(1, &m_EBO);
+
 }
 
 /// <summary>
@@ -42,8 +45,8 @@ void Model::setMesh(const char* meshFilePath)
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 	glBufferData(GL_ARRAY_BUFFER, m_modelMesh->getVertices().size() * sizeof(Vertex), &m_modelMesh->getVertices()[0], GL_STATIC_DRAW);
 
-	glGenBuffers(1, &EBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glGenBuffers(1, &m_EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_modelMesh->getIndices().size() * sizeof(unsigned int), &m_modelMesh->getIndices()[0], GL_STATIC_DRAW);
 
 }
@@ -102,7 +105,7 @@ void Model::setMatrixValues()
 void Model::setVBOAttrib(bool shaderPos, bool shaderNorm, bool shaderTex, bool shaderTan, bool shaderBiTan)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 
 	if (shaderPos)
 	{

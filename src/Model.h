@@ -55,7 +55,7 @@ protected:
 	Shader*			m_modelShaderPassTwo;
 
 	GLuint m_VBO;
-	GLuint EBO;
+	GLuint m_EBO;
 
 	//World Space
 	glm::vec3 m_position;
