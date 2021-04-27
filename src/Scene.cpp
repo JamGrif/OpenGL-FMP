@@ -90,7 +90,7 @@ void Scene::initScene()
 		wall->setDiffuseTexture("res/textures/cartoonBrick_diff.png");
 		wall->setSpecularTexture("res/textures/cartoonBrick_spec.png");
 		wall->setNormalTexture("res/textures/cartoonBrick_norm.png", false);
-		wall->setHeightTexture("res/textures/cartoonBrick_disp.png");
+		wall->setHeightTexture("res/textures/cartoonBrick_height.png");
 		//wall->setEmissionTexture("res/textures/cartoonBrick_emis.png");
 		m_sceneMeshes.push_back(wall);
 	}
