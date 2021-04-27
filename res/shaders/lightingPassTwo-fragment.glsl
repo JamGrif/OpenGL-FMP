@@ -14,7 +14,7 @@ struct Material
 	int normalizeTex;
 	bool usingNormal;
 	bool usingEmission;
-	//bool usingDisplacement;
+	bool usingHeight;
 };
 
 struct PointLight
@@ -82,27 +82,38 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir);
 void main(void)
 {
 	vec3 norm;
-	vec3 viewDir = normalize(TangentViewPos - TangentFragPos);
-	vec2 ParallaxTexCoords = ParallaxMapping(varyingTexCoords, viewDir);
+	vec3 viewDir;
+	
 
+	vec2 texCoords = varyingTexCoords;
+	
+
+	//Surface uses normal map
 	if (material.usingNormal)
 	{
+		viewDir = normalize(TangentViewPos - TangentFragPos);
+		//Surface uses height map for parallax mapping (This only gets applied if a normal map is used as well)
+		if (material.usingHeight)
+		{
+			//Adjust texcoords to use the height map
+			texCoords = ParallaxMapping(varyingTexCoords, viewDir);
+		}
+		//Normalize texture or not
 		if (material.normalizeTex == 1)
 		{
-			norm = normalize(texture(material.normal, ParallaxTexCoords).rgb);
+			norm = normalize(texture(material.normal, texCoords).rgb);
 		}
 		else if (material.normalizeTex == 0)
 		{
-			norm = texture(material.normal, varyingTexCoords).rgb;
+			norm = texture(material.normal, texCoords).rgb;
 		}
 		norm = normalize(norm * 2.0 - 1.0);
 	}
 	else 
 	{
+		viewDir = normalize(viewPos - varyingFragPos);
 		norm = normalize(varyingNormal);
 	}	
-	
-	
 
 	vec3 result;
 
@@ -117,7 +128,7 @@ void main(void)
 	{
 		if (pLight[i].diffuse.x != 0.0)
 		{
-			result += calculatePointLight(pLight[i], norm, viewDir, ParallaxTexCoords);
+			result += calculatePointLight(pLight[i], norm, viewDir, texCoords);
 		}
 		
 	}
@@ -252,7 +263,38 @@ vec3 calculateSpotLight(SpotLight sl, vec3 normal, vec3 fragPos, vec3 viewDir)
 
 vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
 {
-	float height = texture(material.height, texCoords).r;
-	vec2 p = viewDir.xy / viewDir.z * (height * 0.05);
-	return texCoords - p;
+	//float height = texture(material.height, texCoords).r;
+	//vec2 p = viewDir.xy / viewDir.z * (height * 0.05);
+	//return texCoords - p;
+
+	const float minLayers = 8;
+	const float maxLayers = 32;
+	float numLayers = mix(maxLayers, minLayers, max(dot(vec3(0.0,0.0,1.0), viewDir), 0.0));
+	float layerDepth = 1.0 / numLayers;
+	float currentlayerdepth = 0.0;
+	vec2 P = viewDir.xy * 0.05;
+	vec2 deltaTexCoords = P / numLayers;
+
+	vec2 currentTexCoords = texCoords;
+	float currentDepthMapValue = texture(material.height, currentTexCoords).r;
+
+	while(currentlayerdepth < currentDepthMapValue)
+	{
+		currentTexCoords -= deltaTexCoords;
+		currentDepthMapValue = texture(material.height, currentTexCoords).r;
+		currentlayerdepth += layerDepth;
+		if (currentlayerdepth > maxLayers) 
+			break;
+	}
+
+	vec2 prevTexCoords = currentTexCoords + deltaTexCoords;
+
+	float afterDepth = currentDepthMapValue - currentlayerdepth;
+	float beforeDepth = texture(material.height, prevTexCoords).r - currentlayerdepth + layerDepth;
+
+	float weight = afterDepth / (afterDepth - beforeDepth);
+	vec2 finalTexCoords = prevTexCoords * weight + currentTexCoords * (1.0 - weight);
+
+	return finalTexCoords;
+
 }

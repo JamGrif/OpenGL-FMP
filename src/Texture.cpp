@@ -4,14 +4,27 @@
 
 std::vector<Texture*> TextureManager::loadedTextures;
 
-Texture::Texture(const char* filePath)
-	:m_filePath(filePath), m_width(0), m_height(0), m_BPP(0)
+Texture::Texture()
+	:m_texture(0), m_width(0), m_height(0), m_BPP(0)
 {
+	
+
+}
+
+Texture::~Texture()
+{
+	glDeleteTextures(1, &m_texture);
+}
+
+bool Texture::loadTexture(const char* filePath)
+{
+	m_filePath = filePath;
+
 	unsigned char* localBuffer;
 
 	stbi_set_flip_vertically_on_load(1); //Flips texture on Y-Axis
 	localBuffer = stbi_load(filePath, &m_width, &m_height, &m_BPP, 4);
-	
+
 	//Check if file loaded successfully
 	if (stbi_failure_reason() == "can't fopen")
 	{
@@ -24,7 +37,7 @@ Texture::Texture(const char* filePath)
 	glGenTextures(1, &m_texture);
 
 	glBindTexture(GL_TEXTURE_2D, m_texture);
-	
+
 	//Specify what happens if texture is renderered on a different sized surface
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -53,11 +66,7 @@ Texture::Texture(const char* filePath)
 		stbi_image_free(localBuffer);
 	}
 
-}
-
-Texture::~Texture()
-{
-	glDeleteTextures(1, &m_texture);
+	return true;
 }
 
 /// <summary>
@@ -95,7 +104,7 @@ GLuint Texture::getTexture() const
 /// <param name="vertexPath">Vertex shader file path</param>
 /// <param name="fragmentPath">Fragment shader file path</param>
 /// <returns>Pointer to the created texture</returns>
-Texture* TextureManager::loadTexture(const char* filePath)
+Texture* TextureManager::retrieveTexture(const char* filePath)
 {
 	//Check if texture is already loaded
 	for (Texture* t : loadedTextures)
@@ -111,6 +120,8 @@ Texture* TextureManager::loadTexture(const char* filePath)
 	//Otherwise, create new texture and add it to vector
 	std::cout << "TEXTUREMANAGER->" << filePath << " is being loaded" << std::endl;
 
-	loadedTextures.push_back(new Texture(filePath));
+	Texture* t = new Texture;
+	t->loadTexture(filePath);
+	loadedTextures.push_back(t);
 	return loadedTextures.back();
 }

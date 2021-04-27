@@ -18,7 +18,7 @@ struct Material
 	int normalizeTex;
 	bool usingNormal;
 	bool usingEmission;
-	//bool usingDisplacement;
+	bool usingHeight;
 };
 uniform Material material;			//Surface material
 

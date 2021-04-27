@@ -9,8 +9,10 @@
 class Texture
 {
 public:
-	Texture(const char* filePath);
+	Texture();
 	~Texture();
+
+	bool loadTexture(const char* filePath);
 
 	void Bind(unsigned int slot = 0) const;
 	void Unbind() const;
@@ -26,9 +28,16 @@ private:
 
 	const char* m_filePath;
 
-	
-
 	int m_width, m_height, m_BPP;
+
+};
+
+class CubeMap
+{
+public:
+
+
+private:
 
 };
 
@@ -36,7 +45,8 @@ class TextureManager
 {
 public:
 
-	static Texture* loadTexture(const char* filePath);
+	static Texture* retrieveTexture(const char* filePath);
+	static Texture* loadCubeMap(const char* filePath);
 
 private:
 

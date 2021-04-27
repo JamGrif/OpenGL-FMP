@@ -163,7 +163,7 @@ void ModelLighting::drawPassTwo()
 	m_modelShaderPassTwo->setUniform1i("material.normalizeTex", m_normalizeTexture);
 	m_modelShaderPassTwo->setUniform1i("material.usingNormal", m_usingNormal);
 	m_modelShaderPassTwo->setUniform1i("material.usingEmission", m_usingEmission);
-	//m_modelShaderPassTwo->setUniform1i("material.usingDisplacement", m_usingDisplacement);
+	m_modelShaderPassTwo->setUniform1i("material.usingHeight", m_usingHeight);
 
 	//Camera Position
 	m_modelShaderPassTwo->setUniform3f("viewPos", EngineStatics::getCamera()->getPosition());
@@ -251,7 +251,7 @@ void ModelLighting::drawPassTwo()
 /// <param name="texturePath"></param>
 void ModelLighting::setDiffuseTexture(const char* texturePath)
 {
-	m_modelDiffuseTexture = TextureManager::loadTexture(texturePath);
+	m_modelDiffuseTexture = TextureManager::retrieveTexture(texturePath);
 }
 
 /// <summary>
@@ -260,7 +260,7 @@ void ModelLighting::setDiffuseTexture(const char* texturePath)
 /// <param name="texturePath"></param>
 void ModelLighting::setSpecularTexture(const char* texturePath)
 {
-	m_modelSpecularTexture = TextureManager::loadTexture(texturePath);
+	m_modelSpecularTexture = TextureManager::retrieveTexture(texturePath);
 }
 
 /// <summary>
@@ -269,7 +269,7 @@ void ModelLighting::setSpecularTexture(const char* texturePath)
 /// <param name="texturePath"></param>
 void ModelLighting::setEmissionTexture(const char* texturePath)
 {
-	m_modelEmissionTexture = TextureManager::loadTexture(texturePath);
+	m_modelEmissionTexture = TextureManager::retrieveTexture(texturePath);
 	m_usingEmission = true;
 }
 
@@ -280,7 +280,7 @@ void ModelLighting::setEmissionTexture(const char* texturePath)
 /// <param name="normalize">Should the texture be normalized in the fragment shader</param>
 void ModelLighting::setNormalTexture(const char* texturePath, bool normalize)
 {
-	m_modelNormalTexture = TextureManager::loadTexture(texturePath);
+	m_modelNormalTexture = TextureManager::retrieveTexture(texturePath);
 	m_normalizeTexture = normalize;
 	m_usingNormal = true;
 }
@@ -291,6 +291,6 @@ void ModelLighting::setNormalTexture(const char* texturePath, bool normalize)
 /// <param name="texturePath"></param>
 void ModelLighting::setHeightTexture(const char* texturePath)
 {
-	m_modelHeightTexture = TextureManager::loadTexture(texturePath);
+	m_modelHeightTexture = TextureManager::retrieveTexture(texturePath);
 	m_usingHeight = true;
 }
