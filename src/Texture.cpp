@@ -161,7 +161,6 @@ bool CubeMap::loadCubeMap()
 
 	stbi_set_flip_vertically_on_load(0); //Flips texture on Y-Axis
 
-
 	//Generate texture buffer
 	glGenTextures(1, &m_texture);
 
@@ -185,7 +184,7 @@ bool CubeMap::loadCubeMap()
 	
 
 	//Unbind
-	//glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
 	return true;
 }
