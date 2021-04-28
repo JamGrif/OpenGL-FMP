@@ -7,7 +7,7 @@ Model::Model(glm::vec3 position, glm::vec3 rotation)
 	m_position{ position }, m_rotation{ rotation }, m_scale{ 1.0f,1.0f,1.0f },
 	m_mMat{ 1.0f }, m_vMat{ 1.0f }, m_tMat{ 1.0f }, m_rMat{ 1.0f }, m_sMat{ 1.0f }
 {
-	
+	m_localLightManager = EngineStatics::getLightManager();
 }
 
 Model::~Model()

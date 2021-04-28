@@ -57,6 +57,9 @@
     <ClCompile Include="src\ModelLighting.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ModelSky.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader.h">
@@ -101,6 +104,9 @@
     <ClInclude Include="src\ModelLighting.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ModelSky.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\jeff.jpg">
@@ -122,5 +128,7 @@
     <None Include="res\shaders\lightingPassOne-fragment.glsl" />
     <None Include="res\shaders\basic-vertex.glsl" />
     <None Include="res\shaders\basic-fragment.glsl" />
+    <None Include="res\shaders\sky-vertex.glsl" />
+    <None Include="res\shaders\sky-fragment.glsl" />
   </ItemGroup>
 </Project>

@@ -170,6 +170,7 @@ xcopy /y /d $(ProjectDir)res $(TargetDir)\res /S</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\stb_image\stb_image.cpp" />
+    <ClCompile Include="src\ModelSky.cpp" />
     <ClCompile Include="src\ModelBasic.cpp" />
     <ClCompile Include="src\ModelLighting.cpp" />
     <ClCompile Include="src\LightManager.cpp" />
@@ -186,6 +187,7 @@ xcopy /y /d $(ProjectDir)res $(TargetDir)\res /S</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\stb_image\stb_image.h" />
+    <ClInclude Include="src\ModelSky.h" />
     <ClInclude Include="src\ModelBasic.h" />
     <ClInclude Include="src\ModelLighting.h" />
     <ClInclude Include="res\icon\resource.h" />
@@ -214,6 +216,8 @@ xcopy /y /d $(ProjectDir)res $(TargetDir)\res /S</Command>
     <None Include="res\shaders\lightingPassOne-vertex.glsl" />
     <None Include="res\shaders\lightingPassTwo-fragment.glsl" />
     <None Include="res\shaders\lightingPassTwo-vertex.glsl" />
+    <None Include="res\shaders\sky-fragment.glsl" />
+    <None Include="res\shaders\sky-vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

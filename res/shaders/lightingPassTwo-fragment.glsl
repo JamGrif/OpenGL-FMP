@@ -126,7 +126,7 @@ void main(void)
 	//Point Light
 	for (int i = 0; i < NUMBER_OF_POINT_LIGHTS; i++)
 	{
-		if (pLight[i].diffuse.x != 0.0)
+		if (pLight[i].constant != 0.0)
 		{
 			result += calculatePointLight(pLight[i], norm, viewDir, texCoords);
 		}

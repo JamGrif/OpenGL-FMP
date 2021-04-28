@@ -14,15 +14,15 @@ public:
 
 	bool loadTexture(const char* filePath);
 
-	void Bind(unsigned int slot = 0) const;
-	void Unbind() const;
+	virtual void Bind(unsigned int slot = 0) const;
+	virtual void Unbind() const;
 
 
 	const char* getFilePath() const;
 	GLuint getTexture() const;
 	
 
-private:
+protected:
 
 	GLuint m_texture;
 
@@ -32,12 +32,30 @@ private:
 
 };
 
-class CubeMap
+class CubeMap :
+	public Texture
+	
 {
 public:
+	CubeMap();
+	~CubeMap();
 
+	void Bind(unsigned int slot = 0) const override;
+	void Unbind() const override;
+
+	bool loadCubeMap();
 
 private:
+
+	std::vector<const char*> skyFaces = 
+	{ 
+		"res/textures/sky/right.png" ,
+		"res/textures/sky/left.png",
+		"res/textures/sky/top.png",
+		"res/textures/sky/bottom.png",
+		"res/textures/sky/front.png",
+		"res/textures/sky/back.png"
+	};
 
 };
 
@@ -46,11 +64,12 @@ class TextureManager
 public:
 
 	static Texture* retrieveTexture(const char* filePath);
-	static Texture* loadCubeMap(const char* filePath);
+	static CubeMap* retrieveCubeMap();
 
 private:
 
 	static std::vector<Texture*> loadedTextures;
+	static std::vector<CubeMap*> loadedCubemaps;
 
 	TextureManager();
 };

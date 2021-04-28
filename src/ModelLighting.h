@@ -20,8 +20,7 @@ public:
 
 private:
 
-    //Cached other classes
-    LightManager* m_localLightManager;
+    
 
     Texture* m_modelDiffuseTexture;
     Texture* m_modelSpecularTexture;

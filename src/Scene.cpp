@@ -10,8 +10,6 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-	
-	
 	for (Model* m : m_sceneMeshes)
 	{
 		delete m;
@@ -38,6 +36,9 @@ void Scene::initScene()
 	
 	addSceneCamera(0.0f, 2.0f, 0.0f);
 	addSceneLightManager();
+
+	//Skybox
+	m_sceneMeshes.push_back(new ModelSky());
 	
 	//m_sceneLightManager->addDirectionalLight(0.0f, -5.0f, -10.0f);
 	
@@ -72,90 +73,90 @@ void Scene::initScene()
 	
 	
 	//Z wall
-	std::vector<glm::vec3> WallPosRot =
-	{
-		glm::vec3(-6.0f, 3.0f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 3.0f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, 3.0f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f, 3.0f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
-		glm::vec3(0.0f, 3.0f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
-		glm::vec3(6.0f, 3.0f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f)
-	
-	};
-	
-	for (int i = 0; i < WallPosRot.size(); i += 2)
-	{
-		ModelLighting* wall = new ModelLighting(WallPosRot.at(i), WallPosRot.at(i+1));
-		wall->setMesh("res/meshes/plane.obj");
-		wall->setDiffuseTexture("res/textures/cartoonBrick_diff.png");
-		wall->setSpecularTexture("res/textures/cartoonBrick_spec.png");
-		wall->setNormalTexture("res/textures/cartoonBrick_norm.png", false);
-		wall->setHeightTexture("res/textures/cartoonBrick_height.png");
-		//wall->setEmissionTexture("res/textures/cartoonBrick_emis.png");
-		m_sceneMeshes.push_back(wall);
-	}
+	//std::vector<glm::vec3> WallPosRot =
+	//{
+	//	glm::vec3(-6.0f, 3.0f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
+	//	glm::vec3(0.0f, 3.0f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
+	//	glm::vec3(6.0f, 3.0f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
+	//	glm::vec3(-6.0f, 3.0f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
+	//	glm::vec3(0.0f, 3.0f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
+	//	glm::vec3(6.0f, 3.0f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f)
+	//
+	//};
+	//
+	//for (int i = 0; i < WallPosRot.size(); i += 2)
+	//{
+	//	ModelLighting* wall = new ModelLighting(WallPosRot.at(i), WallPosRot.at(i+1));
+	//	wall->setMesh("res/meshes/plane.obj");
+	//	wall->setDiffuseTexture("res/textures/cartoonBrick_diff.png");
+	//	wall->setSpecularTexture("res/textures/cartoonBrick_spec.png");
+	//	wall->setNormalTexture("res/textures/cartoonBrick_norm.png", false);
+	//	wall->setHeightTexture("res/textures/cartoonBrick_height.png");
+	//	//wall->setEmissionTexture("res/textures/cartoonBrick_emis.png");
+	//	m_sceneMeshes.push_back(wall);
+	//}
 
 	//Side wall
-	std::vector<glm::vec3> SideWallPosRot =
-	{
-		glm::vec3(-9.0f, 3.0f, -6.0f), glm::vec3(90.0f, 0.0f, -90.0f),
-		glm::vec3(-9.0f, 3.0f, 0.0f), glm::vec3(90.0f, 0.0f, -90.0f),
-		glm::vec3(-9.0f, 3.0f, 6.0f), glm::vec3(90.0f, 0.0f, -90.0f),
-		glm::vec3(9.0f, 3.0f, -6.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-		glm::vec3(9.0f, 3.0f, 0.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-		glm::vec3(9.0f, 3.0f, 6.0f), glm::vec3(90.0f, 0.0f, 90.0f)
-	};
-	
-	for (int i = 0; i < SideWallPosRot.size(); i += 2)
-	{
-		ModelLighting* wall = new ModelLighting(SideWallPosRot.at(i), SideWallPosRot.at(i + 1));
-		wall->setMesh("res/meshes/plane.obj");
-		wall->setDiffuseTexture("res/textures/wood2_diff.png");
-		wall->setSpecularTexture("res/textures/wood2_spec.png");
-		wall->setNormalTexture("res/textures/wood2_norm.png", false);
-		m_sceneMeshes.push_back(wall);
-	}
+	//std::vector<glm::vec3> SideWallPosRot =
+	//{
+	//	glm::vec3(-9.0f, 3.0f, -6.0f), glm::vec3(90.0f, 0.0f, -90.0f),
+	//	glm::vec3(-9.0f, 3.0f, 0.0f), glm::vec3(90.0f, 0.0f, -90.0f),
+	//	glm::vec3(-9.0f, 3.0f, 6.0f), glm::vec3(90.0f, 0.0f, -90.0f),
+	//	glm::vec3(9.0f, 3.0f, -6.0f), glm::vec3(90.0f, 0.0f, 90.0f),
+	//	glm::vec3(9.0f, 3.0f, 0.0f), glm::vec3(90.0f, 0.0f, 90.0f),
+	//	glm::vec3(9.0f, 3.0f, 6.0f), glm::vec3(90.0f, 0.0f, 90.0f)
+	//};
+	//
+	//for (int i = 0; i < SideWallPosRot.size(); i += 2)
+	//{
+	//	ModelLighting* wall = new ModelLighting(SideWallPosRot.at(i), SideWallPosRot.at(i + 1));
+	//	wall->setMesh("res/meshes/plane.obj");
+	//	wall->setDiffuseTexture("res/textures/wood2_diff.png");
+	//	wall->setSpecularTexture("res/textures/wood2_spec.png");
+	//	wall->setNormalTexture("res/textures/wood2_norm.png", false);
+	//	m_sceneMeshes.push_back(wall);
+	//}
 	
 	//Roof
-	std::vector<glm::vec3> RoofPosRot =
-	{
-		glm::vec3(0.0f, 6.0f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(6.0f, 6.0f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(-6.0f, 6.0f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(0.0f, 6.0f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(6.0f, 6.0f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(-6.0f, 6.0f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(0.0f, 6.0f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(6.0f, 6.0f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(-6.0f, 6.0f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f)
-	};
-	
-	for (int i = 0; i < RoofPosRot.size(); i += 2)
-	{
-		ModelLighting* Floor = new ModelLighting(RoofPosRot.at(i), RoofPosRot.at(i + 1));
-		Floor->setMesh("res/meshes/plane.obj");
-		Floor->setDiffuseTexture("res/textures/metal2_diff.png");
-		Floor->setSpecularTexture("res/textures/metal2_spec.png");
-		Floor->setNormalTexture("res/textures/metal2_norm.png", false);
-		m_sceneMeshes.push_back(Floor);
-	}
+	//std::vector<glm::vec3> RoofPosRot =
+	//{
+	//	glm::vec3(0.0f, 6.0f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(6.0f, 6.0f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(-6.0f, 6.0f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(0.0f, 6.0f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(6.0f, 6.0f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(-6.0f, 6.0f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(0.0f, 6.0f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(6.0f, 6.0f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(-6.0f, 6.0f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f)
+	//};
+	//
+	//for (int i = 0; i < RoofPosRot.size(); i += 2)
+	//{
+	//	ModelLighting* Floor = new ModelLighting(RoofPosRot.at(i), RoofPosRot.at(i + 1));
+	//	Floor->setMesh("res/meshes/plane.obj");
+	//	Floor->setDiffuseTexture("res/textures/metal2_diff.png");
+	//	Floor->setSpecularTexture("res/textures/metal2_spec.png");
+	//	Floor->setNormalTexture("res/textures/metal2_norm.png", false);
+	//	m_sceneMeshes.push_back(Floor);
+	//}
 	
 	//Crates
-	std::vector<glm::vec3> CratePosRot =
-	{
-		glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-3.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-	};
-	
-	for (int i = 0; i < CratePosRot.size(); i += 2)
-	{
-		ModelLighting* Crate = new ModelLighting(CratePosRot.at(i), CratePosRot.at(i + 1));
-		Crate->setMesh("res/meshes/crate.obj");
-		Crate->setDiffuseTexture("res/textures/crate_diff.png");
-		Crate->setSpecularTexture("res/textures/crate_spec.png");
-		Crate->setNormalTexture("res/textures/crate_norm.png", false);
-		m_sceneMeshes.push_back(Crate);
-	}
+	//std::vector<glm::vec3> CratePosRot =
+	//{
+	//	glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-3.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//};
+	//
+	//for (int i = 0; i < CratePosRot.size(); i += 2)
+	//{
+	//	ModelLighting* Crate = new ModelLighting(CratePosRot.at(i), CratePosRot.at(i + 1));
+	//	Crate->setMesh("res/meshes/crate.obj");
+	//	Crate->setDiffuseTexture("res/textures/crate_diff.png");
+	//	Crate->setSpecularTexture("res/textures/crate_spec.png");
+	//	Crate->setNormalTexture("res/textures/crate_norm.png", false);
+	//	m_sceneMeshes.push_back(Crate);
+	//}
 
 
 	//Light
@@ -169,17 +170,17 @@ void Scene::initScene()
 	
 	for (int i = 0; i < LightPos.size(); i++)
 	{
-		Model* light = new ModelBasic(LightPos.at(i));
-		light->setMesh("res/meshes/cube.obj");
-		light->SetXScale(0.3);
-		light->SetYScale(0.3);
-		light->SetZScale(0.3);
-		m_sceneMeshes.push_back(light);
-	
 		m_sceneLightManager->addPointLight(LightPos.at(i).x, LightPos.at(i).y, LightPos.at(i).z);
+
+		ModelBasic* light = new ModelBasic(LightPos.at(i));
+		light->setMesh("res/meshes/cube.obj");
+		light->copyPointLight(i);
+		m_sceneMeshes.push_back(light);
 	}
 
 
+
+	
 
 }
 
@@ -190,6 +191,7 @@ void Scene::updateScene()
 {
 	m_sceneCamera->Update(0.025);
 
+	//m_sceneLightManager->setPointLight(0.0, 0.0, -0.01, 0);
 
 	for (Model* m : m_sceneMeshes)
 	{

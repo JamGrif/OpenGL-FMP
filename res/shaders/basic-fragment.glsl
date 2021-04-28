@@ -1,7 +1,9 @@
 #version 430 
 out vec4 color;
 
+uniform vec3 blockColour;
+
 void main()
 {
-    color = vec4(1.0f); // Set all 4 vector values to 1.0f
+    color = vec4(blockColour, 1.0f);
 }

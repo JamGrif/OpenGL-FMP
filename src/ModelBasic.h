@@ -12,7 +12,12 @@ public:
     void drawPassOne() override;
     void drawPassTwo() override;
 
+    void copyPointLight(int index);
+
 private:
 
+    glm::vec3 m_defaultColour;
+
+    int m_pointLightToCopy;
 };
 

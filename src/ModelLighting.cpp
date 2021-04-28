@@ -6,7 +6,7 @@ ModelLighting::ModelLighting(glm::vec3 position, glm::vec3 rotation)
 	m_normalizeTexture(false), m_usingEmission(false), m_usingNormal(false), m_usingHeight(false)
 {
 
-	m_localLightManager = EngineStatics::getLightManager();
+	
 
 	setShaderOne("res/shaders/lightingPassOne-vertex.glsl", "res/shaders/lightingPassOne-fragment.glsl");
 	setShaderTwo("res/shaders/lightingPassTwo-vertex.glsl", "res/shaders/lightingPassTwo-fragment.glsl");

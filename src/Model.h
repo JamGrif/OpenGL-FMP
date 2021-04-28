@@ -67,6 +67,9 @@ protected:
 	glm::mat4 m_tMat;		//Translation
 	glm::mat4 m_rMat;		//Rotation
 	glm::mat4 m_sMat;		//Scale
+
+	//Cached other classes
+	LightManager* m_localLightManager;
 	
 };
 

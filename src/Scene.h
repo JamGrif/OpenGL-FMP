@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "ModelBasic.h"
 #include "ModelLighting.h"
+#include "ModelSky.h"
 
 class Scene
 {
