@@ -16,6 +16,11 @@ Texture::~Texture()
 	glDeleteTextures(1, &m_texture);
 }
 
+/// <summary>
+/// Loads a texture from the specified filepath and sets its parameters
+/// </summary>
+/// <param name="filePath"></param>
+/// <returns></returns>
 bool Texture::loadTexture(const char* filePath)
 {
 	m_filePath = filePath;
@@ -99,10 +104,9 @@ GLuint Texture::getTexture() const
 }
 
 /// <summary>
-/// Loads the specified texture, if texture already exists it returns a pointer to it instead of reloading the same texture
+/// Loads the specified texture, if texture already exists then it returns a pointer to it instead of reloading the same texture
 /// </summary>
-/// <param name="vertexPath">Vertex shader file path</param>
-/// <param name="fragmentPath">Fragment shader file path</param>
+/// <param name="filePath"></param>
 /// <returns>Pointer to the created texture</returns>
 Texture* TextureManager::retrieveTexture(const char* filePath)
 {
@@ -126,6 +130,10 @@ Texture* TextureManager::retrieveTexture(const char* filePath)
 	return loadedTextures.back();
 }
 
+/// <summary>
+/// Loads the specified cubemap texture, if texture already exists then it returns a pointer to it instead of reloading the same cubemap texture
+/// </summary>
+/// <returns>Pointer to the created texture</returns>
 CubeMap* TextureManager::retrieveCubeMap()
 {
 	CubeMap* t = new CubeMap;
@@ -142,17 +150,28 @@ CubeMap::~CubeMap()
 {
 }
 
+/// <summary>
+/// Binds the cubemap to the rendering pipeline and to specified cubemap texture slot
+/// </summary>
+/// <param name="slot">Cubemap texture slot to bind to</param>
 void CubeMap::Bind(unsigned int slot) const
 {
 	glActiveTexture(GL_TEXTURE0 + slot);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_texture);
 }
 
+/// <summary>
+/// Unbinds cubemap texture from the pipeline
+/// </summary>
 void CubeMap::Unbind() const
 {
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
+/// <summary>
+/// Loads a cubemap texture from the specified filepath and sets its parameters
+/// </summary>
+/// <returns></returns>
 bool CubeMap::loadCubeMap()
 {
 	//m_filePath = filePath;

@@ -3,7 +3,7 @@
 ModelLighting::ModelLighting(glm::vec3 position, glm::vec3 rotation)
 	:Model(position, rotation), m_modelDiffuseTexture(nullptr), m_modelSpecularTexture(nullptr),
 	m_modelEmissionTexture(nullptr), m_modelNormalTexture(nullptr), m_modelHeightTexture(nullptr),
-	m_normalizeTexture(false), m_usingEmission(false), m_usingNormal(false), m_usingHeight(false)
+	m_normalizeTexture(false), m_usingEmission(false), m_usingNormal(false), m_usingHeight(false), m_heightAmount(0.5)
 {
 
 	
@@ -164,6 +164,7 @@ void ModelLighting::drawPassTwo()
 	m_modelShaderPassTwo->setUniform1i("material.usingNormal", m_usingNormal);
 	m_modelShaderPassTwo->setUniform1i("material.usingEmission", m_usingEmission);
 	m_modelShaderPassTwo->setUniform1i("material.usingHeight", m_usingHeight);
+	m_modelShaderPassTwo->setUniform1f("material.heightAmount", m_heightAmount);
 
 	//Camera Position
 	m_modelShaderPassTwo->setUniform3f("viewPos", EngineStatics::getCamera()->getPosition());
@@ -289,8 +290,9 @@ void ModelLighting::setNormalTexture(const char* texturePath, bool normalize)
 /// Assigns specified texture to the model to be used for a height map
 /// </summary>
 /// <param name="texturePath"></param>
-void ModelLighting::setHeightTexture(const char* texturePath)
+void ModelLighting::setHeightTexture(const char* texturePath, float heightAmount)
 {
 	m_modelHeightTexture = TextureManager::retrieveTexture(texturePath);
 	m_usingHeight = true;
+	m_heightAmount = heightAmount;
 }

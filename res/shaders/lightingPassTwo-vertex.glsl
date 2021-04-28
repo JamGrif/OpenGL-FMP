@@ -19,17 +19,18 @@ struct Material
 	bool usingNormal;
 	bool usingEmission;
 	bool usingHeight;
+	float heightAmount;
 };
-uniform Material material;			//Surface material
+uniform Material material;	//Surface material
 
-uniform mat4 m_matrix;
-uniform mat4 v_matrix;
-uniform mat4 proj_matrix;
-uniform vec3 viewPos;				
+uniform mat4 m_matrix;		//Model matrix
+uniform mat4 v_matrix;		//View matrix
+uniform mat4 proj_matrix;	//Projection matrix
+uniform vec3 viewPos;		//Camera position	
 
-out vec3 varyingFragPos; //Fragment positions sent out from vertex shader
-out vec2 varyingTexCoords;
-out vec3 varyingNormal;
+out vec3 varyingFragPos;	//Interpolated fragment positions sent out from vertex shader
+out vec2 varyingTexCoords;	//Interpolated texture coordinates sent out from vertex shader
+out vec3 varyingNormal;		//Interpolated normal coordinates sent out from vertex shader (Used if NO normal map attached)
 out mat3 TBN;
 out vec3 TangentViewPos;
 out vec3 TangentFragPos;
@@ -41,6 +42,7 @@ void main(void)
 
 	if (material.usingNormal)
 	{
+		//If a normal map is attached, lighting will need to be calculated in tangent space
 		mat3 normalMatrix = transpose(inverse(mat3(m_matrix)));
 		vec3 T = normalize(normalMatrix * vertTangent);
 		vec3 N = normalize(normalMatrix * vertNormal);
