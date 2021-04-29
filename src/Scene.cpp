@@ -3,7 +3,7 @@
 #include "EngineStatics.h"
 
 Scene::Scene()
-	:m_sceneCamera(nullptr), m_sceneLightManager(nullptr)
+	:m_sceneCamera(nullptr), m_sceneLightManager(nullptr), m_sceneFramebuffer(nullptr)
 {
 	std::cout << "Scene Initialized" << std::endl;
 }
@@ -24,6 +24,7 @@ Scene::~Scene()
 	delete m_sceneLightManager;
 	m_sceneLightManager = nullptr;
 
+
 	std::cout << "Scene Destroyed" << std::endl;
 }
 
@@ -33,12 +34,15 @@ Scene::~Scene()
 void Scene::initScene()
 {
 	setupShadowObjects();
+	setupSceneFramebuffer();
 	
 	addSceneCamera(0.0f, 2.0f, 0.0f);
 	addSceneLightManager();
 
 	//Skybox
 	m_sceneMeshes.push_back(new ModelSky());
+
+	m_sceneFramebuffer = new ModelFramebuffer();
 	
 	//ModelEnvironment* mb = new ModelEnvironment(glm::vec3(0.0f, 8.0f, 0.0f));
 	//mb->toggleReflection(true);
@@ -236,6 +240,11 @@ void Scene::updateScene()
 
 	//m_sceneLightManager->setPointLight(0.0, 0.0, -0.01, 0);
 
+	m_sceneFramebuffer->bindFramebuffer();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+
+
 	for (Model* m : m_sceneMeshes)
 	{
 		m->setMatrixValues();
@@ -248,6 +257,21 @@ void Scene::updateScene()
 		m->drawPassTwo();
 
 	}
+
+	m_sceneFramebuffer->unbindFramebuffer();
+	glClear(GL_COLOR_BUFFER_BIT);
+	
+	
+	m_sceneFramebuffer->setMatrixValues();
+	m_sceneFramebuffer->drawPassTwo();
+
+}
+
+void Scene::setupSceneFramebuffer()
+{
+
+	
+
 }
 
 void Scene::setupShadowObjects()

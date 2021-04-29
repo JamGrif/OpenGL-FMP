@@ -8,6 +8,7 @@
 #include "ModelLighting.h"
 #include "ModelSky.h"
 #include "ModelEnvironment.h"
+#include "ModelFramebuffer.h"
 
 class Scene
 {
@@ -18,6 +19,7 @@ public:
 	void initScene();
 	void updateScene();
 
+	void setupSceneFramebuffer();
 	void setupShadowObjects();
 
 private:
@@ -30,6 +32,8 @@ private:
 	Camera*					m_sceneCamera;
 
 	LightManager*			m_sceneLightManager;
+
+	ModelFramebuffer*		m_sceneFramebuffer;
 
 	//std::vector<glm::vec3> CottagePosRot =
 	//{

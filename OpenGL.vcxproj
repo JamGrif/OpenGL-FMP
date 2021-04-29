@@ -170,6 +170,7 @@ xcopy /y /d $(ProjectDir)res $(TargetDir)\res /S</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\stb_image\stb_image.cpp" />
+    <ClCompile Include="src\ModelFramebuffer.cpp" />
     <ClCompile Include="src\ModelEnvironment.cpp" />
     <ClCompile Include="src\ModelSky.cpp" />
     <ClCompile Include="src\ModelBasic.cpp" />
@@ -188,6 +189,7 @@ xcopy /y /d $(ProjectDir)res $(TargetDir)\res /S</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\stb_image\stb_image.h" />
+    <ClInclude Include="src\ModelFramebuffer.h" />
     <ClInclude Include="src\ModelEnvironment.h" />
     <ClInclude Include="src\ModelSky.h" />
     <ClInclude Include="src\ModelBasic.h" />
@@ -216,6 +218,8 @@ xcopy /y /d $(ProjectDir)res $(TargetDir)\res /S</Command>
     <None Include="res\shaders\basic-vertex.glsl" />
     <None Include="res\shaders\environmentMapping-fragment.glsl" />
     <None Include="res\shaders\environmentMapping-vertex.glsl" />
+    <None Include="res\shaders\framebuffer-fragment.glsl" />
+    <None Include="res\shaders\framebuffer-vertex.glsl" />
     <None Include="res\shaders\lightingPassOne-fragment.glsl" />
     <None Include="res\shaders\lightingPassOne-vertex.glsl" />
     <None Include="res\shaders\lightingPassTwo-fragment.glsl" />

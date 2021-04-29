@@ -63,6 +63,9 @@
     <ClCompile Include="src\ModelEnvironment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ModelFramebuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader.h">
@@ -113,6 +116,9 @@
     <ClInclude Include="src\ModelEnvironment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ModelFramebuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\jeff.jpg">
@@ -138,5 +144,7 @@
     <None Include="res\shaders\sky-fragment.glsl" />
     <None Include="res\shaders\environmentMapping-fragment.glsl" />
     <None Include="res\shaders\environmentMapping-vertex.glsl" />
+    <None Include="res\shaders\framebuffer-fragment.glsl" />
+    <None Include="res\shaders\framebuffer-vertex.glsl" />
   </ItemGroup>
 </Project>
