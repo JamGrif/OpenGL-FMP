@@ -136,6 +136,13 @@ Texture* TextureManager::retrieveTexture(const char* filePath)
 /// <returns>Pointer to the created texture</returns>
 CubeMap* TextureManager::retrieveCubeMap()
 {
+	//If a loaded cubemap exists, return a pointer to it
+	if (loadedCubemaps.size() > 0)
+	{
+		return loadedCubemaps.back();
+	}
+
+	//Otherwise create a new cubemap
 	CubeMap* t = new CubeMap;
 	t->loadCubeMap();
 	loadedCubemaps.push_back(t);

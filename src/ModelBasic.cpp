@@ -38,9 +38,7 @@ void ModelBasic::drawPassTwo()
 	{
 		return;
 	}
-
 	
-
 	//Bind shader
 	m_modelShaderPassTwo->Bind();
 
@@ -53,8 +51,6 @@ void ModelBasic::drawPassTwo()
 	{
 		m_modelShaderPassTwo->setUniform3f("blockColour", m_defaultColour);
 	}
-
-	//setMatrixValues();
 
 	//Set Vertex values
 	m_modelShaderPassTwo->setUniformMatrix4fv("m_matrix", m_mMat);

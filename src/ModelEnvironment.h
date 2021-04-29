@@ -10,8 +10,15 @@ public:
     void drawPassOne() override;
     void drawPassTwo() override;
 
+    void toggleReflection(bool value);
+    void toggleRefraction(bool value);
+
 private:
 
+    CubeMap* m_skyTexture;
+
+    bool m_usingReflection;
+    bool m_usingRefraction;
 
 };
 

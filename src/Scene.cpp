@@ -40,6 +40,18 @@ void Scene::initScene()
 	//Skybox
 	m_sceneMeshes.push_back(new ModelSky());
 	
+	//ModelEnvironment* mb = new ModelEnvironment(glm::vec3(0.0f, 8.0f, 0.0f));
+	//mb->toggleReflection(true);
+	//mb->setMesh("res/meshes/heart.obj");
+	//m_sceneMeshes.push_back(mb);
+	//
+	//ModelEnvironment* mb2 = new ModelEnvironment(glm::vec3(3.0f, 8.0f, -3.0f));
+	//mb2->toggleRefraction(true);
+	//mb2->setMesh("res/meshes/heart.obj");
+	//m_sceneMeshes.push_back(mb2);
+
+
+	
 	m_sceneLightManager->addDirectionalLight(3.0f, -10.0f, 10.0f);
 	
 	//m_sceneLightManager->addSpotLight(0.0f, 0.0f, 0.0f);
@@ -66,7 +78,7 @@ void Scene::initScene()
 		Floor->setDiffuseTexture("res/textures/concreteBrick_diff.png");
 		Floor->setSpecularTexture("res/textures/concreteBrick_spec.png");
 		Floor->setNormalTexture("res/textures/concreteBrick_norm.png", false);
-		//Floor->setHeightTexture("res/textures/concreteBrick_height.png", 0.01);
+		Floor->setHeightTexture("res/textures/concreteBrick_height.png", 0.01f);
 		//Floor->setEmissionTexture("res/textures/matrix_emis.png");
 		m_sceneMeshes.push_back(Floor);
 	}
@@ -92,7 +104,7 @@ void Scene::initScene()
 		wall->setDiffuseTexture("res/textures/cartoonBrick_diff.png");
 		wall->setSpecularTexture("res/textures/cartoonBrick_spec.png");
 		wall->setNormalTexture("res/textures/cartoonBrick_norm.png", false);
-		wall->setHeightTexture("res/textures/cartoonBrick_height.png", 0.05);
+		wall->setHeightTexture("res/textures/cartoonBrick_height.png", 0.05f);
 		//wall->setEmissionTexture("res/textures/cartoonBrick_emis.png");
 		m_sceneMeshes.push_back(wall);
 	}
@@ -174,7 +186,7 @@ void Scene::initScene()
 	//	m_sceneMeshes.push_back(cottage);
 	//}
 	//
-	//std::vector<glm::vec3> CottagePosRot2 =
+	//std::vector<glm::vec3> CottagePosRot2 
 	//{
 	//	glm::vec3(20.0f, 0.0f, 7.0f), glm::vec3(0.0f, 90.0f, 0.0f)
 	//};
@@ -220,7 +232,7 @@ void Scene::initScene()
 /// </summary>
 void Scene::updateScene()
 {
-	m_sceneCamera->Update(0.025);
+	m_sceneCamera->Update(0.025f);
 
 	//m_sceneLightManager->setPointLight(0.0, 0.0, -0.01, 0);
 

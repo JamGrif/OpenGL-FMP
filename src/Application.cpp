@@ -100,8 +100,6 @@ int Application::appInit()
 
 	glEnable(GL_MULTISAMPLE);
 
-
-
 	//Create Input object
 	m_input = new Input();
 
@@ -121,11 +119,6 @@ void Application::appLoop()
 	int frameCount = 0;
 	while (!glfwWindowShouldClose(m_appWindow))
 	{
-		////Delta time
-		//GLfloat currentFrame = glfwGetTime();
-		//m_deltaTime = currentFrame - m_lastFrame;
-		//m_lastFrame = currentFrame;
-
 		// Measure speed
 		double currentTime = glfwGetTime();
 		frameCount++;
@@ -139,7 +132,7 @@ void Application::appLoop()
 			previousTime = currentTime;
 		}
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clears the screen buffers
+		glClear(GL_DEPTH_BUFFER_BIT); //Clears the screen buffers
 		glfwPollEvents();
 
 		m_demoScene->updateScene();

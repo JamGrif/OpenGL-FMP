@@ -63,8 +63,6 @@ void ModelLighting::drawPassTwo()
 		return;
 	}
 
-	//setMatrixValues();
-
 	//Bind shader
 	m_modelShaderPassTwo->Bind();
 

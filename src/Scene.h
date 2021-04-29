@@ -7,6 +7,7 @@
 #include "ModelBasic.h"
 #include "ModelLighting.h"
 #include "ModelSky.h"
+#include "ModelEnvironment.h"
 
 class Scene
 {

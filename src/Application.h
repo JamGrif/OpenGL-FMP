@@ -22,28 +22,28 @@ public:
 private:
 
 	//Window
-	const int m_defaultWindowWidth;
-	const int m_defaultWindowHeight;
-	int m_currentWindowWidth;
-	int m_currentWindowHeight;
+	const int	m_defaultWindowWidth;
+	const int	m_defaultWindowHeight;
+	int			m_currentWindowWidth;
+	int			m_currentWindowHeight;
 
-	float m_aspectRatio;
+	float		m_aspectRatio;
 
 	//OpenGL
 	GLFWwindow* m_appWindow;
 
-	glm::mat4 m_projMatrix;
+	glm::mat4	m_projMatrix;
 
-	GLuint m_appVAO;
+	GLuint		m_appVAO;
 
 	//Objects
 
-	Scene* m_demoScene;
+	Scene*		m_demoScene;
 
-	Input* m_input;
+	Input*		m_input;
 
 	//Delta time
-	GLfloat m_deltaTime;
-	GLfloat m_lastFrame;
+	GLfloat		m_deltaTime;
+	GLfloat		m_lastFrame;
 };
 

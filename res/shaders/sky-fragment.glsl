@@ -3,15 +3,12 @@ out vec4 color;
 
 in vec3 texCoords;
 
-struct Sky
-{
-    samplerCube skybox;
-};
 
-uniform Sky sky;
+
+uniform samplerCube sky;
 
 
 void main()
 {
-    color = texture(sky.skybox, texCoords);
+    color = texture(sky, texCoords);
 }

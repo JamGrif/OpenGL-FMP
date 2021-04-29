@@ -1,10 +1,13 @@
 #include "ModelEnvironment.h"
 
 ModelEnvironment::ModelEnvironment(glm::vec3 position, glm::vec3 rotation)
-	:Model(position, rotation)
+	:Model(position, rotation), m_usingReflection(false), m_usingRefraction(false)
 {
 	//setShaderOne--------
 	setShaderTwo("res/shaders/environmentMapping-vertex.glsl", "res/shaders/environmentMapping-fragment.glsl");
+
+	m_skyTexture = TextureManager::retrieveCubeMap();
+	//setMesh("res/meshes/heart.obj");
 }
 
 ModelEnvironment::~ModelEnvironment()
@@ -28,18 +31,42 @@ void ModelEnvironment::drawPassTwo()
 		return;
 	}
 
+	//If not using either environment mapping types, stop drawing object
+	if (!m_usingReflection && !m_usingRefraction)
+	{
+		return;
+	}
+
 	//Bind shader
 	m_modelShaderPassTwo->Bind();
-
-	//setMatrixValues();
 
 	//Set Vertex values
 	m_modelShaderPassTwo->setUniformMatrix4fv("m_matrix", m_mMat);
 	m_modelShaderPassTwo->setUniformMatrix4fv("v_matrix", m_vMat);
 	m_modelShaderPassTwo->setUniformMatrix4fv("proj_matrix", *EngineStatics::getProjectionMatrix());
 
+	m_modelShaderPassTwo->setUniform3f("viewPos", EngineStatics::getCamera()->getPosition());
+	m_modelShaderPassTwo->setUniform1i("sky", 0);
+	m_modelShaderPassTwo->setUniform1i("usingReflection", m_usingReflection);
+	m_modelShaderPassTwo->setUniform1i("usingRefraction", m_usingRefraction);
+
+	m_skyTexture->Bind();
+
+	setVBOAttrib(true, true, false, false, false);
+
 	//Draw
 	glDrawElements(GL_TRIANGLES, m_modelMesh->getIndices().size(), GL_UNSIGNED_INT, 0);
 
 	m_modelShaderPassTwo->Unbind();
+	m_skyTexture->Unbind();
+}
+
+void ModelEnvironment::toggleReflection(bool value)
+{
+	m_usingReflection = value;
+}
+
+void ModelEnvironment::toggleRefraction(bool value)
+{
+	m_usingRefraction = value;
 }
