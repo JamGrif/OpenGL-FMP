@@ -15,18 +15,17 @@ public:
 	static void mouseCALLBACK(GLFWwindow* window, double xPos, double yPos);
 	static void getMouseMoved(double& xMouse, double& yMouse);
 
-
 private:
 
 	//Keyboard
-	static bool keys[1024];
+	static bool		keys[1024];
 
 	//Mouse
-	static double lastX;
-	static double lastY;
-	static bool firstMouse;
-	static double xOffset;
-	static double yOffset;
+	static double	lastX;
+	static double	lastY;
+	static bool		firstMouse;
+	static double	xOffset;
+	static double	yOffset;
 
 };
 

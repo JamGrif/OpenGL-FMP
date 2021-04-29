@@ -1,7 +1,5 @@
 #include "Model.h"
 
-
-
 Model::Model(glm::vec3 position, glm::vec3 rotation)
 	:m_modelMesh(nullptr), m_modelShaderPassOne(nullptr), m_modelShaderPassTwo(nullptr), 
 	m_position{ position }, m_rotation{ rotation }, m_scale{ 1.0f,1.0f,1.0f },

@@ -23,10 +23,10 @@ public:
 
 private:
 
-	const char* m_filePath;
+	const char*					m_filePath;
 
-	std::vector<Vertex> vertices;
-	std::vector<unsigned int> indices;
+	std::vector<Vertex>			vertices;
+	std::vector<unsigned int>	indices;
 
 };
 

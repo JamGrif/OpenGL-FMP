@@ -16,8 +16,8 @@ public:
 
 private:
 
-    glm::vec3 m_defaultColour;
+    glm::vec3   m_defaultColour;
 
-    int m_pointLightToCopy;
+    int         m_pointLightToCopy;
 };
 

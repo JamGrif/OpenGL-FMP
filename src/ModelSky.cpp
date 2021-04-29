@@ -6,10 +6,10 @@ ModelSky::ModelSky(glm::vec3 position, glm::vec3 rotation)
 
 	m_skyTexture = TextureManager::retrieveCubeMap();
 
-	//setShaderOne
+	//setShaderOne--------
 	setShaderTwo("res/shaders/sky-vertex.glsl", "res/shaders/sky-fragment.glsl");
 
-	//Skybox uses its own VBO and attrivute system
+	//Skybox uses its own VBO and attribute system
 	glGenBuffers(1, &m_skyboxVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, m_skyboxVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
@@ -37,7 +37,7 @@ void ModelSky::drawPassTwo()
 		return;
 	}
 
-	setMatrixValues();
+	//setMatrixValues();
 	
 
 	m_modelShaderPassTwo->Bind();

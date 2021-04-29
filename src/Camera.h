@@ -19,7 +19,6 @@ const GLfloat YAW = -90.0f;
 const GLfloat PITCH = 0.0f;
 const GLfloat SPEED = 6.0f;
 const GLfloat SENSITIVTY = 0.25f;
-const GLfloat ZOOM = 45.0f;
 
 class Camera
 {
@@ -41,20 +40,20 @@ private:
     void updateCameraVectors();
 
     //Camera Attributes
-    glm::vec3 m_position;
-    glm::vec3 m_front;
-    glm::vec3 m_up;
-    glm::vec3 m_right;
-    glm::vec3 m_worldUp;
+    glm::vec3   m_position;
+    glm::vec3   m_front;
+    glm::vec3   m_up;
+    glm::vec3   m_right;
+    glm::vec3   m_worldUp;
 
     //Eular Angles
-    GLfloat m_yaw;
-    GLfloat m_pitch;
+    GLfloat     m_yaw;
+    GLfloat     m_pitch;
 
     //Camera Options
-    GLfloat m_movementSpeed;
-    GLfloat m_mouseSensitivity;
-    GLfloat m_zoom;
+    GLfloat     m_movementSpeed;
+    GLfloat     m_mouseSensitivity;
+    GLfloat     m_zoom;
 
     
 

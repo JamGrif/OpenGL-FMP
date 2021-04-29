@@ -30,15 +30,18 @@ public:
 	const GLchar* getFragmentPath() const;
 
 private:
-	GLuint m_shaderProgram;
-
-	const GLchar* m_vertexPath;
-	const GLchar* m_fragmentPath;
 
 	int getUniformLocation(const std::string& name);
 
+	GLuint									m_shaderProgram;
+
+	const GLchar*							m_vertexPath;
+	const GLchar*							m_fragmentPath;
+
 	//Cache for uniforms
-	std::unordered_map<std::string, int> m_locationCache;
+	std::unordered_map<std::string, int>	m_locationCache;
+	
+
 
 };
 

@@ -24,11 +24,11 @@ public:
 
 protected:
 
-	GLuint m_texture;
+	GLuint		m_texture;
 
 	const char* m_filePath;
 
-	int m_width, m_height, m_BPP;
+	int			m_width, m_height, m_BPP;
 
 };
 
@@ -47,6 +47,7 @@ public:
 
 private:
 
+	//Overwrite these files to import custom skybox
 	std::vector<const char*> skyFaces = 
 	{ 
 		"res/textures/sky/right.png" ,

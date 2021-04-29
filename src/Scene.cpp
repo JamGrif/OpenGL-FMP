@@ -159,42 +159,42 @@ void Scene::initScene()
 		m_sceneMeshes.push_back(Crate);
 	}
 
-	std::vector<glm::vec3> CottagePosRot =
-	{
-		glm::vec3(20.0f, 0.0f, 3.0f), glm::vec3(0.0f, 90.0f, 0.0f)
-	};
-
-	for (int i = 0; i < CottagePosRot.size(); i += 2)
-	{
-		ModelLighting* cottage = new ModelLighting(CottagePosRot.at(i), CottagePosRot.at(i + 1));
-		cottage->setMesh("res/meshes/shack.obj");
-		cottage->setDiffuseTexture("res/textures/shack_diff.png");
-		cottage->setSpecularTexture("res/textures/shack_spec.png");
-		cottage->setNormalTexture("res/textures/shack_norm.png", false);
-		m_sceneMeshes.push_back(cottage);
-	}
-
-	std::vector<glm::vec3> CottagePosRot2 =
-	{
-		glm::vec3(20.0f, 0.0f, 7.0f), glm::vec3(0.0f, 90.0f, 0.0f)
-	};
-
-	for (int i = 0; i < CottagePosRot2.size(); i += 2)
-	{
-		ModelLighting* cottage = new ModelLighting(CottagePosRot2.at(i), CottagePosRot2.at(i + 1));
-		cottage->setMesh("res/meshes/shack.obj");
-		cottage->setDiffuseTexture("res/textures/shack_diff.png");
-		cottage->setSpecularTexture("res/textures/shack_spec.png");
-		//cottage->setNormalTexture("res/textures/cottage_norm.png", false);
-		m_sceneMeshes.push_back(cottage);
-	}
+	//std::vector<glm::vec3> CottagePosRot =
+	//{
+	//	glm::vec3(20.0f, 0.0f, 3.0f), glm::vec3(0.0f, 90.0f, 0.0f)
+	//};
+	//
+	//for (int i = 0; i < CottagePosRot.size(); i += 2)
+	//{
+	//	ModelLighting* cottage = new ModelLighting(CottagePosRot.at(i), CottagePosRot.at(i + 1));
+	//	cottage->setMesh("res/meshes/shack.obj");
+	//	cottage->setDiffuseTexture("res/textures/shack_diff.png");
+	//	cottage->setSpecularTexture("res/textures/shack_spec.png");
+	//	cottage->setNormalTexture("res/textures/shack_norm.png", false);
+	//	m_sceneMeshes.push_back(cottage);
+	//}
+	//
+	//std::vector<glm::vec3> CottagePosRot2 =
+	//{
+	//	glm::vec3(20.0f, 0.0f, 7.0f), glm::vec3(0.0f, 90.0f, 0.0f)
+	//};
+	//
+	//for (int i = 0; i < CottagePosRot2.size(); i += 2)
+	//{
+	//	ModelLighting* cottage = new ModelLighting(CottagePosRot2.at(i), CottagePosRot2.at(i + 1));
+	//	cottage->setMesh("res/meshes/shack.obj");
+	//	cottage->setDiffuseTexture("res/textures/shack_diff.png");
+	//	cottage->setSpecularTexture("res/textures/shack_spec.png");
+	//	//cottage->setNormalTexture("res/textures/cottage_norm.png", false);
+	//	m_sceneMeshes.push_back(cottage);
+	//}
 
 
 	//Light
 	std::vector<glm::vec3> LightPos =
 	{
 		glm::vec3(0.0f, 3.0f, 0.0f),
-		glm::vec3(15.0f, 3.0f, 3.0f),
+		//glm::vec3(15.0f, 3.0f, 3.0f),
 		//glm::vec3(-3.0f, 3.0f, 5.0f),
 		//glm::vec3(3.0f, 3.0f, 5.0f)
 	};
@@ -226,6 +226,7 @@ void Scene::updateScene()
 
 	for (Model* m : m_sceneMeshes)
 	{
+		m->setMatrixValues();
 		m->drawPassOne();
 	}
 

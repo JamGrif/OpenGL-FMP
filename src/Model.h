@@ -13,6 +13,8 @@
 #include <glm\gtc\matrix_transform.hpp>
 #include <glm\gtx\transform.hpp>
 
+// Abstract model class - The different classes that derive from Model all have their own implementation of
+// drawing, such as different shader values, attributes and texture map types.
 class Model
 {
 public:
@@ -44,9 +46,11 @@ public:
 	void		IncXScale(float num), IncYScale(float num), IncZScale(float num);
 	void		DecXScale(float num), DecYScale(float num), DecZScale(float num);
 
+	void setMatrixValues();
+
 protected:
 
-	void setMatrixValues();
+	
 	void setVBOAttrib(bool shaderPos = false, bool shaderNorm = false, bool shaderTex = false, bool shaderTan = false, bool shaderBiTan = false);
 	
 	//Model properties
@@ -54,22 +58,22 @@ protected:
 	Shader*			m_modelShaderPassOne;
 	Shader*			m_modelShaderPassTwo;
 
-	GLuint m_VBO;
-	GLuint m_EBO;
+	GLuint			m_VBO;
+	GLuint			m_EBO;
 
 	//World Space
-	glm::vec3 m_position;
-	glm::vec3 m_rotation;
-	glm::vec3 m_scale;
+	glm::vec3		m_position;
+	glm::vec3		m_rotation;
+	glm::vec3		m_scale;
 
-	glm::mat4 m_mMat;		//Model
-	glm::mat4 m_vMat;		//View
-	glm::mat4 m_tMat;		//Translation
-	glm::mat4 m_rMat;		//Rotation
-	glm::mat4 m_sMat;		//Scale
+	glm::mat4		m_mMat;		//Model
+	glm::mat4		m_vMat;		//View
+	glm::mat4		m_tMat;		//Translation
+	glm::mat4		m_rMat;		//Rotation
+	glm::mat4		m_sMat;		//Scale
 
 	//Cached other classes
-	LightManager* m_localLightManager;
+	LightManager*	m_localLightManager;
 	
 };
 

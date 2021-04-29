@@ -12,15 +12,15 @@ struct PointLight
 		Position.y = y;
 		Position.z = z;
 	}
-	glm::vec3 Position;
+	glm::vec3	Position;
 
-	float Constant = 1.0f;
-	float Linear = 0.045;
-	float Quadratic = 0.0075;
+	float		Constant = 1.0f;
+	float		Linear = 0.045;
+	float		Quadratic = 0.0075;
 	
-	glm::vec3 Ambient { 0.3f, 0.3f, 0.3f };
-	glm::vec3 Diffuse { 0.8f, 0.8f, 0.8f };
-	glm::vec3 Specular{ 0.5f, 0.5f, 0.5f };
+	glm::vec3	Ambient { 0.3f, 0.3f, 0.3f };
+	glm::vec3	Diffuse { 0.8f, 0.8f, 0.8f };
+	glm::vec3	Specular{ 0.5f, 0.5f, 0.5f };
 };
 
 struct DirectionalLight
@@ -31,11 +31,11 @@ struct DirectionalLight
 		Direction.y = y;
 		Direction.z = z;
 	}
-	glm::vec3 Direction;
+	glm::vec3	Direction;
 
-	glm::vec3 Ambient { 0.2f, 0.2f, 0.2f };
-	glm::vec3 Diffuse { 0.4f, 0.4f, 0.4f };
-	glm::vec3 Specular{ 0.3f, 0.3f, 0.3f };
+	glm::vec3	Ambient { 0.2f, 0.2f, 0.2f };
+	glm::vec3	Diffuse { 0.4f, 0.4f, 0.4f };
+	glm::vec3	Specular{ 0.3f, 0.3f, 0.3f };
 
 };
 
@@ -50,18 +50,18 @@ struct SpotLight
 		Direction.y = 0.0f;
 		Direction.z = 0.0f;
 	}
-	glm::vec3 Position;
-	glm::vec3 Direction;
-	float cutOff = 4.5;
-	float outerCutOff = 25.5;
+	glm::vec3	Position;
+	glm::vec3	Direction;
+	float		cutOff = 4.5;
+	float		outerCutOff = 25.5;
 
-	float Constant = 1.0f;
-	float Linear = 0.09f;
-	float Quadratic = 0.032f;
+	float		Constant = 1.0f;
+	float		Linear = 0.09f;
+	float		Quadratic = 0.032f;
 
-	glm::vec3 Ambient{ 0.1f, 0.1f, 0.1f };
-	glm::vec3 Diffuse{ 0.8f, 0.8f, 0.8f };
-	glm::vec3 Specular{ 1.0f, 1.0f, 1.0f };
+	glm::vec3	Ambient{ 0.1f, 0.1f, 0.1f };
+	glm::vec3	Diffuse{ 0.8f, 0.8f, 0.8f };
+	glm::vec3	Specular{ 1.0f, 1.0f, 1.0f };
 
 };
 
@@ -95,21 +95,21 @@ public:
 private:
 
 	//Directional Lights
-	std::vector<DirectionalLight*> m_sceneDirectionalLights;
-	const int m_maxDirectionalLights;
-	int m_currentDirectionalLights;
+	std::vector<DirectionalLight*>	m_sceneDirectionalLights;
+	const int						m_maxDirectionalLights;
+	int								m_currentDirectionalLights;
 
 
 	//Point Lights
-	std::vector<PointLight*> m_scenePointLights;
-	const int m_maxPointLights;
-	int m_currentPointLights;
+	std::vector<PointLight*>		m_scenePointLights;
+	const int						m_maxPointLights;
+	int								m_currentPointLights;
 
 
 	//Spot Lights
-	std::vector<SpotLight*> m_sceneSpotLights;
-	const int m_maxSpotLights;
-	int m_currentSpotLights;
+	std::vector<SpotLight*>			m_sceneSpotLights;
+	const int						m_maxSpotLights;
+	int								m_currentSpotLights;
 	
 
 };

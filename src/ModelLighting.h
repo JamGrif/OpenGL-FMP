@@ -2,6 +2,7 @@
 
 #include "Model.h"
 
+///
 class ModelLighting :
     public Model
 {
@@ -20,22 +21,20 @@ public:
 
 private:
 
-    
+    Texture*                m_modelDiffuseTexture;
+    Texture*                m_modelSpecularTexture;
+    Texture*                m_modelEmissionTexture;
+    Texture*                m_modelNormalTexture;
+    Texture*                m_modelHeightTexture;
 
-    Texture* m_modelDiffuseTexture;
-    Texture* m_modelSpecularTexture;
-    Texture* m_modelEmissionTexture;
-    Texture* m_modelNormalTexture;
-    Texture* m_modelHeightTexture;
+    bool                    m_normalizeTexture;
+    bool                    m_usingEmission;
+    bool                    m_usingNormal;
+    bool                    m_usingHeight;
+    float                   m_heightAmount;
 
-    bool m_normalizeTexture;
-    bool m_usingEmission;
-    bool m_usingNormal;
-    bool m_usingHeight;
-    float m_heightAmount;
-
-    std::vector<glm::vec3> m_tangents;
-    std::vector<glm::vec3> m_bitangents;
+    std::vector<glm::vec3>  m_tangents;
+    std::vector<glm::vec3>  m_bitangents;
 
 };
 

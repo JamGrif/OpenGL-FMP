@@ -6,7 +6,8 @@ ModelBasic::ModelBasic(glm::vec3 position, glm::vec3 rotation)
 	m_scale.x = 0.3f;
 	m_scale.y = 0.3f;
 	m_scale.z = 0.3f;
-	//setShaderOne
+
+	//setShaderOne--------
 	setShaderTwo("res/shaders/basic-vertex.glsl", "res/shaders/basic-fragment.glsl");
 }
 
@@ -53,7 +54,7 @@ void ModelBasic::drawPassTwo()
 		m_modelShaderPassTwo->setUniform3f("blockColour", m_defaultColour);
 	}
 
-	setMatrixValues();
+	//setMatrixValues();
 
 	//Set Vertex values
 	m_modelShaderPassTwo->setUniformMatrix4fv("m_matrix", m_mMat);
