@@ -1,19 +1,28 @@
 #pragma once
 
-#include "Model.h"
+#include "Shader.h"
 
-class ModelFramebuffer:
-	public Model
+enum
+{
+	screen_Default = 1,
+	screen_Inverse,
+	END_OF_FILTER_ENUM
+};
+
+class Framebuffer
 {
 public:
-	ModelFramebuffer(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f));
-	~ModelFramebuffer();
+	Framebuffer(bool multisampled);
+	~Framebuffer();
 
-	void drawPassOne() override;
-	void drawPassTwo() override;
+	void draw();
 
 	void bindFramebuffer();
 	void unbindFramebuffer();
+
+	void setFrameFilter(int index);
+
+	unsigned int getFBO();
 
 private:
 
@@ -33,7 +42,10 @@ private:
 	unsigned int			m_frameColourTexture;
 	unsigned int			m_rbo;
 
+	Shader* m_screenShader;
 	unsigned int			m_quadVBO;
+
+	int m_screenFilter;
 
 };
 

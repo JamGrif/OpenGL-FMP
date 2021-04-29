@@ -2,8 +2,10 @@
 
 #include "EngineStatics.h"
 
+#include "Input.h"
+
 Scene::Scene()
-	:m_sceneCamera(nullptr), m_sceneLightManager(nullptr), m_sceneFramebuffer(nullptr)
+	:m_sceneCamera(nullptr), m_sceneLightManager(nullptr), m_sceneMSAAFrameBuffer(nullptr), m_sceneFilterFramebuffer(nullptr)
 {
 	std::cout << "Scene Initialized" << std::endl;
 }
@@ -33,8 +35,8 @@ Scene::~Scene()
 /// </summary>
 void Scene::initScene()
 {
-	setupShadowObjects();
-	setupSceneFramebuffer();
+
+	//setupSceneFramebuffer();
 	
 	addSceneCamera(0.0f, 2.0f, 0.0f);
 	addSceneLightManager();
@@ -42,7 +44,8 @@ void Scene::initScene()
 	//Skybox
 	m_sceneMeshes.push_back(new ModelSky());
 
-	m_sceneFramebuffer = new ModelFramebuffer();
+	m_sceneFilterFramebuffer = new Framebuffer(false);
+	m_sceneMSAAFrameBuffer = new Framebuffer(true);
 	
 	//ModelEnvironment* mb = new ModelEnvironment(glm::vec3(0.0f, 8.0f, 0.0f));
 	//mb->toggleReflection(true);
@@ -79,10 +82,10 @@ void Scene::initScene()
 	{
 		ModelLighting* Floor = new ModelLighting(FloorPosRot.at(i), FloorPosRot.at(i + 1));
 		Floor->setMesh("res/meshes/plane.obj");
-		Floor->setDiffuseTexture("res/textures/concreteBrick_diff.png");
-		Floor->setSpecularTexture("res/textures/concreteBrick_spec.png");
-		Floor->setNormalTexture("res/textures/concreteBrick_norm.png", false);
-		Floor->setHeightTexture("res/textures/concreteBrick_height.png", 0.01f);
+		Floor->setDiffuseTexture("res/textures/concrete_diff.png");
+		Floor->setSpecularTexture("res/textures/concrete_spec.png");
+		Floor->setNormalTexture("res/textures/concrete_norm.png", true);
+		//Floor->setHeightTexture("res/textures/concreteBrick_height.png", 0.01f);
 		//Floor->setEmissionTexture("res/textures/matrix_emis.png");
 		m_sceneMeshes.push_back(Floor);
 	}
@@ -237,46 +240,55 @@ void Scene::initScene()
 void Scene::updateScene()
 {
 	m_sceneCamera->Update(0.025f);
+	checkForFilterUpdate();
 
-	//m_sceneLightManager->setPointLight(0.0, 0.0, -0.01, 0);
-
-	m_sceneFramebuffer->bindFramebuffer();
+	m_sceneMSAAFrameBuffer->bindFramebuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 
-
+	//Draw first pass of all models
 	for (Model* m : m_sceneMeshes)
 	{
 		m->setMatrixValues();
 		m->drawPassOne();
 	}
 
-
+	//Draw second pass of all models
 	for (Model* m : m_sceneMeshes)
 	{
 		m->drawPassTwo();
 
 	}
 
-	m_sceneFramebuffer->unbindFramebuffer();
+
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_sceneMSAAFrameBuffer->getFBO());
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_sceneFilterFramebuffer->getFBO());
+	glBlitFramebuffer(0, 0, 1280, 720, 0, 0, 1280, 720, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+	m_sceneMSAAFrameBuffer->unbindFramebuffer();
 	glClear(GL_COLOR_BUFFER_BIT);
+	glDisable(GL_DEPTH_TEST);
+
+	//m_sceneMSAAFrameBuffer->unbindFramebuffer();
 	
 	
-	m_sceneFramebuffer->setMatrixValues();
-	m_sceneFramebuffer->drawPassTwo();
+	
+	m_sceneFilterFramebuffer->draw();
 
 }
 
-void Scene::setupSceneFramebuffer()
+void Scene::checkForFilterUpdate()
 {
+	if (Input::getKeyPressed(GLFW_KEY_1))
+	{
+		m_sceneFilterFramebuffer->setFrameFilter(screen_Default);
+	}
 
-	
+	if (Input::getKeyPressed(GLFW_KEY_2))
+	{
+		m_sceneFilterFramebuffer->setFrameFilter(screen_Inverse);
+	}
 
-}
-
-void Scene::setupShadowObjects()
-{
-	
 }
 
 /// <summary>
