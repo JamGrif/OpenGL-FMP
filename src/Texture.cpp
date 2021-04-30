@@ -13,7 +13,7 @@ Texture::Texture()
 
 Texture::~Texture()
 {
-	std::cout << "deleted texture" << std::endl;
+	//std::cout << "deleted texture" << std::endl;
 	glDeleteTextures(1, &m_texture);
 }
 

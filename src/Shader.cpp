@@ -103,7 +103,7 @@ Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 
 Shader::~Shader()
 {
-	std::cout << "Shader Destroyed" << std::endl;
+	//std::cout << "Shader Destroyed" << std::endl;
 
 	glDeleteProgram(m_shaderProgram);
 }

@@ -16,6 +16,7 @@ class Mesh
 {
 public:
 	Mesh(const char* filePath);
+	~Mesh();
 
 	std::vector<Vertex> getVertices() const;
 	std::vector<unsigned int> getIndices() const;

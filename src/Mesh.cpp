@@ -71,6 +71,10 @@ Mesh::Mesh(const char* filePath)
 
 }
 
+Mesh::~Mesh()
+{
+}
+
 
 std::vector<Vertex> Mesh::getVertices() const
 {
