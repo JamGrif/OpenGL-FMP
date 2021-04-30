@@ -110,3 +110,13 @@ Mesh* MeshManager::loadModel(const char* filePath)
 	loadedModels.push_back(new Mesh(filePath));
 	return loadedModels.back();
 }
+
+void MeshManager::clearMeshes()
+{
+	for (Mesh* m : loadedModels)
+	{
+		delete m;
+		m = nullptr;
+	}
+	loadedModels.clear();
+}

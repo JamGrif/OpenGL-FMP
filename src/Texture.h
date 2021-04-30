@@ -67,6 +67,9 @@ public:
 	static Texture* retrieveTexture(const char* filePath);
 	static CubeMap* retrieveCubeMap();
 
+	static void clearTextures();
+	static void clearCubemaps();
+
 private:
 
 	static std::vector<Texture*> loadedTextures;

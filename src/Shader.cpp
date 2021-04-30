@@ -245,3 +245,13 @@ Shader* ShaderManager::loadShader(const GLchar* vertexPath, const GLchar* fragme
 	loadedShaders.push_back(new Shader(vertexPath, fragmentPath));
 	return loadedShaders.back();
 }
+
+void ShaderManager::clearShaders()
+{
+	for (Shader* s : loadedShaders)
+	{
+		delete s;
+		s = nullptr;
+	}
+	loadedShaders.clear();
+}

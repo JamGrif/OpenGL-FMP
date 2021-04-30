@@ -31,7 +31,11 @@ Application::~Application()
 	glfwDestroyWindow(m_appWindow);
 	glfwTerminate();
 
+	
+
 	std::cout << "Application Destroyed" << std::endl;
+
+	
 }
 
 /// <summary>
@@ -62,6 +66,8 @@ int Application::appInit()
 
 	glfwMakeContextCurrent(m_appWindow);
 	EngineStatics::setAppWindow(m_appWindow);
+	EngineStatics::setScreenWidth(m_defaultWindowWidth);
+	EngineStatics::setScreenHeight(m_defaultWindowHeight);
 
 	std::cout << glGetString(GL_VENDOR) << std::endl;
 	std::cout << glGetString(GL_RENDERER) << std::endl;

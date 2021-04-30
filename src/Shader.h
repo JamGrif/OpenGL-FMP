@@ -51,6 +51,8 @@ public:
 
 	static Shader* loadShader(const GLchar* vertexPath, const GLchar* fragmentPath);
 
+	static void clearShaders();
+
 private:
 
 	static std::vector<Shader*> loadedShaders;

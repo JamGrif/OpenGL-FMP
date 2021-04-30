@@ -13,6 +13,7 @@ Texture::Texture()
 
 Texture::~Texture()
 {
+	std::cout << "deleted texture" << std::endl;
 	glDeleteTextures(1, &m_texture);
 }
 
@@ -147,6 +148,26 @@ CubeMap* TextureManager::retrieveCubeMap()
 	t->loadCubeMap();
 	loadedCubemaps.push_back(t);
 	return loadedCubemaps.back();
+}
+
+void TextureManager::clearTextures()
+{
+	for (Texture* t : loadedTextures)
+	{
+		delete t;
+		t = nullptr;
+	}
+	loadedTextures.clear();
+}
+
+void TextureManager::clearCubemaps()
+{
+	for (CubeMap* cm : loadedCubemaps)
+	{
+		delete cm;
+		cm = nullptr;
+	}
+	loadedCubemaps.clear();
 }
 
 CubeMap::CubeMap()

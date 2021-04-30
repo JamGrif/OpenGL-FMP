@@ -36,6 +36,8 @@ public:
 
 	static Mesh* loadModel(const char* filePath);
 
+	static void clearMeshes();
+
 private:
 
 	static std::vector<Mesh*> loadedModels;

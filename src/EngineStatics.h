@@ -10,6 +10,12 @@ public:
 	static GLFWwindow* getAppWindow() { return appWindow; }
 	static void setAppWindow(GLFWwindow* w) { appWindow = w; }
 
+	static int getScreenWidth() { return screenWidth; }
+	static void setScreenWidth(int width) { screenWidth = width; }
+
+	static int getScreenHeight() { return screenHeight; }
+	static void setScreenHeight(int height) { screenHeight = height; }
+
 	static Camera* getCamera() { return camera; }
 	static void setCamera(Camera* c) { camera = c; }
 	
@@ -24,6 +30,10 @@ public:
 private:
 
 	static GLFWwindow* appWindow;
+
+	static int screenWidth;
+
+	static int screenHeight;
 
 	static Camera* camera;
 

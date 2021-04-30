@@ -31,8 +31,8 @@ private:
 
 	LightManager*			m_sceneLightManager;
 
-	Framebuffer*			m_sceneMSAAFrameBuffer;
-	Framebuffer*			m_sceneFilterFramebuffer;
+	Framebuffer*			m_sceneMSAAFrameBuffer;		//Scene is drawn to this buffer with MSAA applied
+	Framebuffer*			m_sceneFilterFramebuffer;	//Recieves info from the MSAAframebuffer which then draws onto a quad which gets displayed to the screen
 
 };
 

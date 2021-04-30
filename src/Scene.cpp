@@ -26,6 +26,10 @@ Scene::~Scene()
 	delete m_sceneLightManager;
 	m_sceneLightManager = nullptr;
 
+	TextureManager::clearTextures();
+	TextureManager::clearCubemaps();
+	MeshManager::clearMeshes();
+	ShaderManager::clearShaders();
 
 	std::cout << "Scene Destroyed" << std::endl;
 }
@@ -47,15 +51,15 @@ void Scene::initScene()
 	m_sceneFilterFramebuffer = new Framebuffer(false);
 	m_sceneMSAAFrameBuffer = new Framebuffer(true);
 	
-	//ModelEnvironment* mb = new ModelEnvironment(glm::vec3(0.0f, 8.0f, 0.0f));
-	//mb->toggleReflection(true);
-	//mb->setMesh("res/meshes/heart.obj");
-	//m_sceneMeshes.push_back(mb);
-	//
-	//ModelEnvironment* mb2 = new ModelEnvironment(glm::vec3(3.0f, 8.0f, -3.0f));
-	//mb2->toggleRefraction(true);
-	//mb2->setMesh("res/meshes/heart.obj");
-	//m_sceneMeshes.push_back(mb2);
+	ModelEnvironment* reflectionModel = new ModelEnvironment(glm::vec3(0.0f, 8.0f, 0.0f));
+	reflectionModel->toggleReflection(true);
+	reflectionModel->setMesh("res/meshes/heart.obj");
+	m_sceneMeshes.push_back(reflectionModel);
+	
+	ModelEnvironment* refractionModel = new ModelEnvironment(glm::vec3(3.0f, 8.0f, -3.0f));
+	refractionModel->toggleRefraction(true);
+	refractionModel->setMesh("res/meshes/heart.obj");
+	m_sceneMeshes.push_back(refractionModel);
 
 
 	
@@ -82,8 +86,8 @@ void Scene::initScene()
 	{
 		ModelLighting* Floor = new ModelLighting(FloorPosRot.at(i), FloorPosRot.at(i + 1));
 		Floor->setMesh("res/meshes/plane.obj");
-		Floor->setDiffuseTexture("res/textures/concrete_diff.png");
-		Floor->setSpecularTexture("res/textures/concrete_spec.png");
+		Floor->setDiffuseTexture("res/textures/concrete2_diff.png");
+		Floor->setSpecularTexture("res/textures/concrete2_spec.png");
 		Floor->setNormalTexture("res/textures/concrete_norm.png", true);
 		//Floor->setHeightTexture("res/textures/concreteBrick_height.png", 0.01f);
 		//Floor->setEmissionTexture("res/textures/matrix_emis.png");
@@ -107,7 +111,7 @@ void Scene::initScene()
 	for (int i = 0; i < WallPosRot.size(); i += 2)
 	{
 		ModelLighting* wall = new ModelLighting(WallPosRot.at(i), WallPosRot.at(i+1));
-		wall->setMesh("res/meshes/wall.obj");
+		wall->setMesh("res/meshes/plane.obj");
 		wall->setDiffuseTexture("res/textures/cartoonBrick_diff.png");
 		wall->setSpecularTexture("res/textures/cartoonBrick_spec.png");
 		wall->setNormalTexture("res/textures/cartoonBrick_norm.png", false);
@@ -229,9 +233,6 @@ void Scene::initScene()
 	}
 
 
-
-	
-
 }
 
 /// <summary>
@@ -243,8 +244,6 @@ void Scene::updateScene()
 	checkForFilterUpdate();
 
 	m_sceneMSAAFrameBuffer->bindFramebuffer();
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glEnable(GL_DEPTH_TEST);
 
 	//Draw first pass of all models
 	for (Model* m : m_sceneMeshes)
@@ -257,26 +256,22 @@ void Scene::updateScene()
 	for (Model* m : m_sceneMeshes)
 	{
 		m->drawPassTwo();
-
 	}
 
-
+	//Reads from the MSAA buffer and writes it to the Filter buffer
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_sceneMSAAFrameBuffer->getFBO());
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_sceneFilterFramebuffer->getFBO());
 	glBlitFramebuffer(0, 0, 1280, 720, 0, 0, 1280, 720, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 	m_sceneMSAAFrameBuffer->unbindFramebuffer();
-	glClear(GL_COLOR_BUFFER_BIT);
-	glDisable(GL_DEPTH_TEST);
 
-	//m_sceneMSAAFrameBuffer->unbindFramebuffer();
-	
-	
-	
 	m_sceneFilterFramebuffer->draw();
 
 }
 
+/// <summary>
+/// Used to change the filter applied to the screen buffer depending on user input. Checked every app loop
+/// </summary>
 void Scene::checkForFilterUpdate()
 {
 	if (Input::getKeyPressed(GLFW_KEY_1))
@@ -287,6 +282,16 @@ void Scene::checkForFilterUpdate()
 	if (Input::getKeyPressed(GLFW_KEY_2))
 	{
 		m_sceneFilterFramebuffer->setFrameFilter(screen_Inverse);
+	}
+
+	if (Input::getKeyPressed(GLFW_KEY_3))
+	{
+		m_sceneFilterFramebuffer->setFrameFilter(screen_Greyscale);
+	}
+
+	if (Input::getKeyPressed(GLFW_KEY_4))
+	{
+		m_sceneFilterFramebuffer->setFrameFilter(screen_Blur);
 	}
 
 }
