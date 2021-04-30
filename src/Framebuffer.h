@@ -7,7 +7,8 @@ enum
 	screen_Default = 1,
 	screen_Inverse,
 	screen_Greyscale,
-	screen_Blur,
+	screen_EdgeDetection,
+	screen_Drugs,
 	END_OF_FILTER_ENUM
 };
 

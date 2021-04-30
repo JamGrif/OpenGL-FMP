@@ -29,6 +29,8 @@ struct PointLight
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
+
+	bool lightActive;
 };
 
 struct DirectionalLight
@@ -38,6 +40,8 @@ struct DirectionalLight
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
+
+	bool lightActive;
 };
 
 struct SpotLight
@@ -54,6 +58,8 @@ struct SpotLight
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
+
+	bool lightActive;
 };
 
 
@@ -119,7 +125,7 @@ void main(void)
 
 	//Directional Light
 	//Ensure a directional light exists
-	if (dLight.diffuse.x != 0.0)  
+	if (dLight.lightActive)  
 	{
 		result = calculateDirLight(dLight, norm, viewDir, texCoords);
 	}
@@ -128,7 +134,7 @@ void main(void)
 	for (int i = 0; i < NUMBER_OF_POINT_LIGHTS; i++)
 	{
 		//Ensure point light exists
-		if (pLight[i].constant != 0.0)
+		if (pLight[i].lightActive)
 		{
 			result += calculatePointLight(pLight[i], norm, viewDir, texCoords);
 		}
@@ -137,7 +143,7 @@ void main(void)
 
 	//Spot Light
 	//Ensure a spot light exists
-	if (sLight.constant.x != 0.0) //Ensure a spotlight exists by checking if it has a diffuse value
+	if (sLight.lightActive) //Ensure a spotlight exists by checking if it has a diffuse value
 	{
 		result += calculateSpotLight(sLight, norm, viewDir, texCoords);
 	}

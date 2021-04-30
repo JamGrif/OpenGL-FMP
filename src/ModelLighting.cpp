@@ -83,12 +83,13 @@ void ModelLighting::drawPassTwo()
 		m_modelShaderPassTwo->setUniform3f("dLight.diffuse", m_localLightManager->getDirectionalLight(0)->Diffuse);
 		m_modelShaderPassTwo->setUniform3f("dLight.specular", m_localLightManager->getDirectionalLight(0)->Specular);
 		m_modelShaderPassTwo->setUniform3f("dLight.direction", m_localLightManager->getDirectionalLight(0)->Direction);
+		m_modelShaderPassTwo->setUniform1i("dLight.lightActive", m_localLightManager->getDirectionalLight(0)->lightActive);
 	}
 
 	//Ensure a point light exists
 	if (m_localLightManager->getCurrentPointLights() > 0)
 	{
-		//Point lights
+		//Point lights - (I know a better way of this can be done, but when I tried doing it in a for loop by converting and combining the index to a string I encountered performance issues when launching project)
 		if (m_localLightManager->getCurrentPointLights() >= 1)
 		{
 			m_modelShaderPassTwo->setUniform3f("pLight[0].ambient", m_localLightManager->getPointLight(0)->Ambient);
@@ -98,6 +99,7 @@ void ModelLighting::drawPassTwo()
 			m_modelShaderPassTwo->setUniform1f("pLight[0].constant", m_localLightManager->getPointLight(0)->Constant);
 			m_modelShaderPassTwo->setUniform1f("pLight[0].linear", m_localLightManager->getPointLight(0)->Linear);
 			m_modelShaderPassTwo->setUniform1f("pLight[0].quadratic", m_localLightManager->getPointLight(0)->Quadratic);
+			m_modelShaderPassTwo->setUniform1i("pLight[0].lightActive", m_localLightManager->getPointLight(0)->lightActive);
 		}
 
 		if (m_localLightManager->getCurrentPointLights() >= 2)
@@ -109,6 +111,7 @@ void ModelLighting::drawPassTwo()
 			m_modelShaderPassTwo->setUniform1f("pLight[1].constant", m_localLightManager->getPointLight(1)->Constant);
 			m_modelShaderPassTwo->setUniform1f("pLight[1].linear", m_localLightManager->getPointLight(1)->Linear);
 			m_modelShaderPassTwo->setUniform1f("pLight[1].quadratic", m_localLightManager->getPointLight(1)->Quadratic);
+			m_modelShaderPassTwo->setUniform1i("pLight[1].lightActive", m_localLightManager->getPointLight(1)->lightActive);
 		}
 
 		if (m_localLightManager->getCurrentPointLights() >= 3)
@@ -120,6 +123,7 @@ void ModelLighting::drawPassTwo()
 			m_modelShaderPassTwo->setUniform1f("pLight[2].constant", m_localLightManager->getPointLight(2)->Constant);
 			m_modelShaderPassTwo->setUniform1f("pLight[2].linear", m_localLightManager->getPointLight(2)->Linear);
 			m_modelShaderPassTwo->setUniform1f("pLight[2].quadratic", m_localLightManager->getPointLight(2)->Quadratic);
+			m_modelShaderPassTwo->setUniform1i("pLight[2].lightActive", m_localLightManager->getPointLight(2)->lightActive);
 		}
 
 		if (m_localLightManager->getCurrentPointLights() >= 4)
@@ -131,6 +135,7 @@ void ModelLighting::drawPassTwo()
 			m_modelShaderPassTwo->setUniform1f("pLight[3].constant", m_localLightManager->getPointLight(3)->Constant);
 			m_modelShaderPassTwo->setUniform1f("pLight[3].linear", m_localLightManager->getPointLight(3)->Linear);
 			m_modelShaderPassTwo->setUniform1f("pLight[3].quadratic", m_localLightManager->getPointLight(3)->Quadratic);
+			m_modelShaderPassTwo->setUniform1i("pLight[3].lightActive", m_localLightManager->getPointLight(3)->lightActive);
 		}
 	}
 
@@ -147,6 +152,7 @@ void ModelLighting::drawPassTwo()
 		m_modelShaderPassTwo->setUniform1f("sLight.constant", m_localLightManager->getSpotLight(0)->Constant);
 		m_modelShaderPassTwo->setUniform1f("sLight.linear", m_localLightManager->getSpotLight(0)->Linear);
 		m_modelShaderPassTwo->setUniform1f("sLight.quadratic", m_localLightManager->getSpotLight(0)->Quadratic);
+		m_modelShaderPassTwo->setUniform1i("sLight.lightActive", m_localLightManager->getSpotLight(0)->lightActive);
 	}
 
 

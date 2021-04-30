@@ -262,7 +262,7 @@ void Scene::updateScene()
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_sceneMSAAFrameBuffer->getFBO());
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_sceneFilterFramebuffer->getFBO());
 	glBlitFramebuffer(0, 0, 1280, 720, 0, 0, 1280, 720, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-
+	
 	m_sceneMSAAFrameBuffer->unbindFramebuffer();
 
 	m_sceneFilterFramebuffer->draw();
@@ -291,7 +291,12 @@ void Scene::checkForFilterUpdate()
 
 	if (Input::getKeyPressed(GLFW_KEY_4))
 	{
-		m_sceneFilterFramebuffer->setFrameFilter(screen_Blur);
+		m_sceneFilterFramebuffer->setFrameFilter(screen_EdgeDetection);
+	}
+
+	if (Input::getKeyPressed(GLFW_KEY_5))
+	{
+		m_sceneFilterFramebuffer->setFrameFilter(screen_Drugs);
 	}
 
 }
