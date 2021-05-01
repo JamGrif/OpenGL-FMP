@@ -6,8 +6,6 @@ ModelLighting::ModelLighting(glm::vec3 position, glm::vec3 rotation)
 	m_normalizeTexture(false), m_usingEmission(false), m_usingNormal(false), m_usingHeight(false), m_heightAmount(0.5)
 {
 
-	
-
 	setShaderOne("res/shaders/lightingPassOne-vertex.glsl", "res/shaders/lightingPassOne-fragment.glsl");
 	setShaderTwo("res/shaders/lightingPassTwo-vertex.glsl", "res/shaders/lightingPassTwo-fragment.glsl");
 }
@@ -50,6 +48,18 @@ void ModelLighting::drawPassOne()
 	{
 		return;
 	}
+
+	m_modelShaderPassOne->Bind();
+	m_modelShaderPassOne->setUniformMatrix4fv("lightSpaceMatrix", *EngineStatics::getLightSpaceMatrix());
+	m_modelShaderPassOne->setUniformMatrix4fv("model", m_mMat);
+
+	setVBOAttrib(true, false, false, false, false);
+
+	//Draw
+	glDrawElements(GL_TRIANGLES, m_modelMesh->getIndices().size(), GL_UNSIGNED_INT, 0);
+
+	m_modelShaderPassOne->Unbind();
+
 }
 
 /// <summary>
@@ -162,6 +172,7 @@ void ModelLighting::drawPassTwo()
 	m_modelShaderPassTwo->setUniform1i("material.emission", 2);
 	m_modelShaderPassTwo->setUniform1i("material.normal", 3);
 	m_modelShaderPassTwo->setUniform1i("material.height", 4);
+	m_modelShaderPassTwo->setUniform1i("material.depthMap", 5);
 	m_modelShaderPassTwo->setUniform1f("material.shininess", 48.0f);
 
 	m_modelShaderPassTwo->setUniform1i("material.normalizeTex", m_normalizeTexture);
@@ -172,6 +183,7 @@ void ModelLighting::drawPassTwo()
 
 	//Camera Position
 	m_modelShaderPassTwo->setUniform3f("viewPos", EngineStatics::getCamera()->getPosition());
+	m_modelShaderPassTwo->setUniformMatrix4fv("lightSpaceMatrix", *EngineStatics::getLightSpaceMatrix());
 
 
 	//Bind textures to pipeline
@@ -199,6 +211,9 @@ void ModelLighting::drawPassTwo()
 	{
 		m_modelHeightTexture->Bind(4);
 	}
+
+	glActiveTexture(GL_TEXTURE0+5);
+	glBindTexture(GL_TEXTURE_2D, *EngineStatics::getDepthMap());
 
 	/*
 		Bind VBOs and vertex attributes
@@ -246,7 +261,8 @@ void ModelLighting::drawPassTwo()
 		m_modelShaderPassTwo->Unbind();
 	}
 
-	
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 }
 

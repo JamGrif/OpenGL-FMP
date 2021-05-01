@@ -10,5 +10,9 @@ Camera* EngineStatics::camera = nullptr;
 
 glm::mat4* EngineStatics::projectionMatrix;
 
+glm::mat4* EngineStatics::lightSpaceMatrix;
+
 LightManager* EngineStatics::lightManager = nullptr;
+
+unsigned int* EngineStatics::depthMap = 0;
 

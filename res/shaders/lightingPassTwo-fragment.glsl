@@ -9,6 +9,7 @@ struct Material
 	sampler2D emission;
 	sampler2D normal;
 	sampler2D height;
+	sampler2D depthMap;
 	float shininess;
 
 	int normalizeTex;
@@ -71,6 +72,7 @@ in vec3 varyingNormal;
 in mat3 TBN;
 in vec3 TangentViewPos;
 in vec3 TangentFragPos;
+in vec4 FragPosLightSpace;
 
 
 uniform vec3 viewPos;				//Camera position
@@ -85,6 +87,7 @@ vec3 calculatePointLight(PointLight pl, vec3 normal, vec3 viewDir, vec2 alteredT
 vec3 calculateSpotLight(SpotLight sl, vec3 normal, vec3 viewDir, vec2 alteredTexCoords);
 
 vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir);
+float shadowCalculation(vec4 fragPosLightSpace);
 
 void main(void)
 {
@@ -185,7 +188,11 @@ vec3 calculateDirLight(DirectionalLight dl, vec3 normal, vec3 viewDir, vec2 texC
 	vec3 diffuse = dl.diffuse * diff * vec3(texture(material.diffuse, texCoords));
 	vec3 specular = dl.specular * spec * vec3(texture(material.specular, texCoords));
 
-	return (ambient + diffuse + specular);
+	//shadow
+	float shadow = shadowCalculation(FragPosLightSpace);
+	vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular));
+
+	return lighting;
 
 }
 
@@ -321,5 +328,34 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
 	vec2 finalTexCoords = prevTexCoords * weight + currentTexCoords * (1.0 - weight);
 
 	return finalTexCoords;
+
+}
+
+float shadowCalculation(vec4 fragPosLightSpace)
+{
+	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+	projCoords = projCoords * 0.5 + 0.5;
+
+	float closestDepth = texture(material.depthMap, projCoords.xy).r;
+
+	float currentDepth = projCoords.z;
+
+	float bias = 0.05;
+	float shadow = 0.0;
+	vec2 texelSize = 1.0 / textureSize(material.depthMap, 0);
+	for (int x = -1; x <= 1; ++x)
+	{
+		for (int y = -1; y <= 1; ++y)
+		{
+			float pcfDepth = texture(material.depthMap, projCoords.xy + vec2(x,y) * texelSize).r;
+			shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+		}
+	}
+	shadow /= 9.0;
+
+	if (projCoords.z > 1.0)
+		shadow = 0.0;
+
+	return shadow;
 
 }

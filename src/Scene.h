@@ -25,14 +25,23 @@ private:
 	void addSceneLightManager();
 	void checkForFilterUpdate();
 
+	void setupShadowStuff();
+
 	std::vector<Model*>		m_sceneMeshes;
 
-	Camera*					m_sceneCamera;
+	Camera* m_sceneCamera;
 
-	LightManager*			m_sceneLightManager;
+	LightManager* m_sceneLightManager;
 
-	Framebuffer*			m_sceneMSAAFrameBuffer;		//Scene is drawn to this buffer with MSAA applied
-	Framebuffer*			m_sceneFilterFramebuffer;	//Recieves info from the MSAAframebuffer which then draws onto a quad which gets displayed to the screen
+	Framebuffer* m_sceneMSAAFrameBuffer;		//Scene is drawn to this buffer with MSAA applied
+	Framebuffer* m_sceneFilterFramebuffer;	//Recieves info from the MSAAframebuffer which then draws onto a quad which gets displayed to the screen
+
+
+	unsigned int depthMapFBO;
+	unsigned int depthMap;
+	glm::mat4 lightProjection = glm::mat4(1.0f);
+	glm::mat4 lightView = glm::mat4(1.0f);
+	glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
 
 };
 

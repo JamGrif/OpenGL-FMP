@@ -34,9 +34,14 @@ bool Texture::loadTexture(const char* filePath)
 	//Check if file loaded successfully
 	if (stbi_failure_reason() == "can't fopen")
 	{
-		std::cout << "TEXTURE->" << m_filePath << " failed to load, loading default texture" << std::endl;
-		localBuffer = stbi_load("res/textures/missingtexture.png", &m_width, &m_height, &m_BPP, 4);
-		m_filePath = "res/textures/missingtexture.png";
+		std::cout << "TEXTURE->" << m_filePath << " failed to load, loading default texture - FAILURE" << std::endl;
+		//localBuffer = stbi_load("res/textures/missingtexture.png", &m_width, &m_height, &m_BPP, 4);
+		//m_filePath = "res/textures/missingtexture.png";
+		return false;
+	}
+	else
+	{
+		std::cout << "TEXTURE->" << m_filePath << " successfully loaded - SUCCESS" << std::endl;
 	}
 
 	//Generate texture buffer
@@ -116,18 +121,32 @@ Texture* TextureManager::retrieveTexture(const char* filePath)
 	{
 		if (t->getFilePath() == filePath)
 		{
-			//std::cout << "TEXTUREMANAGER->" << filePath << " already exists, returning loaded texture" << std::endl;
 			return t;
 		}
 	}
 
+	//Otherwise, create new texture
+	Texture* newTexture = new Texture;
 
-	//Otherwise, create new texture and add it to vector
-	std::cout << "TEXTUREMANAGER->" << filePath << " is being loaded" << std::endl;
+	if (!newTexture->loadTexture(filePath)) //Attempt to load texture
+	{
+		//Texture failed to load so check if missing texture texture is already loaded and then return it
+		for (Texture* t : loadedTextures)
+		{
+			if (t->getFilePath() == "res/textures/missingtexture.png")
+			{
+				delete newTexture;
+				newTexture = nullptr;
 
-	Texture* t = new Texture;
-	t->loadTexture(filePath);
-	loadedTextures.push_back(t);
+				return t;
+			}
+		}
+
+		//The missing texture texture has not already been made so make it
+		newTexture->loadTexture("res/textures/missingtexture.png");
+	}
+
+	loadedTextures.push_back(newTexture);
 	return loadedTextures.back();
 }
 

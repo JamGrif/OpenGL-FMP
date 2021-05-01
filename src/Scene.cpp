@@ -41,6 +41,8 @@ void Scene::initScene()
 {
 
 	//setupSceneFramebuffer();
+
+	setupShadowStuff();
 	
 	addSceneCamera(0.0f, 2.0f, 0.0f);
 	addSceneLightManager();
@@ -63,7 +65,7 @@ void Scene::initScene()
 
 
 	
-	m_sceneLightManager->addDirectionalLight(3.0f, -10.0f, 10.0f);
+	//m_sceneLightManager->addDirectionalLight(2.0f, -3.0f, 1.0f);
 	
 	//m_sceneLightManager->addSpotLight(0.0f, 0.0f, 0.0f);
 
@@ -88,7 +90,7 @@ void Scene::initScene()
 		Floor->setMesh("res/meshes/plane.obj");
 		Floor->setDiffuseTexture("res/textures/concrete2_diff.png");
 		Floor->setSpecularTexture("res/textures/concrete2_spec.png");
-		Floor->setNormalTexture("res/textures/concrete_norm.png", true);
+		//Floor->setNormalTexture("res/textures/concrete_norm.png", true);
 		//Floor->setHeightTexture("res/textures/concreteBrick_height.png", 0.01f);
 		//Floor->setEmissionTexture("res/textures/matrix_emis.png");
 		m_sceneMeshes.push_back(Floor);
@@ -168,7 +170,7 @@ void Scene::initScene()
 	//Crates
 	std::vector<glm::vec3> CratePosRot =
 	{
-		glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 0.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f),
 		//glm::vec3(-3.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f),
 	};
 	
@@ -178,7 +180,7 @@ void Scene::initScene()
 		Crate->setMesh("res/meshes/crate.obj");
 		Crate->setDiffuseTexture("res/textures/crate_diff.png");
 		Crate->setSpecularTexture("res/textures/crate_spec.png");
-		Crate->setNormalTexture("res/textures/crate_norm.png", false);
+		//Crate->setNormalTexture("res/textures/crate_norm.png", false);
 		m_sceneMeshes.push_back(Crate);
 	}
 
@@ -214,23 +216,23 @@ void Scene::initScene()
 
 
 	//Light
-	//std::vector<glm::vec3> LightPos =
-	//{
-	//	glm::vec3(0.0f, 3.0f, 0.0f),
-	//	//glm::vec3(15.0f, 3.0f, 3.0f),
-	//	//glm::vec3(-3.0f, 3.0f, 5.0f),
-	//	//glm::vec3(3.0f, 3.0f, 5.0f)
-	//};
-	//
-	//for (int i = 0; i < LightPos.size(); i++)
-	//{
-	//	m_sceneLightManager->addPointLight(LightPos.at(i).x, LightPos.at(i).y, LightPos.at(i).z);
-	//
-	//	ModelBasic* light = new ModelBasic(LightPos.at(i));
-	//	light->setMesh("res/meshes/cube.obj");
-	//	light->copyPointLight(i);
-	//	m_sceneMeshes.push_back(light);
-	//}
+	std::vector<glm::vec3> LightPos =
+	{
+		glm::vec3(0.0f, 3.0f, 0.0f),
+		//glm::vec3(15.0f, 3.0f, 3.0f),
+		//glm::vec3(-3.0f, 3.0f, 5.0f),
+		//glm::vec3(3.0f, 3.0f, 5.0f)
+	};
+	
+	for (int i = 0; i < LightPos.size(); i++)
+	{
+		m_sceneLightManager->addPointLight(LightPos.at(i).x, LightPos.at(i).y, LightPos.at(i).z);
+	
+		ModelBasic* light = new ModelBasic(LightPos.at(i));
+		light->setMesh("res/meshes/cube.obj");
+		light->copyPointLight(i);
+		m_sceneMeshes.push_back(light);
+	}
 
 
 }
@@ -245,12 +247,24 @@ void Scene::updateScene()
 
 	//m_sceneMSAAFrameBuffer->bindFramebuffer();
 
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	//Draw first pass of all models
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glClear(GL_DEPTH_BUFFER_BIT);
+	
+
 	for (Model* m : m_sceneMeshes)
 	{
 		m->setMatrixValues();
 		m->drawPassOne();
 	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glActiveTexture(GL_TEXTURE5);
+	//glBindTexture(GL_TEXTURE_2D, depthMap);
+
 
 	//Draw second pass of all models
 	for (Model* m : m_sceneMeshes)
@@ -298,6 +312,39 @@ void Scene::checkForFilterUpdate()
 	{
 		m_sceneFilterFramebuffer->setFrameFilter(screen_Drugs);
 	}
+
+}
+
+void Scene::setupShadowStuff()
+{
+
+	glGenFramebuffers(1, &depthMapFBO);
+	glGenTextures(1, &depthMap);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1280, 720, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+	//Attach depth texture to framebuffers depth buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+
+	//Tell framebuffer that no colour data will be rendered 
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	float near_plane = 1.0f, far_plane = 7.5f;
+	lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+	lightView = glm::lookAt(glm::vec3(-2.0f, 3.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	lightSpaceMatrix = lightProjection * lightView;
+
+	EngineStatics::setLightSpaceMatrix(&lightSpaceMatrix);
+	EngineStatics::setDepthMap(&depthMap);
 
 }
 

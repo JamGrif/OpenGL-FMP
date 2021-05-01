@@ -8,15 +8,28 @@
 
 std::vector<Mesh*> MeshManager::loadedModels;
 
-Mesh::Mesh(const char* filePath)
-	:m_filePath(filePath)
+Mesh::Mesh()
 {
+}
+
+Mesh::~Mesh()
+{
+}
+
+bool Mesh::loadMesh(const char* filePath)
+{
+	m_filePath = filePath;
 	Assimp::Importer import;
 	const aiScene* scene = import.ReadFile(filePath, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		std::cout << "MESH->" << import.GetErrorString() << std::endl;
+		std::cout << "MESH->" << m_filePath << " failed to load, loading default mesh - FAILURE" << std::endl;
+		return false;
+	}
+	else
+	{
+		std::cout << "MESH->" << m_filePath << " successfully loaded - SUCCESS" << std::endl;
 	}
 
 	aiMesh* mesh = scene->mMeshes[0];
@@ -68,11 +81,7 @@ Mesh::Mesh(const char* filePath)
 			indices.push_back(face.mIndices[j]);
 		}
 	}
-
-}
-
-Mesh::~Mesh()
-{
+	return true;
 }
 
 
@@ -103,15 +112,33 @@ Mesh* MeshManager::loadModel(const char* filePath)
 	{
 		if (im->getFilePath() == filePath)
 		{
-			//std::cout << "MESHMANAGER->" << filePath << " already exists, returning loaded model" << std::endl;
 			return im;
 		}
 	}
 
 	//Otherwise, create new model and add it to vector
-	std::cout << "MESHMANAGER->" << filePath << " is being loaded" << std::endl;
 
-	loadedModels.push_back(new Mesh(filePath));
+	Mesh* newMesh = new Mesh;
+
+	if (!newMesh->loadMesh(filePath)) //Attempt to load texture
+	{
+		//Texture failed to load so check if missing texture texture is already loaded and then return it
+		for (Mesh* m : loadedModels)
+		{
+			if (m->getFilePath() == "res/meshes/cube.obj")
+			{
+				delete newMesh;
+				newMesh = nullptr;
+
+				return m;
+			}
+		}
+
+		//The missing texture texture has not already been made so make it
+		newMesh->loadMesh("res/meshes/cube.obj");
+	}
+
+	loadedModels.push_back(newMesh);
 	return loadedModels.back();
 }
 

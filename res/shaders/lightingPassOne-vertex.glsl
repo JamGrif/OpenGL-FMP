@@ -1,8 +1,10 @@
 #version 430 
 layout (location=0) in vec3 vertPos;
-uniform mat4 shadowMVP1;
+
+uniform mat4 lightSpaceMatrix;
+uniform mat4 model;
 
 void main(void)
 {
-	gl_Position = shadowMVP1 * vec4(vertPos,1.0);
+	gl_Position = lightSpaceMatrix * model * vec4(vertPos, 1.0);
 }

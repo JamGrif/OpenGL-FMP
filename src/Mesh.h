@@ -15,8 +15,10 @@ struct Vertex
 class Mesh
 {
 public:
-	Mesh(const char* filePath);
+	Mesh();
 	~Mesh();
+
+	bool loadMesh(const char* filePath);
 
 	std::vector<Vertex> getVertices() const;
 	std::vector<unsigned int> getIndices() const;
