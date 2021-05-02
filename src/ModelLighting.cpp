@@ -172,7 +172,7 @@ void ModelLighting::drawPassTwo()
 	m_modelShaderPassTwo->setUniform1i("material.emission", 2);
 	m_modelShaderPassTwo->setUniform1i("material.normal", 3);
 	m_modelShaderPassTwo->setUniform1i("material.height", 4);
-	m_modelShaderPassTwo->setUniform1i("material.depthMap", 5);
+	//m_modelShaderPassTwo->setUniform1i("material.depthMap", 5);
 	m_modelShaderPassTwo->setUniform1f("material.shininess", 48.0f);
 
 	m_modelShaderPassTwo->setUniform1i("material.normalizeTex", m_normalizeTexture);
@@ -183,7 +183,7 @@ void ModelLighting::drawPassTwo()
 
 	//Camera Position
 	m_modelShaderPassTwo->setUniform3f("viewPos", EngineStatics::getCamera()->getPosition());
-	m_modelShaderPassTwo->setUniformMatrix4fv("lightSpaceMatrix", *EngineStatics::getLightSpaceMatrix());
+	//m_modelShaderPassTwo->setUniformMatrix4fv("lightSpaceMatrix", *EngineStatics::getLightSpaceMatrix());
 
 
 	//Bind textures to pipeline
@@ -212,8 +212,8 @@ void ModelLighting::drawPassTwo()
 		m_modelHeightTexture->Bind(4);
 	}
 
-	glActiveTexture(GL_TEXTURE0+5);
-	glBindTexture(GL_TEXTURE_2D, *EngineStatics::getDepthMap());
+	//glActiveTexture(GL_TEXTURE0+5);
+	//glBindTexture(GL_TEXTURE_2D, *EngineStatics::getDepthMap());
 
 	/*
 		Bind VBOs and vertex attributes
@@ -261,8 +261,8 @@ void ModelLighting::drawPassTwo()
 		m_modelShaderPassTwo->Unbind();
 	}
 
-	glActiveTexture(GL_TEXTURE5);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//glActiveTexture(GL_TEXTURE5);
+	//glBindTexture(GL_TEXTURE_2D, 0);
 
 }
 

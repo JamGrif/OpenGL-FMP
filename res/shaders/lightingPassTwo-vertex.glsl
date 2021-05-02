@@ -13,7 +13,6 @@ struct Material
 	sampler2D emission;
 	sampler2D normal;
 	sampler2D height;
-	sampler2D depthMap;
 	float shininess;
 
 	int normalizeTex;
@@ -28,7 +27,6 @@ uniform mat4 m_matrix;		//Model matrix
 uniform mat4 v_matrix;		//View matrix
 uniform mat4 proj_matrix;	//Projection matrix
 uniform vec3 viewPos;		//Camera position	
-uniform mat4 lightSpaceMatrix;
 
 out vec3 varyingFragPos;	//Interpolated fragment positions sent out from vertex shader
 out vec2 varyingTexCoords;	//Interpolated texture coordinates sent out from vertex shader
@@ -36,7 +34,6 @@ out vec3 varyingNormal;		//Interpolated normal coordinates sent out from vertex 
 out mat3 TBN;
 out vec3 TangentViewPos;
 out vec3 TangentFragPos;
-out vec4 FragPosLightSpace; 
 
 void main(void) 
 {
@@ -59,7 +56,6 @@ void main(void)
 	else 
 	{
 		varyingNormal = mat3(transpose(inverse(m_matrix)))*vertNormal;
-		FragPosLightSpace = lightSpaceMatrix * vec4(varyingFragPos, 1.0);
 	}
 	
 

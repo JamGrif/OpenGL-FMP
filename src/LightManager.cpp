@@ -92,9 +92,9 @@ int LightManager::getCurrentDirectionalLights() const
 /// <param name="index">Index of the light within the point light vector</param>
 void LightManager::setPointLight(float x, float y, float z, int index)
 {
-	m_scenePointLights.at(index)->Position.x += x;
-	m_scenePointLights.at(index)->Position.y += y;
-	m_scenePointLights.at(index)->Position.z += z;
+	m_scenePointLights.at(index)->Position.x = x;
+	m_scenePointLights.at(index)->Position.y = y;
+	m_scenePointLights.at(index)->Position.z = z;
 }
 
 /// <summary>

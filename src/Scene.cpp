@@ -42,7 +42,7 @@ void Scene::initScene()
 
 	//setupSceneFramebuffer();
 
-	setupShadowStuff();
+	//setupShadowStuff();
 	
 	addSceneCamera(0.0f, 2.0f, 0.0f);
 	addSceneLightManager();
@@ -50,9 +50,9 @@ void Scene::initScene()
 	//Skybox
 	m_sceneMeshes.push_back(new ModelSky());
 
-	//m_sceneFilterFramebuffer = new Framebuffer(false);
-	//m_sceneMSAAFrameBuffer = new Framebuffer(true);
-	//
+	m_sceneFilterFramebuffer = new Framebuffer(false);
+	m_sceneMSAAFrameBuffer = new Framebuffer(true);
+	
 	//ModelEnvironment* reflectionModel = new ModelEnvironment(glm::vec3(0.0f, 8.0f, 0.0f));
 	//reflectionModel->toggleReflection(true);
 	//reflectionModel->setMesh("res/meshes/heart.obj");
@@ -63,9 +63,29 @@ void Scene::initScene()
 	//refractionModel->setMesh("res/meshes/heart.obj");
 	//m_sceneMeshes.push_back(refractionModel);
 
+	//std::vector<glm::vec3> grassPos =
+	//{
+	//	glm::vec3(2.0f, 0.5f, 2.0f),
+	//	glm::vec3(-2.0f, 0.5f, -2.0f),
+	//	glm::vec3(2.0f, 0.5f, -2.0f),
+	//	glm::vec3(-2.0f, 0.5f, 2.0f),
+	//	glm::vec3(1.0f, 0.5f, 5.0f),
+	//};
+	//
+	//for (int i = 0; i < grassPos.size(); i++)
+	//{
+	//	ModelSprite* grass = new ModelSprite(grassPos.at(i), glm::vec3(0.0f, 0.0f, 0.0f));
+	//	grass->setSprite("res/textures/grass_sprite.png");
+	//	grass->SetXScale(0.3);
+	//	grass->SetYScale(0.3);
+	//	grass->SetZScale(0.3);
+	//	m_sceneMeshes.push_back(grass);
+	//}
 
 	
-	//m_sceneLightManager->addDirectionalLight(2.0f, -3.0f, 1.0f);
+
+	
+	m_sceneLightManager->addDirectionalLight(2.0f, -3.0f, 1.0f);
 	
 	//m_sceneLightManager->addSpotLight(0.0f, 0.0f, 0.0f);
 
@@ -88,131 +108,203 @@ void Scene::initScene()
 	{
 		ModelLighting* Floor = new ModelLighting(FloorPosRot.at(i), FloorPosRot.at(i + 1));
 		Floor->setMesh("res/meshes/plane.obj");
-		Floor->setDiffuseTexture("res/textures/concrete2_diff.png");
-		Floor->setSpecularTexture("res/textures/concrete2_spec.png");
-		//Floor->setNormalTexture("res/textures/concrete_norm.png", true);
-		//Floor->setHeightTexture("res/textures/concreteBrick_height.png", 0.01f);
+		Floor->setDiffuseTexture("res/textures/carpet_diff.png");
+		Floor->setSpecularTexture("res/textures/carpet_spec.png");
+		Floor->setNormalTexture("res/textures/carpet_norm.png", false);
+		Floor->setHeightTexture("res/textures/carpet_height.png", 0.05f);
+		//Floor->setEmissionTexture("res/textures/matrix_emis.png");
+		m_sceneMeshes.push_back(Floor);
+	}
+
+	std::vector<glm::vec3> ConcreteFloor =
+	{
+		glm::vec3(0.0f, -0.8f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(6.0f, -0.8f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-6.0f, -0.8f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, -0.8f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(6.0f, -0.8f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-6.0f, -0.8f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, -0.8f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(6.0f, -0.8f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-6.0f, -0.8f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f)
+	};
+
+
+	for (int i = 0; i < ConcreteFloor.size(); i += 2)
+	{
+		ModelLighting* Floor = new ModelLighting(ConcreteFloor.at(i), ConcreteFloor.at(i + 1));
+		Floor->setMesh("res/meshes/slab.obj");
+		Floor->setDiffuseTexture("res/textures/concreteSlab_diff.png");
+		Floor->setSpecularTexture("res/textures/concreteSlab_spec.png");
+		Floor->setNormalTexture("res/textures/concreteSlab_norm.png", false);
+		Floor->setHeightTexture("res/textures/concreteSlab_height.png", 0.01f);
+		m_sceneMeshes.push_back(Floor);
+	}
+
+	//Side wall
+	std::vector<glm::vec3> SideWallPosRot =
+	{
+		glm::vec3(-9.0f, 2.8f, -6.0f), glm::vec3(90.0f, 0.0f, -90.0f),
+		glm::vec3(-9.0f, 2.8f, 0.0f), glm::vec3(90.0f, 0.0f, -90.0f),
+		glm::vec3(-9.0f, 2.8f, 6.0f), glm::vec3(90.0f, 0.0f, -90.0f),
+		glm::vec3(9.0f, 2.8f, -6.0f), glm::vec3(90.0f, 0.0f, 90.0f),
+		glm::vec3(9.0f, 2.8f, 0.0f), glm::vec3(90.0f, 0.0f, 90.0f),
+		glm::vec3(9.0f, 2.8f, 6.0f), glm::vec3(90.0f, 0.0f, 90.0f),
+		glm::vec3(-6.0f, 2.8f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 2.8f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
+		glm::vec3(6.0f, 2.8f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
+		glm::vec3(-6.0f, 2.8f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
+		//glm::vec3(0.0f, 2.8f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
+		glm::vec3(6.0f, 2.8f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f)
+	};
+	
+	for (int i = 0; i < SideWallPosRot.size(); i += 2)
+	{
+		ModelLighting* wall = new ModelLighting(SideWallPosRot.at(i), SideWallPosRot.at(i + 1));
+		wall->setMesh("res/meshes/wall.obj");
+		wall->setDiffuseTexture("res/textures/woodWall_diff.png");
+		wall->setSpecularTexture("res/textures/woodWall_spec.png");
+		wall->setNormalTexture("res/textures/woodWall_norm.png", false);
+		wall->setHeightTexture("res/textures/woodWall_height.png", 0.04);
+		m_sceneMeshes.push_back(wall);
+	}
+	
+	////Roof
+	std::vector<glm::vec3> RoofPosRot =
+	{
+		glm::vec3(0.0f, 5.8f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+		glm::vec3(6.0f, 5.8f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+		glm::vec3(-6.0f, 5.8f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+		glm::vec3(0.0f, 5.8f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+		glm::vec3(6.0f, 5.8f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+		glm::vec3(-6.0f, 5.8f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+		glm::vec3(0.0f, 5.8f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+		glm::vec3(6.0f, 5.8f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+		glm::vec3(-6.0f, 5.8f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f)
+	};
+	
+	for (int i = 0; i < RoofPosRot.size(); i += 2)
+	{
+		ModelLighting* Floor = new ModelLighting(RoofPosRot.at(i), RoofPosRot.at(i + 1));
+		Floor->setMesh("res/meshes/wall.obj");
+		Floor->setDiffuseTexture("res/textures/metal2_diff.png");
+		Floor->setSpecularTexture("res/textures/metal2_spec.png");
+		Floor->setNormalTexture("res/textures/metal2_norm.png", false);
+		m_sceneMeshes.push_back(Floor);
+	}
+	//
+	//Crates
+	std::vector<glm::vec3> DresserPosRot =
+	{
+		glm::vec3(0.0f, 0.0f, -7.75f), glm::vec3(0.0f, 0.0f, 0.0f),
+		//glm::vec3(-3.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	};
+	
+	for (int i = 0; i < DresserPosRot.size(); i += 2)
+	{
+		ModelLighting* dresser = new ModelLighting(DresserPosRot.at(i), DresserPosRot.at(i + 1));
+		dresser->setMesh("res/meshes/dresser.obj");
+		dresser->setDiffuseTexture("res/textures/dresser_diff.png");
+		dresser->setSpecularTexture("res/textures/dresser_spec.png");
+		dresser->setNormalTexture("res/textures/dresser_norm.png", false);
+		m_sceneMeshes.push_back(dresser);
+	}
+
+	//Crates
+	std::vector<glm::vec3> StairsPos =
+	{
+		glm::vec3(0.0f, -2.25f, 10.0f), glm::vec3(0.0f, 90.0f, 0.0f),
+	};
+
+	for (int i = 0; i < StairsPos.size(); i += 2)
+	{
+		ModelLighting* Crate = new ModelLighting(StairsPos.at(i), StairsPos.at(i + 1));
+		Crate->setMesh("res/meshes/stairs.obj");
+		Crate->setDiffuseTexture("res/textures/wood2_diff.png");
+		Crate->setSpecularTexture("res/textures/wood2_spec.png");
+		Crate->setNormalTexture("res/textures/wood2_norm.png", false);
+		m_sceneMeshes.push_back(Crate);
+	}
+
+	//Grass
+	std::vector<glm::vec3> GrassPosRot =
+	{
+		glm::vec3(0.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(6.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-6.0f,-1.5f,  0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(6.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-6.0f,-1.5f,  6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(6.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-6.0f,-1.5f,  -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+
+		glm::vec3(-18.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-12.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-24.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-18.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-12.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-24.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-18.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-12.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-24.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+
+		glm::vec3(18.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(12.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(24.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(18.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(12.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(24.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(18.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(12.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(24.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+
+		//
+		glm::vec3(0.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(6.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-6.0f,-1.5f,  18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(6.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-6.0f,-1.5f,  24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(6.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-6.0f,-1.5f,  12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+
+		glm::vec3(-18.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-12.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-24.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-18.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-12.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-24.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-18.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-12.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-24.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+
+		glm::vec3(18.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(12.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(24.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(18.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(12.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(24.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(18.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(12.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(24.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f)
+	};
+
+
+	for (int i = 0; i < GrassPosRot.size(); i += 2)
+	{
+		ModelLighting* Floor = new ModelLighting(GrassPosRot.at(i), GrassPosRot.at(i + 1));
+		Floor->setMesh("res/meshes/plane.obj");
+		Floor->setDiffuseTexture("res/textures/grass_diff.png");
+		Floor->setSpecularTexture("res/textures/grass_spec.png");
+		//Floor->setNormalTexture("res/textures/carpet_norm.png", false);
+		//Floor->setHeightTexture("res/textures/carpet_height.png", 0.05f);
 		//Floor->setEmissionTexture("res/textures/matrix_emis.png");
 		m_sceneMeshes.push_back(Floor);
 	}
 
 	
-	
-	//Z wall
-	//std::vector<glm::vec3> WallPosRot =
-	//{
-	//	glm::vec3(-6.0f, 3.0f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
-	//	glm::vec3(0.0f, 3.0f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
-	//	glm::vec3(6.0f, 3.0f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
-	//	glm::vec3(-6.0f, 3.0f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
-	//	glm::vec3(0.0f, 3.0f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
-	//	glm::vec3(6.0f, 3.0f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f)
-	//
-	//};
-	//
-	//for (int i = 0; i < WallPosRot.size(); i += 2)
-	//{
-	//	ModelLighting* wall = new ModelLighting(WallPosRot.at(i), WallPosRot.at(i+1));
-	//	wall->setMesh("res/meshes/plane.obj");
-	//	wall->setDiffuseTexture("res/textures/cartoonBrick_diff.png");
-	//	wall->setSpecularTexture("res/textures/cartoonBrick_spec.png");
-	//	wall->setNormalTexture("res/textures/cartoonBrick_norm.png", false);
-	//	wall->setHeightTexture("res/textures/cartoonBrick_height.png", 0.05f);
-	//	//wall->setEmissionTexture("res/textures/cartoonBrick_emis.png");
-	//	m_sceneMeshes.push_back(wall);
-	//}
-	//
-	////Side wall
-	//std::vector<glm::vec3> SideWallPosRot =
-	//{
-	//	glm::vec3(-9.0f, 3.0f, -6.0f), glm::vec3(90.0f, 0.0f, -90.0f),
-	//	glm::vec3(-9.0f, 3.0f, 0.0f), glm::vec3(90.0f, 0.0f, -90.0f),
-	//	glm::vec3(-9.0f, 3.0f, 6.0f), glm::vec3(90.0f, 0.0f, -90.0f),
-	//	glm::vec3(9.0f, 3.0f, -6.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-	//	glm::vec3(9.0f, 3.0f, 0.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-	//	glm::vec3(9.0f, 3.0f, 6.0f), glm::vec3(90.0f, 0.0f, 90.0f)
-	//};
-	//
-	//for (int i = 0; i < SideWallPosRot.size(); i += 2)
-	//{
-	//	ModelLighting* wall = new ModelLighting(SideWallPosRot.at(i), SideWallPosRot.at(i + 1));
-	//	wall->setMesh("res/meshes/plane.obj");
-	//	wall->setDiffuseTexture("res/textures/wood2_diff.png");
-	//	wall->setSpecularTexture("res/textures/wood2_spec.png");
-	//	wall->setNormalTexture("res/textures/wood2_norm.png", false);
-	//	m_sceneMeshes.push_back(wall);
-	//}
-	//
-	////Roof
-	//std::vector<glm::vec3> RoofPosRot =
-	//{
-	//	glm::vec3(0.0f, 6.0f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-	//	glm::vec3(6.0f, 6.0f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-	//	glm::vec3(-6.0f, 6.0f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-	//	glm::vec3(0.0f, 6.0f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-	//	glm::vec3(6.0f, 6.0f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-	//	glm::vec3(-6.0f, 6.0f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-	//	glm::vec3(0.0f, 6.0f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-	//	glm::vec3(6.0f, 6.0f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-	//	glm::vec3(-6.0f, 6.0f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f)
-	//};
-	//
-	//for (int i = 0; i < RoofPosRot.size(); i += 2)
-	//{
-	//	ModelLighting* Floor = new ModelLighting(RoofPosRot.at(i), RoofPosRot.at(i + 1));
-	//	Floor->setMesh("res/meshes/plane.obj");
-	//	Floor->setDiffuseTexture("res/textures/metal2_diff.png");
-	//	Floor->setSpecularTexture("res/textures/metal2_spec.png");
-	//	Floor->setNormalTexture("res/textures/metal2_norm.png", false);
-	//	m_sceneMeshes.push_back(Floor);
-	//}
-	
-	//Crates
-	std::vector<glm::vec3> CratePosRot =
-	{
-		glm::vec3(0.0f, 0.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		//glm::vec3(-3.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-	};
-	
-	for (int i = 0; i < CratePosRot.size(); i += 2)
-	{
-		ModelLighting* Crate = new ModelLighting(CratePosRot.at(i), CratePosRot.at(i + 1));
-		Crate->setMesh("res/meshes/crate.obj");
-		Crate->setDiffuseTexture("res/textures/crate_diff.png");
-		Crate->setSpecularTexture("res/textures/crate_spec.png");
-		//Crate->setNormalTexture("res/textures/crate_norm.png", false);
-		m_sceneMeshes.push_back(Crate);
-	}
-
-	//std::vector<glm::vec3> CottagePosRot =
-	//{
-	//	glm::vec3(20.0f, 0.0f, 3.0f), glm::vec3(0.0f, 90.0f, 0.0f)
-	//};
-	//
-	//for (int i = 0; i < CottagePosRot.size(); i += 2)
-	//{
-	//	ModelLighting* cottage = new ModelLighting(CottagePosRot.at(i), CottagePosRot.at(i + 1));
-	//	cottage->setMesh("res/meshes/shack.obj");
-	//	cottage->setDiffuseTexture("res/textures/shack_diff.png");
-	//	cottage->setSpecularTexture("res/textures/shack_spec.png");
-	//	cottage->setNormalTexture("res/textures/shack_norm.png", false);
-	//	m_sceneMeshes.push_back(cottage);
-	//}
-	//
-	//std::vector<glm::vec3> CottagePosRot2 
-	//{
-	//	glm::vec3(20.0f, 0.0f, 7.0f), glm::vec3(0.0f, 90.0f, 0.0f)
-	//};
-	//
-	//for (int i = 0; i < CottagePosRot2.size(); i += 2)
-	//{
-	//	ModelLighting* cottage = new ModelLighting(CottagePosRot2.at(i), CottagePosRot2.at(i + 1));
-	//	cottage->setMesh("res/meshes/shack.obj");
-	//	cottage->setDiffuseTexture("res/textures/shack_diff.png");
-	//	cottage->setSpecularTexture("res/textures/shack_spec.png");
-	//	//cottage->setNormalTexture("res/textures/cottage_norm.png", false);
-	//	m_sceneMeshes.push_back(cottage);
-	//}
 
 
 	//Light
@@ -243,25 +335,25 @@ void Scene::initScene()
 void Scene::updateScene()
 {
 	m_sceneCamera->Update(0.025f);
-	//checkForFilterUpdate();
+	checkForFilterUpdate();
 
-	//m_sceneMSAAFrameBuffer->bindFramebuffer();
+	m_sceneMSAAFrameBuffer->bindFramebuffer();
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Draw first pass of all models
-	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-	glClear(GL_DEPTH_BUFFER_BIT);
-	
+	//glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	//glClear(GL_DEPTH_BUFFER_BIT);
+
 
 	for (Model* m : m_sceneMeshes)
 	{
 		m->setMatrixValues();
-		m->drawPassOne();
+		//m->drawPassOne();
 	}
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//glActiveTexture(GL_TEXTURE5);
 	//glBindTexture(GL_TEXTURE_2D, depthMap);
 
@@ -273,13 +365,13 @@ void Scene::updateScene()
 	}
 
 	//Reads from the MSAA buffer and writes it to the Filter buffer
-	//glBindFramebuffer(GL_READ_FRAMEBUFFER, m_sceneMSAAFrameBuffer->getFBO());
-	//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_sceneFilterFramebuffer->getFBO());
-	//glBlitFramebuffer(0, 0, 1280, 720, 0, 0, 1280, 720, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-	//
-	//m_sceneMSAAFrameBuffer->unbindFramebuffer();
-	//
-	//m_sceneFilterFramebuffer->draw();
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_sceneMSAAFrameBuffer->getFBO());
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_sceneFilterFramebuffer->getFBO());
+	glBlitFramebuffer(0, 0, 1280, 720, 0, 0, 1280, 720, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	
+	m_sceneMSAAFrameBuffer->unbindFramebuffer();
+	
+	m_sceneFilterFramebuffer->draw();
 
 }
 
@@ -315,38 +407,38 @@ void Scene::checkForFilterUpdate()
 
 }
 
-void Scene::setupShadowStuff()
-{
-
-	glGenFramebuffers(1, &depthMapFBO);
-	glGenTextures(1, &depthMap);
-	glBindTexture(GL_TEXTURE_2D, depthMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1280, 720, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-
-	//Attach depth texture to framebuffers depth buffer
-	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
-
-	//Tell framebuffer that no colour data will be rendered 
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	float near_plane = 1.0f, far_plane = 7.5f;
-	lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-	lightView = glm::lookAt(glm::vec3(-2.0f, 3.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	lightSpaceMatrix = lightProjection * lightView;
-
-	EngineStatics::setLightSpaceMatrix(&lightSpaceMatrix);
-	EngineStatics::setDepthMap(&depthMap);
-
-}
+//void Scene::setupShadowStuff()
+//{
+//
+//	glGenFramebuffers(1, &depthMapFBO);
+//	glGenTextures(1, &depthMap);
+//	glBindTexture(GL_TEXTURE_2D, depthMap);
+//	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1280, 720, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+//	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+//	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+//
+//	//Attach depth texture to framebuffers depth buffer
+//	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+//
+//	//Tell framebuffer that no colour data will be rendered 
+//	glDrawBuffer(GL_NONE);
+//	glReadBuffer(GL_NONE);
+//	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+//
+//	float near_plane = 1.0f, far_plane = 7.5f;
+//	lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+//	lightView = glm::lookAt(glm::vec3(-2.0f, 3.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+//	lightSpaceMatrix = lightProjection * lightView;
+//
+//	EngineStatics::setLightSpaceMatrix(&lightSpaceMatrix);
+//	EngineStatics::setDepthMap(&depthMap);
+//
+//}
 
 /// <summary>
 /// Creates the scene camera, remakes it if one already exists

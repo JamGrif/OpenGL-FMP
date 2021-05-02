@@ -8,6 +8,7 @@
 #include "ModelLighting.h"
 #include "ModelSky.h"
 #include "ModelEnvironment.h"
+#include "ModelSprite.h"
 #include "Framebuffer.h"
 
 class Scene
@@ -37,11 +38,11 @@ private:
 	Framebuffer* m_sceneFilterFramebuffer;	//Recieves info from the MSAAframebuffer which then draws onto a quad which gets displayed to the screen
 
 
-	unsigned int depthMapFBO;
-	unsigned int depthMap;
-	glm::mat4 lightProjection = glm::mat4(1.0f);
-	glm::mat4 lightView = glm::mat4(1.0f);
-	glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
+	//unsigned int depthMapFBO;
+	//unsigned int depthMap;
+	//glm::mat4 lightProjection = glm::mat4(1.0f);
+	//glm::mat4 lightView = glm::mat4(1.0f);
+	//glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
 
 };
 

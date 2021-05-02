@@ -66,6 +66,9 @@
     <ClCompile Include="src\Framebuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ModelSprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader.h">
@@ -119,6 +122,9 @@
     <ClInclude Include="src\Framebuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ModelSprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\jeff.jpg">
@@ -146,5 +152,7 @@
     <None Include="res\shaders\environmentMapping-vertex.glsl" />
     <None Include="res\shaders\framebuffer-fragment.glsl" />
     <None Include="res\shaders\framebuffer-vertex.glsl" />
+    <None Include="res\shaders\blendingSprite-vertex.glsl" />
+    <None Include="res\shaders\blendingSprite-fragment.glsl" />
   </ItemGroup>
 </Project>

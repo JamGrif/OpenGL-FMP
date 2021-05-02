@@ -17,8 +17,8 @@ struct PointLight
 	glm::vec3	Position;
 
 	float		Constant = 1.0f;
-	float		Linear = 0.045f;
-	float		Quadratic = 0.0075f;
+	float		Linear = 0.027f;
+	float		Quadratic = 0.0028f;
 	
 	glm::vec3	Ambient { 0.3f, 0.3f, 0.3f };
 	glm::vec3	Diffuse { 1.0f, 1.0f, 1.0f };
