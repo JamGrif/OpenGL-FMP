@@ -10,6 +10,7 @@
 #include "ModelEnvironment.h"
 #include "ModelSprite.h"
 #include "Framebuffer.h"
+#include "Terrain.h"
 
 class Scene
 {

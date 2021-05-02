@@ -16,3 +16,5 @@ LightManager* EngineStatics::lightManager = nullptr;
 
 unsigned int* EngineStatics::depthMap = 0;
 
+GLfloat EngineStatics::deltaTime = 0;
+

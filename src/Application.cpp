@@ -125,6 +125,11 @@ void Application::appLoop()
 	int frameCount = 0;
 	while (!glfwWindowShouldClose(m_appWindow))
 	{
+		//Delta time
+		GLfloat currentFrame = glfwGetTime();
+		m_deltaTime = currentFrame - m_lastFrame;
+		m_lastFrame = currentFrame;
+		 
 		// Measure speed
 		double currentTime = glfwGetTime();
 		frameCount++;
@@ -137,6 +142,8 @@ void Application::appLoop()
 			frameCount = 0;
 			previousTime = currentTime;
 		}
+
+		EngineStatics::setDeltaTime(m_deltaTime);
 
 		glClear(GL_DEPTH_BUFFER_BIT); //Clears the screen buffers
 		glfwPollEvents();

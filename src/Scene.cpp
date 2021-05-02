@@ -52,6 +52,9 @@ void Scene::initScene()
 
 	m_sceneFilterFramebuffer = new Framebuffer(false);
 	m_sceneMSAAFrameBuffer = new Framebuffer(true);
+
+	//Terrain
+	m_sceneMeshes.push_back(new Terrain(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(180.0f, 0.0f, 0.0f)));
 	
 	//ModelEnvironment* reflectionModel = new ModelEnvironment(glm::vec3(0.0f, 8.0f, 0.0f));
 	//reflectionModel->toggleReflection(true);
@@ -90,268 +93,268 @@ void Scene::initScene()
 	//m_sceneLightManager->addSpotLight(0.0f, 0.0f, 0.0f);
 
 	//Floor
-	std::vector<glm::vec3> FloorPosRot =
-	{
-		glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 0.0f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, 0.0f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f, 0.0f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 0.0f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, 0.0f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f, 0.0f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f)
-	};
-	
-	
-	for (int i = 0; i < FloorPosRot.size(); i += 2)
-	{
-		ModelLighting* Floor = new ModelLighting(FloorPosRot.at(i), FloorPosRot.at(i + 1));
-		Floor->setMesh("res/meshes/plane.obj");
-		Floor->setDiffuseTexture("res/textures/carpet_diff.png");
-		Floor->setSpecularTexture("res/textures/carpet_spec.png");
-		Floor->setNormalTexture("res/textures/carpet_norm.png", false);
-		Floor->setHeightTexture("res/textures/carpet_height.png", 0.05f);
-		//Floor->setEmissionTexture("res/textures/matrix_emis.png");
-		m_sceneMeshes.push_back(Floor);
-	}
-
-	std::vector<glm::vec3> ConcreteFloor =
-	{
-		glm::vec3(0.0f, -0.8f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, -0.8f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f, -0.8f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, -0.8f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, -0.8f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f, -0.8f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, -0.8f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, -0.8f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f, -0.8f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f)
-	};
-
-
-	for (int i = 0; i < ConcreteFloor.size(); i += 2)
-	{
-		ModelLighting* Floor = new ModelLighting(ConcreteFloor.at(i), ConcreteFloor.at(i + 1));
-		Floor->setMesh("res/meshes/slab.obj");
-		Floor->setDiffuseTexture("res/textures/concreteSlab_diff.png");
-		Floor->setSpecularTexture("res/textures/concreteSlab_spec.png");
-		Floor->setNormalTexture("res/textures/concreteSlab_norm.png", false);
-		Floor->setHeightTexture("res/textures/concreteSlab_height.png", 0.01f);
-		m_sceneMeshes.push_back(Floor);
-	}
-
-	//Side wall
-	std::vector<glm::vec3> SideWallPosRot =
-	{
-		glm::vec3(-9.0f, 2.8f, -6.0f), glm::vec3(90.0f, 0.0f, -90.0f),
-		glm::vec3(-9.0f, 2.8f, 0.0f), glm::vec3(90.0f, 0.0f, -90.0f),
-		glm::vec3(-9.0f, 2.8f, 6.0f), glm::vec3(90.0f, 0.0f, -90.0f),
-		glm::vec3(9.0f, 2.8f, -6.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-		glm::vec3(9.0f, 2.8f, 0.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-		glm::vec3(9.0f, 2.8f, 6.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-		glm::vec3(-6.0f, 2.8f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 2.8f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, 2.8f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f, 2.8f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
-		//glm::vec3(0.0f, 2.8f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
-		glm::vec3(6.0f, 2.8f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f)
-	};
-	
-	for (int i = 0; i < SideWallPosRot.size(); i += 2)
-	{
-		ModelLighting* wall = new ModelLighting(SideWallPosRot.at(i), SideWallPosRot.at(i + 1));
-		wall->setMesh("res/meshes/wall.obj");
-		wall->setDiffuseTexture("res/textures/woodWall_diff.png");
-		wall->setSpecularTexture("res/textures/woodWall_spec.png");
-		wall->setNormalTexture("res/textures/woodWall_norm.png", false);
-		wall->setHeightTexture("res/textures/woodWall_height.png", 0.04);
-		m_sceneMeshes.push_back(wall);
-	}
-	
-	////Roof
-	std::vector<glm::vec3> RoofPosRot =
-	{
-		glm::vec3(0.0f, 5.8f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(6.0f, 5.8f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(-6.0f, 5.8f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(0.0f, 5.8f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(6.0f, 5.8f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(-6.0f, 5.8f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(0.0f, 5.8f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(6.0f, 5.8f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(-6.0f, 5.8f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f)
-	};
-	
-	for (int i = 0; i < RoofPosRot.size(); i += 2)
-	{
-		ModelLighting* Floor = new ModelLighting(RoofPosRot.at(i), RoofPosRot.at(i + 1));
-		Floor->setMesh("res/meshes/wall.obj");
-		Floor->setDiffuseTexture("res/textures/metal2_diff.png");
-		Floor->setSpecularTexture("res/textures/metal2_spec.png");
-		Floor->setNormalTexture("res/textures/metal2_norm.png", false);
-		m_sceneMeshes.push_back(Floor);
-	}
-	
-	//Dresser
-	std::vector<glm::vec3> DresserPosRot =
-	{
-		glm::vec3(0.0f, 0.0f, -7.75f), glm::vec3(0.0f, 0.0f, 0.0f),
-		//glm::vec3(-3.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-	};
-	
-	for (int i = 0; i < DresserPosRot.size(); i += 2)
-	{
-		ModelLighting* dresser = new ModelLighting(DresserPosRot.at(i), DresserPosRot.at(i + 1));
-		dresser->setMesh("res/meshes/dresser.obj");
-		dresser->setDiffuseTexture("res/textures/dresser_diff.png");
-		dresser->setSpecularTexture("res/textures/dresser_spec.png");
-		dresser->setNormalTexture("res/textures/dresser_norm.png", false);
-		m_sceneMeshes.push_back(dresser);
-	}
-
-	//Front Stair
-	std::vector<glm::vec3> StairsPos =
-	{
-		glm::vec3(0.0f, -2.25f, 10.0f), glm::vec3(0.0f, 90.0f, 0.0f),
-	};
-
-	for (int i = 0; i < StairsPos.size(); i += 2)
-	{
-		ModelLighting* Crate = new ModelLighting(StairsPos.at(i), StairsPos.at(i + 1));
-		Crate->setMesh("res/meshes/stairs.obj");
-		Crate->setDiffuseTexture("res/textures/wood2_diff.png");
-		Crate->setSpecularTexture("res/textures/wood2_spec.png");
-		Crate->setNormalTexture("res/textures/wood2_norm.png", false);
-		m_sceneMeshes.push_back(Crate);
-	}
-
-	//Grass
-	std::vector<glm::vec3> GrassPosRot =
-	{
-		glm::vec3(0.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f,-1.5f,  0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f,-1.5f,  6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f,-1.5f,  -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-
-		glm::vec3(-18.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-12.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-24.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-18.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-12.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-24.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-18.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-12.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-24.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-
-		glm::vec3(18.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(12.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(24.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(18.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(12.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(24.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(18.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(12.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(24.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-
-		//
-		glm::vec3(0.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f,-1.5f,  18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f,-1.5f,  24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f,-1.5f,  12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-
-		glm::vec3(-18.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-12.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-24.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-18.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-12.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-24.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-18.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-12.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-24.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-
-		glm::vec3(18.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(12.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(24.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(18.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(12.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(24.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(18.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(12.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(24.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f)
-	};
-
-
-	for (int i = 0; i < GrassPosRot.size(); i += 2)
-	{
-		ModelLighting* Grass = new ModelLighting(GrassPosRot.at(i), GrassPosRot.at(i + 1));
-		Grass->setMesh("res/meshes/plane.obj");
-		Grass->setDiffuseTexture("res/textures/grass_diff.png");
-		Grass->setSpecularTexture("res/textures/grass_spec.png");
-		m_sceneMeshes.push_back(Grass);
-	}
-
-
-	//Side wall
-	std::vector<glm::vec3> OutsideWall =
-	{
-		glm::vec3(-12.0f, 1.5f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
-		//glm::vec3(-9.0f, 2.8f, 0.0f), glm::vec3(90.0f, 0.0f, -90.0f),
-		//glm::vec3(-9.0f, 2.8f, 6.0f), glm::vec3(90.0f, 0.0f, -90.0f),
-		//glm::vec3(9.0f, 2.8f, -6.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-		//glm::vec3(9.0f, 2.8f, 0.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-		//glm::vec3(9.0f, 2.8f, 6.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-		//glm::vec3(-6.0f, 2.8f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
-		//glm::vec3(0.0f, 2.8f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
-		//glm::vec3(6.0f, 2.8f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
-		//glm::vec3(-6.0f, 2.8f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
-		////glm::vec3(0.0f, 2.8f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
-		//glm::vec3(6.0f, 2.8f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f)
-	};
-
-	for (int i = 0; i < OutsideWall.size(); i += 2)
-	{
-		ModelLighting* wall = new ModelLighting(OutsideWall.at(i), OutsideWall.at(i + 1));
-		wall->setMesh("res/meshes/signpost.obj");
-		wall->setDiffuseTexture("res/textures/wood2_diff.png");
-		wall->setEmissionTexture("res/textures/sign_emis.png");
-		//wall->setSpecularTexture("res/textures/concreteBrick_spec.png");
-		//wall->setNormalTexture("res/textures/concreteBrick_norm.png", false);
-		//wall->setHeightTexture("res/textures/concreteBrick_height.png", 0.005);
-		m_sceneMeshes.push_back(wall);
-	}
-
-	
-
-
-	//Light
-	std::vector<glm::vec3> LightPos =
-	{
-		glm::vec3(0.0f, 3.0f, 0.0f),
-		//glm::vec3(15.0f, 3.0f, 3.0f),
-		//glm::vec3(-3.0f, 3.0f, 5.0f),
-		//glm::vec3(3.0f, 3.0f, 5.0f)
-	};
-	
-	for (int i = 0; i < LightPos.size(); i++)
-	{
-		m_sceneLightManager->addPointLight(LightPos.at(i).x, LightPos.at(i).y, LightPos.at(i).z);
-	
-		ModelBasic* light = new ModelBasic(LightPos.at(i));
-		light->setMesh("res/meshes/cube.obj");
-		light->copyPointLight(i);
-		m_sceneMeshes.push_back(light);
-	}
+	//std::vector<glm::vec3> FloorPosRot =
+	//{
+	//	glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(6.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-6.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(0.0f, 0.0f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(6.0f, 0.0f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-6.0f, 0.0f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(0.0f, 0.0f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(6.0f, 0.0f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-6.0f, 0.0f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f)
+	//};
+	//
+	//
+	//for (int i = 0; i < FloorPosRot.size(); i += 2)
+	//{
+	//	ModelLighting* Floor = new ModelLighting(FloorPosRot.at(i), FloorPosRot.at(i + 1));
+	//	Floor->setMesh("res/meshes/plane.obj");
+	//	Floor->setDiffuseTexture("res/textures/carpet_diff.png");
+	//	Floor->setSpecularTexture("res/textures/carpet_spec.png");
+	//	Floor->setNormalTexture("res/textures/carpet_norm.png", false);
+	//	Floor->setHeightTexture("res/textures/carpet_height.png", 0.05f);
+	//	//Floor->setEmissionTexture("res/textures/matrix_emis.png");
+	//	m_sceneMeshes.push_back(Floor);
+	//}
+	//
+	//std::vector<glm::vec3> ConcreteFloor =
+	//{
+	//	glm::vec3(0.0f, -0.8f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(6.0f, -0.8f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-6.0f, -0.8f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(0.0f, -0.8f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(6.0f, -0.8f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-6.0f, -0.8f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(0.0f, -0.8f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(6.0f, -0.8f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-6.0f, -0.8f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f)
+	//};
+	//
+	//
+	//for (int i = 0; i < ConcreteFloor.size(); i += 2)
+	//{
+	//	ModelLighting* Floor = new ModelLighting(ConcreteFloor.at(i), ConcreteFloor.at(i + 1));
+	//	Floor->setMesh("res/meshes/slab.obj");
+	//	Floor->setDiffuseTexture("res/textures/concreteSlab_diff.png");
+	//	Floor->setSpecularTexture("res/textures/concreteSlab_spec.png");
+	//	Floor->setNormalTexture("res/textures/concreteSlab_norm.png", false);
+	//	Floor->setHeightTexture("res/textures/concreteSlab_height.png", 0.01f);
+	//	m_sceneMeshes.push_back(Floor);
+	//}
+	//
+	////Side wall
+	//std::vector<glm::vec3> SideWallPosRot =
+	//{
+	//	glm::vec3(-9.0f, 2.8f, -6.0f), glm::vec3(90.0f, 0.0f, -90.0f),
+	//	glm::vec3(-9.0f, 2.8f, 0.0f), glm::vec3(90.0f, 0.0f, -90.0f),
+	//	glm::vec3(-9.0f, 2.8f, 6.0f), glm::vec3(90.0f, 0.0f, -90.0f),
+	//	glm::vec3(9.0f, 2.8f, -6.0f), glm::vec3(90.0f, 0.0f, 90.0f),
+	//	glm::vec3(9.0f, 2.8f, 0.0f), glm::vec3(90.0f, 0.0f, 90.0f),
+	//	glm::vec3(9.0f, 2.8f, 6.0f), glm::vec3(90.0f, 0.0f, 90.0f),
+	//	glm::vec3(-6.0f, 2.8f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
+	//	glm::vec3(0.0f, 2.8f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
+	//	glm::vec3(6.0f, 2.8f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
+	//	glm::vec3(-6.0f, 2.8f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
+	//	//glm::vec3(0.0f, 2.8f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
+	//	glm::vec3(6.0f, 2.8f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f)
+	//};
+	//
+	//for (int i = 0; i < SideWallPosRot.size(); i += 2)
+	//{
+	//	ModelLighting* wall = new ModelLighting(SideWallPosRot.at(i), SideWallPosRot.at(i + 1));
+	//	wall->setMesh("res/meshes/wall.obj");
+	//	wall->setDiffuseTexture("res/textures/woodWall_diff.png");
+	//	wall->setSpecularTexture("res/textures/woodWall_spec.png");
+	//	wall->setNormalTexture("res/textures/woodWall_norm.png", false);
+	//	wall->setHeightTexture("res/textures/woodWall_height.png", 0.04);
+	//	m_sceneMeshes.push_back(wall);
+	//}
+	//
+	//////Roof
+	//std::vector<glm::vec3> RoofPosRot =
+	//{
+	//	glm::vec3(0.0f, 5.8f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(6.0f, 5.8f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(-6.0f, 5.8f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(0.0f, 5.8f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(6.0f, 5.8f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(-6.0f, 5.8f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(0.0f, 5.8f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(6.0f, 5.8f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
+	//	glm::vec3(-6.0f, 5.8f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f)
+	//};
+	//
+	//for (int i = 0; i < RoofPosRot.size(); i += 2)
+	//{
+	//	ModelLighting* Floor = new ModelLighting(RoofPosRot.at(i), RoofPosRot.at(i + 1));
+	//	Floor->setMesh("res/meshes/wall.obj");
+	//	Floor->setDiffuseTexture("res/textures/metal2_diff.png");
+	//	Floor->setSpecularTexture("res/textures/metal2_spec.png");
+	//	Floor->setNormalTexture("res/textures/metal2_norm.png", false);
+	//	m_sceneMeshes.push_back(Floor);
+	//}
+	//
+	////Dresser
+	//std::vector<glm::vec3> DresserPosRot =
+	//{
+	//	glm::vec3(0.0f, 0.0f, -7.75f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	//glm::vec3(-3.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//};
+	//
+	//for (int i = 0; i < DresserPosRot.size(); i += 2)
+	//{
+	//	ModelLighting* dresser = new ModelLighting(DresserPosRot.at(i), DresserPosRot.at(i + 1));
+	//	dresser->setMesh("res/meshes/dresser.obj");
+	//	dresser->setDiffuseTexture("res/textures/dresser_diff.png");
+	//	dresser->setSpecularTexture("res/textures/dresser_spec.png");
+	//	dresser->setNormalTexture("res/textures/dresser_norm.png", false);
+	//	m_sceneMeshes.push_back(dresser);
+	//}
+	//
+	////Front Stair
+	//std::vector<glm::vec3> StairsPos =
+	//{
+	//	glm::vec3(0.0f, -2.25f, 10.0f), glm::vec3(0.0f, 90.0f, 0.0f),
+	//};
+	//
+	//for (int i = 0; i < StairsPos.size(); i += 2)
+	//{
+	//	ModelLighting* Crate = new ModelLighting(StairsPos.at(i), StairsPos.at(i + 1));
+	//	Crate->setMesh("res/meshes/stairs.obj");
+	//	Crate->setDiffuseTexture("res/textures/wood2_diff.png");
+	//	Crate->setSpecularTexture("res/textures/wood2_spec.png");
+	//	Crate->setNormalTexture("res/textures/wood2_norm.png", false);
+	//	m_sceneMeshes.push_back(Crate);
+	//}
+	//
+	////Grass
+	//std::vector<glm::vec3> GrassPosRot =
+	//{
+	//	glm::vec3(0.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(6.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-6.0f,-1.5f,  0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(0.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(6.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-6.0f,-1.5f,  6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(0.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(6.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-6.0f,-1.5f,  -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//
+	//	glm::vec3(-18.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-12.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-24.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-18.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-12.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-24.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-18.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-12.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-24.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//
+	//	glm::vec3(18.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(12.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(24.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(18.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(12.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(24.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(18.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(12.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(24.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//
+	//	//
+	//	glm::vec3(0.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(6.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-6.0f,-1.5f,  18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(0.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(6.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-6.0f,-1.5f,  24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(0.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(6.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-6.0f,-1.5f,  12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//
+	//	glm::vec3(-18.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-12.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-24.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-18.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-12.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-24.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-18.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-12.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(-24.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//
+	//	glm::vec3(18.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(12.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(24.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(18.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(12.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(24.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(18.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(12.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(24.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f)
+	//};
+	//
+	//
+	//for (int i = 0; i < GrassPosRot.size(); i += 2)
+	//{
+	//	ModelLighting* Grass = new ModelLighting(GrassPosRot.at(i), GrassPosRot.at(i + 1));
+	//	Grass->setMesh("res/meshes/plane.obj");
+	//	Grass->setDiffuseTexture("res/textures/grass_diff.png");
+	//	Grass->setSpecularTexture("res/textures/grass_spec.png");
+	//	m_sceneMeshes.push_back(Grass);
+	//}
+	//
+	//
+	////Side wall
+	//std::vector<glm::vec3> OutsideWall =
+	//{
+	//	glm::vec3(-12.0f, 1.5f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
+	//	//glm::vec3(-9.0f, 2.8f, 0.0f), glm::vec3(90.0f, 0.0f, -90.0f),
+	//	//glm::vec3(-9.0f, 2.8f, 6.0f), glm::vec3(90.0f, 0.0f, -90.0f),
+	//	//glm::vec3(9.0f, 2.8f, -6.0f), glm::vec3(90.0f, 0.0f, 90.0f),
+	//	//glm::vec3(9.0f, 2.8f, 0.0f), glm::vec3(90.0f, 0.0f, 90.0f),
+	//	//glm::vec3(9.0f, 2.8f, 6.0f), glm::vec3(90.0f, 0.0f, 90.0f),
+	//	//glm::vec3(-6.0f, 2.8f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
+	//	//glm::vec3(0.0f, 2.8f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
+	//	//glm::vec3(6.0f, 2.8f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
+	//	//glm::vec3(-6.0f, 2.8f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
+	//	////glm::vec3(0.0f, 2.8f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
+	//	//glm::vec3(6.0f, 2.8f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f)
+	//};
+	//
+	//for (int i = 0; i < OutsideWall.size(); i += 2)
+	//{
+	//	ModelLighting* wall = new ModelLighting(OutsideWall.at(i), OutsideWall.at(i + 1));
+	//	wall->setMesh("res/meshes/signpost.obj");
+	//	wall->setDiffuseTexture("res/textures/wood2_diff.png");
+	//	wall->setEmissionTexture("res/textures/sign_emis.png");
+	//	//wall->setSpecularTexture("res/textures/concreteBrick_spec.png");
+	//	//wall->setNormalTexture("res/textures/concreteBrick_norm.png", false);
+	//	//wall->setHeightTexture("res/textures/concreteBrick_height.png", 0.005);
+	//	m_sceneMeshes.push_back(wall);
+	//}
+	//
+	//
+	//
+	//
+	////Light
+	//std::vector<glm::vec3> LightPos =
+	//{
+	//	glm::vec3(0.0f, 3.0f, 0.0f),
+	//	//glm::vec3(15.0f, 3.0f, 3.0f),
+	//	//glm::vec3(-3.0f, 3.0f, 5.0f),
+	//	//glm::vec3(3.0f, 3.0f, 5.0f)
+	//};
+	//
+	//for (int i = 0; i < LightPos.size(); i++)
+	//{
+	//	m_sceneLightManager->addPointLight(LightPos.at(i).x, LightPos.at(i).y, LightPos.at(i).z);
+	//
+	//	ModelBasic* light = new ModelBasic(LightPos.at(i));
+	//	light->setMesh("res/meshes/cube.obj");
+	//	light->copyPointLight(i);
+	//	m_sceneMeshes.push_back(light);
+	//}
 
 
 }
@@ -361,7 +364,7 @@ void Scene::initScene()
 /// </summary>
 void Scene::updateScene()
 {
-	m_sceneCamera->Update(0.025f);
+	m_sceneCamera->Update(EngineStatics::getDeltaTime());
 	checkForFilterUpdate();
 
 	m_sceneMSAAFrameBuffer->bindFramebuffer();

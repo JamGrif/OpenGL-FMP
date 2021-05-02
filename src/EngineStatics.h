@@ -31,6 +31,9 @@ public:
 	static unsigned int* getDepthMap() { return depthMap; }
 	static void setDepthMap(unsigned int* dm) { depthMap = dm; }
 
+	static GLfloat getDeltaTime() { return deltaTime; }
+	static void setDeltaTime(float dt) { deltaTime = dt; }
+
 
 private:
 
@@ -49,6 +52,8 @@ private:
 	static LightManager* lightManager;
 
 	static unsigned int* depthMap;
+
+	static GLfloat deltaTime;
 
 };
 

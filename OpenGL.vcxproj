@@ -187,6 +187,7 @@ xcopy /y /d $(ProjectDir)res $(TargetDir)\res /S</Command>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\stb_image\stb_image.h" />
@@ -207,6 +208,7 @@ xcopy /y /d $(ProjectDir)res $(TargetDir)\res /S</Command>
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\Terrain.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\icon\Icon.ico" />
@@ -230,6 +232,10 @@ xcopy /y /d $(ProjectDir)res $(TargetDir)\res /S</Command>
     <None Include="res\shaders\lightingPassTwo-vertex.glsl" />
     <None Include="res\shaders\sky-fragment.glsl" />
     <None Include="res\shaders\sky-vertex.glsl" />
+    <None Include="res\shaders\terrain-fragment.glsl" />
+    <None Include="res\shaders\terrain-tessCont.glsl" />
+    <None Include="res\shaders\terrain-tessEval.glsl" />
+    <None Include="res\shaders\terrain-vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

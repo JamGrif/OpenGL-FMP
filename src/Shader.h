@@ -16,7 +16,7 @@ public:
 	~Shader();
 
 	void loadShader(const GLchar* vertexPath, const GLchar* fragmentPath);
-	void loadShader(const GLchar* vertexPath, const GLchar* tessellationPath, const GLchar* fragmentPath);
+	void loadShader(const GLchar* vertexPath, const GLchar* tessellationControlPath, const GLchar* tessellationEvaluationPath, const GLchar* fragmentPath);
 
 	void Bind() const;
 	void Unbind() const;
@@ -31,7 +31,8 @@ public:
 	GLuint getProgram() const;
 	const GLchar* getVertexPath() const;
 	const GLchar* getFragmentPath() const;
-	const GLchar* getTessellationPath() const;
+	const GLchar* getTessellationControlPath() const;
+	const GLchar* getTessellationEvaluationPath() const;
 
 private:
 
@@ -41,7 +42,8 @@ private:
 
 	const GLchar*							m_vertexPath;
 	const GLchar*							m_fragmentPath;
-	const GLchar*							m_tessellationPath;
+	const GLchar*							m_tessellationEvaluationPath;
+	const GLchar*							m_tessellationControlPath;
 
 	//Cache for uniforms
 	std::unordered_map<std::string, int>	m_locationCache;
@@ -55,7 +57,7 @@ class ShaderManager
 public:
 
 	static Shader* loadShader(const GLchar* vertexPath, const GLchar* fragmentPath);
-	static Shader* loadShader(const GLchar* vertexPath, const GLchar* tessellationPath, const GLchar* fragmentPath);
+	static Shader* loadShader(const GLchar* vertexPath, const GLchar* tessellationControlPath, const GLchar* tessellationEvaluationPath, const GLchar* fragmentPath);
 
 	static void clearShaders();
 
