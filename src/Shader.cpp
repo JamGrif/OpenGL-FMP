@@ -6,10 +6,26 @@
 
 std::vector<Shader*> ShaderManager::loadedShaders;
 
-Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
-	:m_vertexPath(vertexPath), m_fragmentPath(fragmentPath), m_shaderProgram(0)
+Shader::Shader()
+	:m_shaderProgram(0)
+{
+	
+
+}
+
+Shader::~Shader()
+{
+	//std::cout << "Shader Destroyed" << std::endl;
+
+	glDeleteProgram(m_shaderProgram);
+}
+
+void Shader::loadShader(const GLchar* vertexPath, const GLchar* fragmentPath)
 {
 	//std::cout << "Shader Initialized" << std::endl;
+
+	m_vertexPath = vertexPath;
+	m_fragmentPath = fragmentPath;
 
 	//Retrieve the vertex/fragment source code from filePath
 	std::string vertexCode;
@@ -101,11 +117,8 @@ Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 	glDeleteShader(fragment);
 }
 
-Shader::~Shader()
+void Shader::loadShader(const GLchar* vertexPath, const GLchar* tessellationPath, const GLchar* fragmentPath)
 {
-	//std::cout << "Shader Destroyed" << std::endl;
-
-	glDeleteProgram(m_shaderProgram);
 }
 
 /// <summary>
@@ -199,6 +212,11 @@ const GLchar* Shader::getFragmentPath() const
 	return m_fragmentPath;
 }
 
+const GLchar* Shader::getTessellationPath() const
+{
+	return m_tessellationPath;
+}
+
 /// <summary>
 /// Cache system that only finds the location of a uniform once and then stores it location.
 /// </summary>
@@ -242,7 +260,30 @@ Shader* ShaderManager::loadShader(const GLchar* vertexPath, const GLchar* fragme
 	//Otherwise, create new texture and add it to vector
 	std::cout << "SHADERMANAGER->" << vertexPath << " + " << fragmentPath << " program is being created" << std::endl;
 
-	loadedShaders.push_back(new Shader(vertexPath, fragmentPath));
+	Shader* s = new Shader();
+	s->loadShader(vertexPath, fragmentPath);
+	loadedShaders.push_back(s);
+	return loadedShaders.back();
+}
+
+Shader* ShaderManager::loadShader(const GLchar* vertexPath, const GLchar* tessellationPath, const GLchar* fragmentPath)
+{
+	//Check if shader program is already loaded
+	for (Shader* s : loadedShaders)
+	{
+		if (s->getVertexPath() == vertexPath && s->getTessellationPath() == tessellationPath && s->getFragmentPath() == fragmentPath)
+		{
+			//std::cout << "SHADERMANAGER->" << vertexPath << " + " << fragmentPath << " program already exists, returning loaded shader program" << std::endl;
+			return s;
+		}
+	}
+
+	//Otherwise, create new texture and add it to vector
+	std::cout << "SHADERMANAGER->" << vertexPath << " + " << fragmentPath << " program is being created" << std::endl;
+
+	Shader* s = new Shader();
+	s->loadShader(vertexPath, tessellationPath, fragmentPath);
+	loadedShaders.push_back(s);
 	return loadedShaders.back();
 }
 
