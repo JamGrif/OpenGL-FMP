@@ -1,9 +1,12 @@
 #version 430 
 out vec4 color;
 
-uniform mat4 mvp_matrix;
+in vec2 tes_out;
+
+layout (binding = 0) uniform sampler2D texture_color;
 
 void main()
 {
-    color = vec4(1.0, 1.0, 0.0, 1.0);
+	//Apply texture to grid
+	color = texture(texture_color, tes_out);
 }

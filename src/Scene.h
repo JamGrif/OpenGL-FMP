@@ -38,6 +38,9 @@ private:
 	Framebuffer* m_sceneMSAAFrameBuffer;		//Scene is drawn to this buffer with MSAA applied
 	Framebuffer* m_sceneFilterFramebuffer;	//Recieves info from the MSAAframebuffer which then draws onto a quad which gets displayed to the screen
 
+	Terrain* m_mountainsX;
+	Terrain* m_mountainsZ;
+
 
 	//unsigned int depthMapFBO;
 	//unsigned int depthMap;
