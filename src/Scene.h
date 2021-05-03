@@ -29,6 +29,8 @@ private:
 
 	void updateOnInput();
 
+	void moveSceneLight();
+
 	
 
 	std::vector<Model*>		m_sceneMeshes;
@@ -51,6 +53,14 @@ private:
 	//glm::mat4 lightProjection = glm::mat4(1.0f);
 	//glm::mat4 lightView = glm::mat4(1.0f);
 	//glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
+
+	//Used to move objects around the scene
+	float minZ = -5;
+	float maxZ = 9;
+	float minX = -25;
+	float maxX = -13;
+	bool incZ = true;
+	bool incX = true;
 
 };
 

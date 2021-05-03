@@ -239,9 +239,9 @@ void Scene::initScene()
 	{
 		ModelLighting* Crate = new ModelLighting(StairsPos.at(i), StairsPos.at(i + 1));
 		Crate->setMesh("res/meshes/stairs.obj");
-		Crate->setDiffuseTexture("res/textures/wood2_diff.png");
-		Crate->setSpecularTexture("res/textures/wood2_spec.png");
-		Crate->setNormalTexture("res/textures/wood2_norm.png", false);
+		Crate->setDiffuseTexture("res/textures/stairs_diff.png");
+		Crate->setSpecularTexture("res/textures/stairs_spec.png");
+		Crate->setNormalTexture("res/textures/stairs_norm.png", false);
 		m_sceneMeshes.push_back(Crate);
 	}
 	
@@ -424,12 +424,65 @@ void Scene::initScene()
 		m_sceneMeshes.push_back(dresser);
 		signNum++;
 	}
+
+	/*
+		Floor showcase
+	*/
+
+	std::vector<const char*> floorMaterials =
+	{
+		//Diffuse map					  //Specular Map					//Normal Map 
+		"res/textures/metal_diff.png",	  "res/textures/metal_spec.png",    "res/textures/metal_norm.png",					//not norm
+		"res/textures/tile_diff.png", "res/textures/tile_spec.png", "res/textures/tile_norm.png",							//not norm
+		"res/textures/sand_diff.png", "res/textures/sand_spec.png", "res/textures/sand_norm.png",							//not norm
+		"res/textures/marble_diff.png", "res/textures/marble_spec.png", "res/textures/marble_norm.png",						//not norm
+		"res/textures/hieroglyphs_diff.png", "res/textures/hieroglyphs_spec.png", "res/textures/hieroglyphs_norm.png",		//not norm		
+		"res/textures/metalHammer_diff.png", "res/textures/metalHammer_spec.png", "res/textures/metalHammer_norm.png",		//norm		
+				"res/textures/skullGround_diff.png", "res/textures/skullGround_spec.png", "res/textures/skullGround_norm.png",		//norm
+		"res/textures/rock_diff.png", "res/textures/rock_spec.png", "res/textures/rock_norm.png",							//norm
+				"res/textures/concrete2_diff.png", "res/textures/concrete2_spec.png", "res/textures/concrete2_norm.png",			//norm
+	};
+
+	std::vector<glm::vec3> floorPos =
+	{
+		glm::vec3(-24.0f, -1.25, -4.0),
+		glm::vec3(-18.0f, -1.25, -4.0),
+		glm::vec3(-12.0f, -1.25, -4.0),
+		glm::vec3(-24.0f, -1.25, 2.0),
+		glm::vec3(-18.0f, -1.25, 2.0),
+		glm::vec3(-18.0f, -1.25, 8.0),
+		glm::vec3(-24.0f, -1.25, 8.0),
+		glm::vec3(-12.0f, -1.25, 2.0),
+		glm::vec3(-12.0f, -1.25, 8.0),
+		
+	};
+
+	int materialNum = 0;
+	for (int i = 0; i < floorPos.size(); i++)
+	{
+		ModelLighting* floor = new ModelLighting(floorPos.at(i));
+		floor->setMesh("res/meshes/plane.obj");
+		floor->setDiffuseTexture(floorMaterials.at(materialNum));
+		floor->setSpecularTexture(floorMaterials.at(materialNum+1));
+		if (materialNum >= 6) 
+		{
+			floor->setNormalTexture(floorMaterials.at(materialNum + 2), true);
+		}
+		else
+		{
+			floor->setNormalTexture(floorMaterials.at(materialNum + 2), false);
+		}
+		
+		m_sceneMeshes.push_back(floor);
+		materialNum += 3;
+	}
+	
 	
 	//Light
 	std::vector<glm::vec3> LightPosAmbDifSpc =
 	{
 		glm::vec3(0.0f, 3.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),
-		glm::vec3(-15.0f, 3.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),
+		glm::vec3(-18.0f, 2.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),
 		glm::vec3(15.0f, 3.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),
 	};
 	
@@ -454,6 +507,8 @@ void Scene::initScene()
 /// </summary>
 void Scene::updateScene()
 {
+	moveSceneLight();
+
 	m_sceneCamera->Update(EngineStatics::getDeltaTime());
 
 	updateOnInput();
@@ -580,6 +635,47 @@ void Scene::updateOnInput()
 	{
 		if (m_sceneLightManager->getPointLight(2) != nullptr)
 			m_sceneLightManager->getPointLight(2)->toggleActive();
+	}
+}
+
+void Scene::moveSceneLight()
+{
+	if (incZ)
+	{
+		m_sceneLightManager->getPointLight(1)->Position.z += 0.075;
+		if (m_sceneLightManager->getPointLight(1)->Position.z >= maxZ)
+		{
+			m_sceneLightManager->getPointLight(1)->Position.z = maxZ;
+			incZ = false;
+		}
+	}
+	else
+	{
+		m_sceneLightManager->getPointLight(1)->Position.z -= 0.075;
+		if (m_sceneLightManager->getPointLight(1)->Position.z <= minZ)
+		{
+			m_sceneLightManager->getPointLight(1)->Position.z = minZ;
+			incZ = true;
+		}
+	}
+
+	if (incX)
+	{
+		m_sceneLightManager->getPointLight(1)->Position.x += 0.1;
+		if (m_sceneLightManager->getPointLight(1)->Position.x >= maxX)
+		{
+			m_sceneLightManager->getPointLight(1)->Position.x = maxX;
+			incX = false;
+		}
+	}
+	else
+	{
+		m_sceneLightManager->getPointLight(1)->Position.x -= 0.1;
+		if (m_sceneLightManager->getPointLight(1)->Position.x <= minX)
+		{
+			m_sceneLightManager->getPointLight(1)->Position.x = minX;
+			incX = true;
+		}
 	}
 }
 
