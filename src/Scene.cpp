@@ -60,19 +60,28 @@ void Scene::initScene()
 	m_sceneMeshes.push_back(m_mountainsZ = new Terrain(glm::vec3(30.0f, 20.0f, -125.0f), glm::vec3(180.0f, 90.0f, 0.0f), glm::vec3(50, 10, 200), -4.5f)); //Mountain on Z axis
 
 	//Geometry shader object
-	ModelGeometry* g = new ModelGeometry(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-	g->setMesh("res/meshes/cube.obj");
+	ModelGeometry* g = new ModelGeometry(glm::vec3(-1.0f, -1.5f, 23.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+	g->setMesh("res/meshes/barrel.obj");
+	g->SetXScale(1.5);
+	g->SetYScale(1.5);
+	g->SetZScale(1.5);
 	m_sceneMeshes.push_back(g);
 	
-	//ModelEnvironment* reflectionModel = new ModelEnvironment(glm::vec3(0.0f, 8.0f, 0.0f));
-	//reflectionModel->toggleReflection(true);
-	//reflectionModel->setMesh("res/meshes/heart.obj");
-	//m_sceneMeshes.push_back(reflectionModel);
-	//
-	//ModelEnvironment* refractionModel = new ModelEnvironment(glm::vec3(3.0f, 8.0f, -3.0f));
-	//refractionModel->toggleRefraction(true);
-	//refractionModel->setMesh("res/meshes/heart.obj");
-	//m_sceneMeshes.push_back(refractionModel);
+	ModelEnvironment* reflectionModel = new ModelEnvironment(glm::vec3(14.0f, 0.5f, -7.0f));
+	reflectionModel->toggleReflection(true);
+	reflectionModel->setMesh("res/meshes/heart.obj");
+	reflectionModel->SetXScale(1);
+	reflectionModel->SetYScale(1);
+	reflectionModel->SetZScale(1);
+	m_sceneMeshes.push_back(reflectionModel);
+	
+	ModelEnvironment* refractionModel = new ModelEnvironment(glm::vec3(22.0f, 0.5f, -7.0f));
+	refractionModel->toggleRefraction(true);
+	refractionModel->setMesh("res/meshes/heart.obj");
+	refractionModel->SetXScale(1);
+	refractionModel->SetYScale(1);
+	refractionModel->SetZScale(1);
+	m_sceneMeshes.push_back(refractionModel);
 
 	//std::vector<glm::vec3> grassPos =
 	//{

@@ -1,9 +1,11 @@
 #version 430 
 out vec4 color;
 
-uniform vec3 blockColour;
+in vec2 varyingTexCoordG;
+
+layout (binding = 0) uniform sampler2D texture_color;
 
 void main()
 {
-    color = vec4(blockColour, 1.0f);
+    color = texture(texture_color, varyingTexCoordG);
 }

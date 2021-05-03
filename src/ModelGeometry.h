@@ -17,6 +17,10 @@ public:
 
 private:
 
+	Texture* m_GeometryTexture;
+
+	float m_inflation;
+	bool m_increasing;
 
 };
 

@@ -1,9 +1,11 @@
 #include "ModelGeometry.h"
 
 ModelGeometry::ModelGeometry(glm::vec3 position, glm::vec3 rotation)
-	:Model(position, rotation)
+	:Model(position, rotation), m_inflation(0)
 {
 	setShaderTwo("res/shaders/geometry-vertex.glsl", "res/shaders/geometry-geometry.glsl", "res/shaders/geometry-fragment.glsl");
+
+	m_GeometryTexture = TextureManager::retrieveTexture("res/textures/barrel_diff.png");
 }
 
 ModelGeometry::~ModelGeometry()
@@ -24,7 +26,47 @@ void ModelGeometry::drawPassTwo()
 	{
 		return;
 	}
-	//std::cout << "geometry" << std::endl;
+
+	//Bind shader
+	m_modelShaderPassTwo->Bind();
+	m_GeometryTexture->Bind();
+
+	if (m_increasing)
+	{
+		m_inflation += 0.025 * EngineStatics::getDeltaTime();
+		if (m_inflation > 0.2)
+		{
+			m_inflation = 0.2;
+			m_increasing = false;
+		}
+	}
+	else
+	{
+		m_inflation -= 0.025 * EngineStatics::getDeltaTime();
+		if (m_inflation < -0.2)
+		{
+			m_inflation = -0.2;
+			m_increasing = true;
+		}
+	}
+		
+
+	//Set Vertex values
+	m_modelShaderPassTwo->setUniformMatrix4fv("m_matrix", m_mMat);
+	m_modelShaderPassTwo->setUniformMatrix4fv("v_matrix", m_vMat);
+	m_modelShaderPassTwo->setUniformMatrix4fv("proj_matrix", *EngineStatics::getProjectionMatrix());
+	m_modelShaderPassTwo->setUniform1f("inflation", m_inflation);
+	m_modelShaderPassTwo->setUniform1i("texture_color", 0);
+
+	setVBOAttrib(true, true, true, false, false);
+
+	
+
+	//Draw
+	glDrawElements(GL_TRIANGLES, m_modelMesh->getIndices().size(), GL_UNSIGNED_INT, 0);
+
+	m_modelShaderPassTwo->Unbind();
+	m_GeometryTexture->Unbind();
 }
 
 void ModelGeometry::setShaderTwo(const char* vertexPath, const char* geometryPath, const char* fragmentPath)

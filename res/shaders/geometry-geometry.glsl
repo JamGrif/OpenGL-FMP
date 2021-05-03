@@ -1,9 +1,28 @@
 #version 430 
-out vec4 color;
+//Geometry shader allows the manipulation of one primitive(triangle) at a time (access to all 3 vertices of a triangle)
 
-uniform vec3 blockColour;
+layout (triangles) in;
+layout (triangle_strip, max_vertices=3) out;
+
+in vec3 varyingNormal[];
+in vec2 varyingTexCoord[];
+out vec3 varyingNormalG;
+out vec2 varyingTexCoordG;
+
+uniform mat4 m_matrix;
+uniform mat4 v_matrix;
+uniform mat4 proj_matrix;
+uniform float inflation;
 
 void main()
 {
-    color = vec4(blockColour, 1.0f);
+    
+    for (int i = 0; i < 3; i++)
+    {
+        gl_Position = proj_matrix * (gl_in[i].gl_Position + normalize(vec4(varyingNormal[i], 1.0)) * inflation);
+        varyingNormalG = varyingNormal[i];
+        varyingTexCoordG = varyingTexCoord[i];
+        EmitVertex();
+    }
+    EndPrimitive();
 }

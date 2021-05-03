@@ -292,12 +292,12 @@ void Shader::loadShader(const GLchar* vertexPath, const GLchar* geometryPath, co
 		vShaderFile.open(vertexPath);
 		fShaderFile.open(fragmentPath);
 		geoShaderFile.open(geometryPath);
-		std::stringstream vShaderStream, fShaderStream, tcShaderStream, teShaderStream;
+		std::stringstream vShaderStream, fShaderStream, geoShaderStream;
 
 		//Read file's buffer contents into streams
 		vShaderStream << vShaderFile.rdbuf();
 		fShaderStream << fShaderFile.rdbuf();
-		tcShaderStream << geoShaderFile.rdbuf();
+		geoShaderStream << geoShaderFile.rdbuf();
 
 		//Close File handlers
 		vShaderFile.close();
@@ -307,7 +307,7 @@ void Shader::loadShader(const GLchar* vertexPath, const GLchar* geometryPath, co
 		//Convert stream into string
 		vertexCode = vShaderStream.str();
 		fragmentCode = fShaderStream.str();
-		geoCode = teShaderStream.str();
+		geoCode = geoShaderStream.str();
 	}
 	catch (std::ifstream::failure e)
 	{

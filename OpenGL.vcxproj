@@ -228,6 +228,9 @@ xcopy /y /d $(ProjectDir)res $(TargetDir)\res /S</Command>
     <None Include="res\shaders\environmentMapping-vertex.glsl" />
     <None Include="res\shaders\framebuffer-fragment.glsl" />
     <None Include="res\shaders\framebuffer-vertex.glsl" />
+    <None Include="res\shaders\geometry-fragment.glsl" />
+    <None Include="res\shaders\geometry-geometry.glsl" />
+    <None Include="res\shaders\geometry-vertex.glsl" />
     <None Include="res\shaders\lightingPassOne-fragment.glsl" />
     <None Include="res\shaders\lightingPassOne-vertex.glsl" />
     <None Include="res\shaders\lightingPassTwo-fragment.glsl" />

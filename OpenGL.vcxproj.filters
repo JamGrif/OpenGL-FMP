@@ -170,5 +170,8 @@
     <None Include="res\shaders\terrain-tessCont.glsl" />
     <None Include="res\shaders\terrain-tessEval.glsl" />
     <None Include="res\shaders\terrain-vertex.glsl" />
+    <None Include="res\shaders\geometry-vertex.glsl" />
+    <None Include="res\shaders\geometry-geometry.glsl" />
+    <None Include="res\shaders\geometry-fragment.glsl" />
   </ItemGroup>
 </Project>
