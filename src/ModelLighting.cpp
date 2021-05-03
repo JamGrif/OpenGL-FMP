@@ -39,7 +39,7 @@ ModelLighting::~ModelLighting()
 }
 
 /// <summary>
-/// First draw pass
+/// Overriden method from Model base class - Used to render the scene to the shadow map depth texture
 /// </summary>
 void ModelLighting::drawPassOne()
 {
@@ -63,7 +63,7 @@ void ModelLighting::drawPassOne()
 }
 
 /// <summary>
-/// Second draw pass
+/// Overriden method from Model base class - Used to light an object by taking values from all active lights, binding texture maps and drawing the object
 /// </summary>
 void ModelLighting::drawPassTwo()
 {

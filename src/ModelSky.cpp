@@ -20,6 +20,9 @@ ModelSky::~ModelSky()
 	glDeleteBuffers(1, &m_skyboxVBO);
 }
 
+/// <summary>
+/// Overriden method from Model base class - Unused in this class
+/// </summary>
 void ModelSky::drawPassOne()
 {
 	//If no valid model or shader attached
@@ -29,6 +32,9 @@ void ModelSky::drawPassOne()
 	}
 }
 
+/// <summary>
+/// Overriden method from Model base class - Used to draw the skybox
+/// </summary>
 void ModelSky::drawPassTwo()
 {
 	//If no valid model or shader attached
@@ -51,7 +57,7 @@ void ModelSky::drawPassTwo()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-	//Draw
+	//Draw - disables writing to the depth buffer
 	glDepthFunc(GL_LEQUAL);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDepthFunc(GL_LESS);

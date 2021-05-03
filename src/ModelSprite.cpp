@@ -16,6 +16,9 @@ ModelSprite::~ModelSprite()
 	
 }
 
+/// <summary>
+/// Overriden method from Model base class - Unused in this class
+/// </summary>
 void ModelSprite::drawPassOne()
 {
 	//If no valid model or shader attached
@@ -25,6 +28,9 @@ void ModelSprite::drawPassOne()
 	}
 }
 
+/// <summary>
+/// Overriden method from Model base class - Used to draw the sprite in the scene
+/// </summary>
 void ModelSprite::drawPassTwo()
 {
 	//If no valid model or shader attached

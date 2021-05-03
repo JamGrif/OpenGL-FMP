@@ -19,10 +19,16 @@ Terrain::~Terrain()
 {
 }
 
+/// <summary>
+/// Overriden method from Model base class - Unused in this class
+/// </summary>
 void Terrain::drawPassOne()
 {
 }
 
+/// <summary>
+/// Overriden method from Model base class - Used to draw surrounding terrain with the tessellation shader
+/// </summary>
 void Terrain::drawPassTwo()
 {
 	//If no shader attached

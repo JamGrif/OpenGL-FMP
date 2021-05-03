@@ -14,6 +14,9 @@ ModelEnvironment::~ModelEnvironment()
 {
 }
 
+/// <summary>
+/// Overriden method from Model base class - Unused in this class
+/// </summary>
 void ModelEnvironment::drawPassOne()
 {
 	//If no valid model or shader attached
@@ -23,6 +26,9 @@ void ModelEnvironment::drawPassOne()
 	}
 }
 
+/// <summary>
+/// Overriden method from Model base class - Used for environment mapping by taking the skybox texture and mapping it to the texture
+/// </summary>
 void ModelEnvironment::drawPassTwo()
 {
 	//If no valid model or shader attached
