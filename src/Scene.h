@@ -55,12 +55,17 @@ private:
 	//glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
 
 	//Used to move objects around the scene
-	float minZ = -5;
-	float maxZ = 9;
-	float minX = -25;
-	float maxX = -13;
-	bool incZ = true;
-	bool incX = true;
+	float materialLightminZ = -5;
+	float materialLightmaxZ = 9;
+	float materialLightminX = -25;
+	float materialLightmaxX = -13;
+	bool materialLightincZ = true;
+	bool materialLightincX = true;
+
+	//
+	float normalLightmaxZ = 8;
+	float normalLightminZ = 23;
+	bool normalLightincZ = true;
 
 };
 

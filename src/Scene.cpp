@@ -387,15 +387,18 @@ void Scene::initScene()
 	//Sign
 	std::vector<glm::vec3> SignPosRot =
 	{
-		glm::vec3(1.0f, -3.5f, 25.75f), glm::vec3(0.0f, 180.0f, 0.0f),		//Breating barrel /
-		glm::vec3(10.0f, 10.0f, -7.75f), glm::vec3(0.0f, 0.0f, 0.0f),		//Q and E tessellation shader
-		glm::vec3(15.0f, 10.0f, -7.75f), glm::vec3(0.0f, 0.0f, 0.0f),		//Fake depth from height / normal
-		glm::vec3(20.0f, 10.0f, -7.75f), glm::vec3(0.0f, 0.0f, 0.0f),		//Sign text from emission
-		glm::vec3(11.0f, -3.5f, -4.75f), glm::vec3(0.0f, 30.0f, 0.0f),		//Environment reflect /
-		glm::vec3(25.0f, -3.5f, -4.75f), glm::vec3(0.0f, -30.0f, 0.0f),		//Environment refract /
-		glm::vec3(35.0f, 10.0f, -7.75f), glm::vec3(0.0f, 0.0f, 0.0f),		//Normal vs no normal
-		glm::vec3(40.0f, 10.0f, -7.75f), glm::vec3(0.0f, 0.0f, 0.0f),		//Different materials
+		glm::vec3(2.0f, -3.0f, 25.75f), glm::vec3(0.0f, 180.0f, 0.0f),		//Breating barrel /
+		glm::vec3(-3.0f, -1.3f, -4.0f), glm::vec3(0.0f, 30.0f, 0.0f),		//Q and E tessellation shader /
+		glm::vec3(7.0f, -1.3f, -4.5f), glm::vec3(0.0f, -90.0f, 0.0f),		//Fake depth from height / normal /
+		glm::vec3(3.0f, -1.3f, -4.0f), glm::vec3(0.0f, -30.0f, 0.0f),		//Sign text from emission /
+		glm::vec3(11.0f, -3.0f, -4.75f), glm::vec3(0.0f, 30.0f, 0.0f),		//Environment reflect /
+		glm::vec3(25.0f, -3.0f, -4.75f), glm::vec3(0.0f, -30.0f, 0.0f),		//Environment refract /
+		glm::vec3(25.0f, -3.0f, 15.0f), glm::vec3(0.0f, -90.0f, 0.0f),		//Normal vs no normal /
+		glm::vec3(-15.0f, -3.0f, -8.25f), glm::vec3(0.0f, 0.0f, 0.0f),		//Different materials /
 		glm::vec3(45.0f, 10.0f, -7.75f), glm::vec3(0.0f, 0.0f, 0.0f),		//Colour lighting
+		glm::vec3(-23.0f, -3.0f, -8.25f), glm::vec3(0.0f, 0.0f, 0.0f),		//disable lights to show / 
+		glm::vec3(0.0f, -1.3f, -4.0f), glm::vec3(0.0f, 0.0f, 0.0f),			//toggle lights	/
+		glm::vec3(0.0f, 1.0f, -8.0f), glm::vec3(0.0f, 0.0f, 0.0f),			//change filters /
 	};
 
 	std::vector <const char*> SignTex =
@@ -408,20 +411,25 @@ void Scene::initScene()
 		"res/textures/signs/sign6_emis.png",
 		"res/textures/signs/sign7_emis.png",
 		"res/textures/signs/sign8_emis.png",
-		"res/textures/signs/sign9_emis.png"
+		"res/textures/signs/sign9_emis.png",
+		"res/textures/signs/sign10_emis.png",
+		"res/textures/signs/sign11_emis.png",
+		"res/textures/signs/sign12_emis.png"
 	};
 
 	int signNum = 0;
 	for (int i = 0; i < SignPosRot.size(); i += 2)
 	{
-		ModelLighting* dresser = new ModelLighting(SignPosRot.at(i), SignPosRot.at(i + 1));
-		dresser->setMesh("res/meshes/signpost.obj");
-		dresser->setDiffuseTexture("res/textures/sign_diff.png");
-		dresser->setSpecularTexture("res/textures/sign_spec.png");
-		dresser->setNormalTexture("res/textures/sign_norm.png", false);
-
-		dresser->setEmissionTexture(SignTex.at(signNum));
-		m_sceneMeshes.push_back(dresser);
+		ModelLighting* sign = new ModelLighting(SignPosRot.at(i), SignPosRot.at(i + 1));
+		sign->setMesh("res/meshes/signpost.obj");
+		sign->setDiffuseTexture("res/textures/sign_diff.png");
+		sign->setSpecularTexture("res/textures/sign_spec.png");
+		sign->setNormalTexture("res/textures/sign_norm.png", false);
+		sign->setEmissionTexture(SignTex.at(signNum));
+		sign->SetXScale(0.75);
+		sign->SetYScale(0.75);
+		sign->SetZScale(0.75);
+		m_sceneMeshes.push_back(sign);
 		signNum++;
 	}
 
@@ -431,16 +439,16 @@ void Scene::initScene()
 
 	std::vector<const char*> floorMaterials =
 	{
-		//Diffuse map					  //Specular Map					//Normal Map 
-		"res/textures/metal_diff.png",	  "res/textures/metal_spec.png",    "res/textures/metal_norm.png",					//not norm
-		"res/textures/tile_diff.png", "res/textures/tile_spec.png", "res/textures/tile_norm.png",							//not norm
-		"res/textures/sand_diff.png", "res/textures/sand_spec.png", "res/textures/sand_norm.png",							//not norm
-		"res/textures/marble_diff.png", "res/textures/marble_spec.png", "res/textures/marble_norm.png",						//not norm
-		"res/textures/hieroglyphs_diff.png", "res/textures/hieroglyphs_spec.png", "res/textures/hieroglyphs_norm.png",		//not norm		
-		"res/textures/metalHammer_diff.png", "res/textures/metalHammer_spec.png", "res/textures/metalHammer_norm.png",		//norm		
-				"res/textures/skullGround_diff.png", "res/textures/skullGround_spec.png", "res/textures/skullGround_norm.png",		//norm
-		"res/textures/rock_diff.png", "res/textures/rock_spec.png", "res/textures/rock_norm.png",							//norm
-				"res/textures/concrete2_diff.png", "res/textures/concrete2_spec.png", "res/textures/concrete2_norm.png",			//norm
+		//Diffuse map							//Specular Map							//Normal Map 
+		"res/textures/metal_diff.png",			"res/textures/metal_spec.png",			"res/textures/metal_norm.png",			//not norm
+		"res/textures/tile_diff.png",			"res/textures/tile_spec.png",			"res/textures/tile_norm.png",			//not norm
+		"res/textures/sand_diff.png",			"res/textures/sand_spec.png",			"res/textures/sand_norm.png",			//not norm
+		"res/textures/marble_diff.png",			"res/textures/marble_spec.png",			"res/textures/marble_norm.png",			//not norm
+		"res/textures/hieroglyphs_diff.png",	"res/textures/hieroglyphs_spec.png",	"res/textures/hieroglyphs_norm.png",	//not norm		
+		"res/textures/metalHammer_diff.png",	"res/textures/metalHammer_spec.png",	"res/textures/metalHammer_norm.png",	//norm		
+		"res/textures/skullGround_diff.png",	"res/textures/skullGround_spec.png",	"res/textures/skullGround_norm.png",	//norm
+		"res/textures/rock_diff.png",			"res/textures/rock_spec.png",			"res/textures/rock_norm.png",			//norm
+		"res/textures/concrete2_diff.png",		"res/textures/concrete2_spec.png",		"res/textures/concrete2_norm.png",		//norm
 	};
 
 	std::vector<glm::vec3> floorPos =
@@ -476,14 +484,59 @@ void Scene::initScene()
 		m_sceneMeshes.push_back(floor);
 		materialNum += 3;
 	}
+
+	//Normal vs no normal
+
+	std::vector<glm::vec3> planePos =
+	{
+		glm::vec3(25.0f, 1.0f, 6.0f), glm::vec3(90.0f, 0.0f, 90.0f),
+		glm::vec3(25.0f, 1.0f, 12.0f), glm::vec3(90.0f, 0.0f, 90.0f),
+		glm::vec3(25.0f, 1.0f, 18.0f), glm::vec3(90.0f, 0.0f, 90.0f),
+		glm::vec3(25.0f, 1.0f, 24.0f), glm::vec3(90.0f, 0.0f, 90.0f),
+		glm::vec3(22.0f, 1.0f, 26.0f), glm::vec3(90.0f, 0.0f, 180.0f),
+		glm::vec3(16.0f, 1.0f, 26.0f), glm::vec3(90.0f, 0.0f, 180.0f),
+	};
+
+	ModelLighting * leather = new ModelLighting(planePos.at(0), planePos.at(1));
+	leather->setMesh("res/meshes/plane.obj");
+	leather->setDiffuseTexture("res/textures/leather_diff.png");
+	m_sceneMeshes.push_back(leather);
+
+	ModelLighting* leather2 = new ModelLighting(planePos.at(2), planePos.at(3));
+	leather2->setMesh("res/meshes/plane.obj");
+	leather2->setDiffuseTexture("res/textures/leather_diff.png");
+	leather2->setNormalTexture("res/textures/leather_norm.png", false);
+	m_sceneMeshes.push_back(leather2);
+
+	ModelLighting* concrete = new ModelLighting(planePos.at(4), planePos.at(5));
+	concrete->setMesh("res/meshes/plane.obj");
+	concrete->setDiffuseTexture("res/textures/concreteExample_diff.png");
+	m_sceneMeshes.push_back(concrete);
+
+	ModelLighting* concrete2 = new ModelLighting(planePos.at(6), planePos.at(7));
+	concrete2->setMesh("res/meshes/plane.obj");
+	concrete2->setDiffuseTexture("res/textures/concreteExample_diff.png");
+	concrete2->setNormalTexture("res/textures/concreteExample_norm.png", false);
+	m_sceneMeshes.push_back(concrete2);
+
+	ModelLighting* brick = new ModelLighting(planePos.at(8), planePos.at(9));
+	brick->setMesh("res/meshes/plane.obj");
+	brick->setDiffuseTexture("res/textures/cartoonBricks_diff.png");
+	m_sceneMeshes.push_back(brick);
+
+	ModelLighting* brick2 = new ModelLighting(planePos.at(10), planePos.at(11));
+	brick2->setMesh("res/meshes/plane.obj");
+	brick2->setDiffuseTexture("res/textures/cartoonBricks_diff.png");
+	brick2->setNormalTexture("res/textures/cartoonBricks_norm.png", false);
+	m_sceneMeshes.push_back(brick2);
 	
 	
 	//Light
 	std::vector<glm::vec3> LightPosAmbDifSpc =
 	{
-		glm::vec3(0.0f, 3.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),
-		glm::vec3(-18.0f, 2.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),
-		glm::vec3(15.0f, 3.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),
+		glm::vec3(0.0f, 3.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),		//House light
+		glm::vec3(-18.0f, 2.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),	//Material showcase light
+		glm::vec3(18.0f, 2.0f, 14.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),	//Normal showcase light
 	};
 	
 	for (int i = 0; i < LightPosAmbDifSpc.size(); i+=4)
@@ -515,15 +568,12 @@ void Scene::updateScene()
 
 	m_sceneMSAAFrameBuffer->bindFramebuffer();
 
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Draw first pass of all models
 	//glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 	//glClear(GL_DEPTH_BUFFER_BIT);
 
 	
-
-
 	for (Model* m : m_sceneMeshes)
 	{
 		m->setMatrixValues();
@@ -640,41 +690,60 @@ void Scene::updateOnInput()
 
 void Scene::moveSceneLight()
 {
-	if (incZ)
+	if (materialLightincZ)
 	{
-		m_sceneLightManager->getPointLight(1)->Position.z += 0.075;
-		if (m_sceneLightManager->getPointLight(1)->Position.z >= maxZ)
+		m_sceneLightManager->getPointLight(1)->Position.z += 0.075f;
+		if (m_sceneLightManager->getPointLight(1)->Position.z >= materialLightmaxZ)
 		{
-			m_sceneLightManager->getPointLight(1)->Position.z = maxZ;
-			incZ = false;
+			m_sceneLightManager->getPointLight(1)->Position.z = materialLightmaxZ;
+			materialLightincZ = false;
 		}
 	}
 	else
 	{
-		m_sceneLightManager->getPointLight(1)->Position.z -= 0.075;
-		if (m_sceneLightManager->getPointLight(1)->Position.z <= minZ)
+		m_sceneLightManager->getPointLight(1)->Position.z -= 0.075f;
+		if (m_sceneLightManager->getPointLight(1)->Position.z <= materialLightminZ)
 		{
-			m_sceneLightManager->getPointLight(1)->Position.z = minZ;
-			incZ = true;
+			m_sceneLightManager->getPointLight(1)->Position.z = materialLightminZ;
+			materialLightincZ = true;
 		}
 	}
 
-	if (incX)
+	if (materialLightincX)
 	{
-		m_sceneLightManager->getPointLight(1)->Position.x += 0.1;
-		if (m_sceneLightManager->getPointLight(1)->Position.x >= maxX)
+		m_sceneLightManager->getPointLight(1)->Position.x += 0.1f;
+		if (m_sceneLightManager->getPointLight(1)->Position.x >= materialLightmaxX)
 		{
-			m_sceneLightManager->getPointLight(1)->Position.x = maxX;
-			incX = false;
+			m_sceneLightManager->getPointLight(1)->Position.x = materialLightmaxX;
+			materialLightincX = false;
 		}
 	}
 	else
 	{
-		m_sceneLightManager->getPointLight(1)->Position.x -= 0.1;
-		if (m_sceneLightManager->getPointLight(1)->Position.x <= minX)
+		m_sceneLightManager->getPointLight(1)->Position.x -= 0.1f;
+		if (m_sceneLightManager->getPointLight(1)->Position.x <= materialLightminX)
 		{
-			m_sceneLightManager->getPointLight(1)->Position.x = minX;
-			incX = true;
+			m_sceneLightManager->getPointLight(1)->Position.x = materialLightminX;
+			materialLightincX = true;
+		}
+	}
+
+	if (normalLightincZ)
+	{
+		m_sceneLightManager->getPointLight(2)->Position.z += 0.05f;
+		if (m_sceneLightManager->getPointLight(2)->Position.z >= normalLightmaxZ)
+		{
+			m_sceneLightManager->getPointLight(2)->Position.z = normalLightmaxZ;
+			normalLightincZ = false;
+		}
+	}
+	else
+	{
+		m_sceneLightManager->getPointLight(2)->Position.z += 0.05f;
+		if (m_sceneLightManager->getPointLight(2)->Position.z >= normalLightminZ)
+		{
+			m_sceneLightManager->getPointLight(2)->Position.z = normalLightminZ;
+			normalLightincZ = true;
 		}
 	}
 }
