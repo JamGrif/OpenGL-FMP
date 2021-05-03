@@ -44,6 +44,9 @@ void ModelBasic::drawPassTwo()
 
 	if (m_pointLightToCopy >= 0) //Copying light
 	{
+		if (!m_localLightManager->getPointLight(m_pointLightToCopy)->lightActive) //If light is not active, leave draw function
+			return;
+
 		m_position = m_localLightManager->getPointLight(m_pointLightToCopy)->Position;
 		m_modelShaderPassTwo->setUniform3f("blockColour", m_localLightManager->getPointLight(m_pointLightToCopy)->Diffuse);
 	}

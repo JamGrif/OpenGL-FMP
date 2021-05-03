@@ -38,12 +38,12 @@ void LightManager::setDirectionalLight(float x, float y, float z, int index)
 /// <param name="x"></param>
 /// <param name="y"></param>
 /// <param name="z"></param>
-void LightManager::addDirectionalLight(float x, float y, float z)
+void LightManager::addDirectionalLight(float x, float y, float z, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)
 {
 	//Ensure new directional lights don't exceed the maximum amount allowed
 	if (m_currentDirectionalLights < m_maxDirectionalLights)
 	{
-		DirectionalLight* direction = new DirectionalLight(x, y, z);
+		DirectionalLight* direction = new DirectionalLight(x, y, z, ambient, diffuse, specular);
 		m_sceneDirectionalLights.push_back(direction);
 		m_currentDirectionalLights++;
 
@@ -103,12 +103,12 @@ void LightManager::setPointLight(float x, float y, float z, int index)
 /// <param name="x"></param>
 /// <param name="y"></param>
 /// <param name="z"></param>
-void LightManager::addPointLight(float x, float y, float z)
+void LightManager::addPointLight(float x, float y, float z, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)
 {
 	//Ensure new point lights don't exceed the maximum amount allowed
 	if (m_currentPointLights < m_maxPointLights)
 	{
-		PointLight* point = new PointLight(x, y, z);
+		PointLight* point = new PointLight(x, y, z, ambient, diffuse, specular);
 		m_scenePointLights.push_back(point);
 		m_currentPointLights++;
 		
@@ -168,12 +168,12 @@ void LightManager::setSpotLight(float x, float y, float z, int index)
 /// <param name="x"></param>
 /// <param name="y"></param>
 /// <param name="z"></param>
-void LightManager::addSpotLight(float x, float y, float z)
+void LightManager::addSpotLight(float x, float y, float z, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)
 {
 	//Ensure new point lights don't exceed the maximum amount allowed
 	if (m_currentSpotLights < m_maxSpotLights)
 	{
-		SpotLight* spot = new SpotLight(x, y, z);
+		SpotLight* spot = new SpotLight(x, y, z, ambient, diffuse, specular);
 		m_sceneSpotLights.push_back(spot);
 		m_currentSpotLights++;
 

@@ -105,9 +105,10 @@ void Scene::initScene()
 	
 
 	
-	m_sceneLightManager->addDirectionalLight(-2.0f, -3.0f, -1.0f);
+	m_sceneLightManager->addDirectionalLight(-2.0f, -3.0f, -1.0f, glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.4f, 0.4f, 0.4f), glm::vec3(0.3f, 0.3f, 0.3f));
 	
-	//m_sceneLightManager->addSpotLight(0.0f, 0.0f, 0.0f);
+	m_sceneLightManager->addSpotLight(0.0f, 0.0f, 0.0f, glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.8f,0.8f,0.8f), glm::vec3(1.0f, 1.0f, 1.0f));
+	m_sceneLightManager->getSpotLight(0)->toggleActive(); //Turns off spotlight by default
 
 	//Floor
 	std::vector<glm::vec3> FloorPosRot =
@@ -174,7 +175,6 @@ void Scene::initScene()
 		glm::vec3(0.0f, 2.8f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
 		glm::vec3(6.0f, 2.8f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
 		glm::vec3(-6.0f, 2.8f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
-		//glm::vec3(0.0f, 2.8f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
 		glm::vec3(6.0f, 2.8f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f)
 	};
 	
@@ -217,7 +217,6 @@ void Scene::initScene()
 	std::vector<glm::vec3> DresserPosRot =
 	{
 		glm::vec3(0.0f, 0.0f, -7.75f), glm::vec3(0.0f, 0.0f, 0.0f),
-		//glm::vec3(-3.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f),
 	};
 	
 	for (int i = 0; i < DresserPosRot.size(); i += 2)
@@ -365,15 +364,14 @@ void Scene::initScene()
 		wall->setDiffuseTexture("res/textures/concreteBrick_diff.png");
 		wall->setSpecularTexture("res/textures/concreteBrick_spec.png");
 		wall->setNormalTexture("res/textures/concreteBrick_norm.png", false);
-		wall->setHeightTexture("res/textures/concreteBrick_height.png", 0.005);
+		wall->setHeightTexture("res/textures/concreteBrick_height.png", 0.01);
 		m_sceneMeshes.push_back(wall);
 	}
 
 	//Shed
 	std::vector<glm::vec3> ShedPos =
 	{
-		glm::vec3(-38.0f, 1.0f, 0.0f), glm::vec3(0.0f, 210.0f, 0.0f),
-		//glm::vec3(-3.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-38.0f, 1.0f, 0.0f), glm::vec3(0.0f, 210.0f, 0.0f)
 	};
 
 	for (int i = 0; i < ShedPos.size(); i += 2)
@@ -385,26 +383,69 @@ void Scene::initScene()
 		dresser->setNormalTexture("res/textures/shed_norm.png", false);
 		m_sceneMeshes.push_back(dresser);
 	}
+
+	//Sign
+	std::vector<glm::vec3> SignPosRot =
+	{
+		glm::vec3(1.0f, -3.5f, 25.75f), glm::vec3(0.0f, 180.0f, 0.0f),		//Breating barrel /
+		glm::vec3(10.0f, 10.0f, -7.75f), glm::vec3(0.0f, 0.0f, 0.0f),		//Q and E tessellation shader
+		glm::vec3(15.0f, 10.0f, -7.75f), glm::vec3(0.0f, 0.0f, 0.0f),		//Fake depth from height / normal
+		glm::vec3(20.0f, 10.0f, -7.75f), glm::vec3(0.0f, 0.0f, 0.0f),		//Sign text from emission
+		glm::vec3(11.0f, -3.5f, -4.75f), glm::vec3(0.0f, 30.0f, 0.0f),		//Environment reflect /
+		glm::vec3(25.0f, -3.5f, -4.75f), glm::vec3(0.0f, -30.0f, 0.0f),		//Environment refract /
+		glm::vec3(35.0f, 10.0f, -7.75f), glm::vec3(0.0f, 0.0f, 0.0f),		//Normal vs no normal
+		glm::vec3(40.0f, 10.0f, -7.75f), glm::vec3(0.0f, 0.0f, 0.0f),		//Different materials
+		glm::vec3(45.0f, 10.0f, -7.75f), glm::vec3(0.0f, 0.0f, 0.0f),		//Colour lighting
+	};
+
+	std::vector <const char*> SignTex =
+	{
+		"res/textures/signs/sign1_emis.png",
+		"res/textures/signs/sign2_emis.png",
+		"res/textures/signs/sign3_emis.png",
+		"res/textures/signs/sign4_emis.png",
+		"res/textures/signs/sign5_emis.png",
+		"res/textures/signs/sign6_emis.png",
+		"res/textures/signs/sign7_emis.png",
+		"res/textures/signs/sign8_emis.png",
+		"res/textures/signs/sign9_emis.png"
+	};
+
+	int signNum = 0;
+	for (int i = 0; i < SignPosRot.size(); i += 2)
+	{
+		ModelLighting* dresser = new ModelLighting(SignPosRot.at(i), SignPosRot.at(i + 1));
+		dresser->setMesh("res/meshes/signpost.obj");
+		dresser->setDiffuseTexture("res/textures/sign_diff.png");
+		dresser->setSpecularTexture("res/textures/sign_spec.png");
+		dresser->setNormalTexture("res/textures/sign_norm.png", false);
+
+		dresser->setEmissionTexture(SignTex.at(signNum));
+		m_sceneMeshes.push_back(dresser);
+		signNum++;
+	}
 	
 	//Light
-	std::vector<glm::vec3> LightPos =
+	std::vector<glm::vec3> LightPosAmbDifSpc =
 	{
-		glm::vec3(0.0f, 3.0f, 0.0f),
-		//glm::vec3(15.0f, 3.0f, 3.0f),
-		//glm::vec3(-3.0f, 3.0f, 5.0f),
-		//glm::vec3(3.0f, 3.0f, 5.0f)
+		glm::vec3(0.0f, 3.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),
+		glm::vec3(-15.0f, 3.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),
+		glm::vec3(15.0f, 3.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),
 	};
 	
-	for (int i = 0; i < LightPos.size(); i++)
+	for (int i = 0; i < LightPosAmbDifSpc.size(); i+=4)
 	{
-		m_sceneLightManager->addPointLight(LightPos.at(i).x, LightPos.at(i).y, LightPos.at(i).z);
-	
-		ModelBasic* light = new ModelBasic(LightPos.at(i));
+		m_sceneLightManager->addPointLight(LightPosAmbDifSpc.at(i).x, LightPosAmbDifSpc.at(i).y, LightPosAmbDifSpc.at(i).z, LightPosAmbDifSpc.at(i+1), LightPosAmbDifSpc.at(i+2), LightPosAmbDifSpc.at(i+3));
+	}
+
+	//Objects that copy lights
+	for (int i = 0; i < m_sceneLightManager->getCurrentPointLights(); i++)
+	{
+		ModelBasic* light = new ModelBasic(LightPosAmbDifSpc.at(i));
 		light->setMesh("res/meshes/cube.obj");
 		light->copyPointLight(i);
 		m_sceneMeshes.push_back(light);
 	}
-
 
 }
 
@@ -495,16 +536,50 @@ void Scene::updateOnInput()
 		Tessellation terrain inputs
 	*/
 
-	if (Input::getKeyPressed(GLFW_KEY_8))
+	if (Input::getKeyPressedOnce(GLFW_KEY_Q))
 	{
 		m_mountainsX->alterElevation(0.5);
 		m_mountainsZ->alterElevation(0.5);
 	}
 
-	if (Input::getKeyPressed(GLFW_KEY_9))
+	if (Input::getKeyPressedOnce(GLFW_KEY_E))
 	{
 		m_mountainsX->alterElevation(-0.5);
 		m_mountainsZ->alterElevation(-0.5);
+	}
+
+	/*
+		Toggle lights
+	*/
+
+	if (Input::getKeyPressedOnce(GLFW_KEY_6))
+	{
+		if (m_sceneLightManager->getDirectionalLight(0) != nullptr)
+			m_sceneLightManager->getDirectionalLight(0)->toggleActive();
+	}
+
+	if (Input::getKeyPressedOnce(GLFW_KEY_7))
+	{
+		if (m_sceneLightManager->getSpotLight(0) != nullptr)
+			m_sceneLightManager->getSpotLight(0)->toggleActive();
+	}
+
+	if (Input::getKeyPressedOnce(GLFW_KEY_8))
+	{
+		if (m_sceneLightManager->getPointLight(0) != nullptr)
+				m_sceneLightManager->getPointLight(0)->toggleActive();
+	}
+
+	if (Input::getKeyPressedOnce(GLFW_KEY_9))
+	{
+		if (m_sceneLightManager->getPointLight(1) != nullptr)
+			m_sceneLightManager->getPointLight(1)->toggleActive();
+	}
+
+	if (Input::getKeyPressedOnce(GLFW_KEY_0))
+	{
+		if (m_sceneLightManager->getPointLight(2) != nullptr)
+			m_sceneLightManager->getPointLight(2)->toggleActive();
 	}
 }
 

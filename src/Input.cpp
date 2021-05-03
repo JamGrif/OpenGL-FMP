@@ -6,6 +6,7 @@
 
 //Keyboard
 bool Input::keys[1024];
+int Input::lastKey = 0;
 
 //Mouse
 double Input::lastX = 0;
@@ -49,10 +50,12 @@ void Input::keyCALLBACK(GLFWwindow* window, int key, int scancode, int action, i
     {
         if (action == GLFW_PRESS)
         {
+           // lastKey = key;
             keys[key] = true;
         }
         else if (action == GLFW_RELEASE)
         {
+            lastKey = 0;
             keys[key] = false;
         }
     }
@@ -67,10 +70,20 @@ bool Input::getKeyPressed(int key)
 {
     if (keys[key])
     {
-        //std::cout << "key true" << std::endl;
+        
         return true;
     }
 	return false;
+}
+
+bool Input::getKeyPressedOnce(int key)
+{
+    if (keys[key] && key != lastKey)
+    {
+        lastKey = key;
+        return true;
+    }
+    return false;
 }
 
 /// <summary>

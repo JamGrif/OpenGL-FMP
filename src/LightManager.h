@@ -4,9 +4,30 @@
 
 #include <iostream>
 
-struct PointLight
+//Base class for all 3 lights - provides utility functions they all can use
+struct Light
 {
-	PointLight(float x = 0.0f, float y = 0.0f, float z = 0.0f)
+	Light(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)
+	{
+		Ambient = ambient;
+		Diffuse = diffuse;
+		Specular = specular;
+	}
+	void toggleActive()
+	{
+		lightActive = lightActive == true ? false : true;
+	}
+	glm::vec3	Ambient;
+	glm::vec3	Diffuse;
+	glm::vec3	Specular;
+	bool		lightActive = false;
+};
+
+struct PointLight
+	:public Light
+{
+	PointLight(float x = 0.0f, float y = 0.0f, float z = 0.0f, glm::vec3 ambient = glm::vec3(1.0f,1.0f,1.0f), glm::vec3 diffuse = glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3 specular = glm::vec3(1.0f, 1.0f, 1.0f))
+		:Light(ambient, diffuse, specular)
 	{
 		Position.x = x;
 		Position.y = y;
@@ -17,19 +38,21 @@ struct PointLight
 	glm::vec3	Position;
 
 	float		Constant = 1.0f;
-	float		Linear = 0.027f;
-	float		Quadratic = 0.0028f;
+	float		Linear = 0.07;
+	float		Quadratic = 0.017;
 	
-	glm::vec3	Ambient { 0.3f, 0.3f, 0.3f };
-	glm::vec3	Diffuse { 1.0f, 1.0f, 1.0f };
-	glm::vec3	Specular{ 0.5f, 0.5f, 0.5f };
+	//glm::vec3	Ambient { 0.2f, 0.2f, 0.2f };
+	//glm::vec3	Diffuse { 1.0f, 1.0f, 1.0f };
+	//glm::vec3	Specular{ 0.4f, 0.4f, 0.4f };
 
-	bool		lightActive = false;
+	
 };
 
 struct DirectionalLight
+	:public Light
 {
-	DirectionalLight(float x = 0.0f, float y = 0.0f, float z = 0.0f)
+	DirectionalLight(float x = 0.0f, float y = 0.0f, float z = 0.0f, glm::vec3 ambient = glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3 diffuse = glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3 specular = glm::vec3(1.0f, 1.0f, 1.0f))
+		:Light(ambient, diffuse, specular)
 	{
 		Direction.x = x;
 		Direction.y = y;
@@ -39,16 +62,17 @@ struct DirectionalLight
 	}
 	glm::vec3	Direction;
 
-	glm::vec3	Ambient { 0.2f, 0.2f, 0.2f };
-	glm::vec3	Diffuse { 0.4f, 0.4f, 0.4f };
-	glm::vec3	Specular{ 0.3f, 0.3f, 0.3f };
+	//glm::vec3	Ambient { 0.2f, 0.2f, 0.2f };
+	//glm::vec3	Diffuse { 0.4f, 0.4f, 0.4f };
+	//glm::vec3	Specular{ 0.3f, 0.3f, 0.3f };
 
-	bool		lightActive = false;
 };
 
 struct SpotLight
+	:public Light
 {
-	SpotLight(float x = 0.0f, float y = 0.0f, float z = 0.0f)
+	SpotLight(float x = 0.0f, float y = 0.0f, float z = 0.0f, glm::vec3 ambient = glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3 diffuse = glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3 specular = glm::vec3(1.0f, 1.0f, 1.0f))
+		:Light(ambient, diffuse, specular)
 	{
 		Position.x = x;
 		Position.y = y;
@@ -68,11 +92,9 @@ struct SpotLight
 	float		Linear = 0.09f;
 	float		Quadratic = 0.032f;
 
-	glm::vec3	Ambient{ 0.1f, 0.1f, 0.1f };
-	glm::vec3	Diffuse{ 0.8f, 0.8f, 0.8f };
-	glm::vec3	Specular{ 1.0f, 1.0f, 1.0f };
-
-	bool		lightActive = false;
+	//glm::vec3	Ambient{ 0.0f, 0.0f, 0.0f };
+	//glm::vec3	Diffuse{ 0.8f, 0.8f, 0.8f };
+	//glm::vec3	Specular{ 1.0f, 1.0f, 1.0f };
 
 };
 
@@ -84,21 +106,21 @@ public:
 
 	//Directional Lights
 	void setDirectionalLight(float x, float y, float z, int index = 0);
-	void addDirectionalLight(float x, float y, float z);
+	void addDirectionalLight(float x, float y, float z, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
 	DirectionalLight* getDirectionalLight(int index = 0) const;
 
 	int getCurrentDirectionalLights() const;
 
 	//Point Lights
 	void setPointLight(float x, float y, float z, int index = 0);
-	void addPointLight(float x, float y, float z);
+	void addPointLight(float x, float y, float z, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
 	PointLight* getPointLight(int index = 0) const;
 
 	int getCurrentPointLights() const;
 
 	//Spot Lights
 	void setSpotLight(float x, float y, float z, int index = 0);
-	void addSpotLight(float x, float y, float z);
+	void addSpotLight(float x, float y, float z, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
 	SpotLight* getSpotLight(int index = 0) const;
 
 	int getCurrentSpotLights() const;

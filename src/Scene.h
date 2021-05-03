@@ -29,21 +29,23 @@ private:
 
 	void updateOnInput();
 
-	void setupShadowStuff();
+	
 
 	std::vector<Model*>		m_sceneMeshes;
 
-	Camera* m_sceneCamera;
+	Camera*					m_sceneCamera;
 
-	LightManager* m_sceneLightManager;
+	LightManager*			m_sceneLightManager;
 
-	Framebuffer* m_sceneMSAAFrameBuffer;		//Scene is drawn to this buffer with MSAA applied
-	Framebuffer* m_sceneFilterFramebuffer;	//Recieves info from the MSAAframebuffer which then draws onto a quad which gets displayed to the screen
+	Framebuffer*			m_sceneMSAAFrameBuffer;		//Scene is drawn to this buffer with MSAA applied
+	Framebuffer*			m_sceneFilterFramebuffer;	//Recieves info from the MSAAframebuffer which then draws onto a quad which gets displayed to the screen
 
-	Terrain* m_mountainsX;
-	Terrain* m_mountainsZ;
+	Terrain*				m_mountainsX;
+	Terrain*				m_mountainsZ;
 
 
+	//void setupShadowStuff();
+	 
 	//unsigned int depthMapFBO;
 	//unsigned int depthMap;
 	//glm::mat4 lightProjection = glm::mat4(1.0f);
