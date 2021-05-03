@@ -170,6 +170,7 @@ xcopy /y /d $(ProjectDir)res $(TargetDir)\res /S</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\stb_image\stb_image.cpp" />
+    <ClCompile Include="src\ModelGeometry.cpp" />
     <ClCompile Include="src\ModelSprite.cpp" />
     <ClCompile Include="src\Framebuffer.cpp" />
     <ClCompile Include="src\ModelEnvironment.cpp" />
@@ -191,6 +192,7 @@ xcopy /y /d $(ProjectDir)res $(TargetDir)\res /S</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\stb_image\stb_image.h" />
+    <ClInclude Include="src\ModelGeometry.h" />
     <ClInclude Include="src\ModelSprite.h" />
     <ClInclude Include="src\Framebuffer.h" />
     <ClInclude Include="src\ModelEnvironment.h" />

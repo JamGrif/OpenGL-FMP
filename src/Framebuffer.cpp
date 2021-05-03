@@ -59,7 +59,7 @@ Framebuffer::Framebuffer(bool multisampled)
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
 	//Set framebuffer shader
-	m_screenShader = ShaderManager::loadShader("res/shaders/framebuffer-vertex.glsl", "res/shaders/framebuffer-fragment.glsl");
+	m_screenShader = ShaderManager::retrieveShader("res/shaders/framebuffer-vertex.glsl", "res/shaders/framebuffer-fragment.glsl");
 
 	//Create the VBO object the screen will be drawn to
 	glGenBuffers(1, &m_quadVBO);

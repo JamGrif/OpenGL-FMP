@@ -11,6 +11,7 @@
 #include "ModelSprite.h"
 #include "Framebuffer.h"
 #include "Terrain.h"
+#include "ModelGeometry.h"
 
 class Scene
 {
@@ -25,7 +26,8 @@ private:
 
 	void addSceneCamera(float x = 0.0f, float y = 0.0f, float z = 0.0f);
 	void addSceneLightManager();
-	void checkForFilterUpdate();
+
+	void updateOnInput();
 
 	void setupShadowStuff();
 

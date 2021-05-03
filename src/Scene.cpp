@@ -56,8 +56,13 @@ void Scene::initScene()
 	//Terrain
 	m_sceneMeshes.push_back(new Terrain(glm::vec3(0.0f, 22.0f, 0.0f), glm::vec3(180.0f, 0.0f, 0.0f), glm::vec3(150,10,150), 3.0f)); //Surrounding house
 
-	m_sceneMeshes.push_back(m_mountainsX = new Terrain(glm::vec3(125.0f, 20.0f, -30.0f), glm::vec3(180.0f, 0.0f, 0.0f), glm::vec3(50,10,200), -4.5f)); //Mountain
-	m_sceneMeshes.push_back(m_mountainsZ = new Terrain(glm::vec3(30.0f, 20.0f, -125.0f), glm::vec3(180.0f, 90.0f, 0.0f), glm::vec3(50, 10, 200), -4.5f)); //Mountain
+	m_sceneMeshes.push_back(m_mountainsX = new Terrain(glm::vec3(125.0f, 20.0f, -30.0f), glm::vec3(180.0f, 0.0f, 0.0f), glm::vec3(50,10,200), -4.5f)); //Mountain on X axis
+	m_sceneMeshes.push_back(m_mountainsZ = new Terrain(glm::vec3(30.0f, 20.0f, -125.0f), glm::vec3(180.0f, 90.0f, 0.0f), glm::vec3(50, 10, 200), -4.5f)); //Mountain on Z axis
+
+	//Geometry shader object
+	ModelGeometry* g = new ModelGeometry(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+	g->setMesh("res/meshes/cube.obj");
+	m_sceneMeshes.push_back(g);
 	
 	//ModelEnvironment* reflectionModel = new ModelEnvironment(glm::vec3(0.0f, 8.0f, 0.0f));
 	//reflectionModel->toggleReflection(true);
@@ -400,7 +405,8 @@ void Scene::initScene()
 void Scene::updateScene()
 {
 	m_sceneCamera->Update(EngineStatics::getDeltaTime());
-	checkForFilterUpdate();
+
+	updateOnInput();
 
 	m_sceneMSAAFrameBuffer->bindFramebuffer();
 
@@ -410,17 +416,7 @@ void Scene::updateScene()
 	//glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 	//glClear(GL_DEPTH_BUFFER_BIT);
 
-	if (Input::getKeyPressed(GLFW_KEY_8))
-	{
-		m_mountainsX->alterElevation(0.5);
-		m_mountainsZ->alterElevation(0.5);
-	}
-
-	if (Input::getKeyPressed(GLFW_KEY_9))
-	{
-		m_mountainsX->alterElevation(-0.5);
-		m_mountainsZ->alterElevation(-0.5);
-	}
+	
 
 
 	for (Model* m : m_sceneMeshes)
@@ -453,10 +449,14 @@ void Scene::updateScene()
 }
 
 /// <summary>
-/// Used to change the filter applied to the screen buffer depending on user input. Checked every app loop
+/// Checks for input and updates various game objects as a result of those inputs - called every scene update
 /// </summary>
-void Scene::checkForFilterUpdate()
+void Scene::updateOnInput()
 {
+	/*
+		Framebuffer filters inputs
+	*/
+
 	if (Input::getKeyPressed(GLFW_KEY_1))
 	{
 		m_sceneFilterFramebuffer->setFrameFilter(screen_Default);
@@ -482,6 +482,21 @@ void Scene::checkForFilterUpdate()
 		m_sceneFilterFramebuffer->setFrameFilter(screen_Drugs);
 	}
 
+	/*
+		Tessellation terrain inputs
+	*/
+
+	if (Input::getKeyPressed(GLFW_KEY_8))
+	{
+		m_mountainsX->alterElevation(0.5);
+		m_mountainsZ->alterElevation(0.5);
+	}
+
+	if (Input::getKeyPressed(GLFW_KEY_9))
+	{
+		m_mountainsX->alterElevation(-0.5);
+		m_mountainsZ->alterElevation(-0.5);
+	}
 }
 
 //void Scene::setupShadowStuff()

@@ -32,34 +32,43 @@ void Terrain::drawPassTwo()
 	}
 
 	m_modelShaderPassTwo->Bind(); 
+
 	glm::mat4 mMVP = *EngineStatics::getProjectionMatrix() * m_vMat * m_mMat;
+
 	m_modelShaderPassTwo->setUniformMatrix4fv("mvp_matrix", mMVP);
-
 	m_modelShaderPassTwo->setUniform1f("elevation", m_elevation);
-
 	m_modelShaderPassTwo->setUniform1i("texture_color", 0);
 	m_modelShaderPassTwo->setUniform1i("texture_height", 1);
 
 	m_terrainTexture->Bind(0);
 	m_terrainHeight->Bind(1);
-
 	
 	glPatchParameteri(GL_PATCH_VERTICES, 16);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawArrays(GL_PATCHES, 0, 16);
 
-	glPolygonMode(GL_FRONT, GL_FILL);
 
 	m_modelShaderPassTwo->Unbind();
 	m_terrainTexture->Unbind();
+	m_terrainHeight->Unbind();
 
 }
 
+/// <summary>
+/// Overloaded version of the base setShaderTwo which is able to take in tessellation shader paths
+/// </summary>
+/// <param name="vertexPath"></param>
+/// <param name="tessellationControlPath"></param>
+/// <param name="tessellationEvaluationPath"></param>
+/// <param name="fragmentPath"></param>
 void Terrain::setShaderTwo(const char* vertexPath, const char* tessellationControlPath, const char* tessellationEvaluationPath, const char* fragmentPath)
 {
-	m_modelShaderPassTwo = ShaderManager::loadShader(vertexPath, tessellationControlPath, tessellationEvaluationPath, fragmentPath);
+	m_modelShaderPassTwo = ShaderManager::retrieveShader(vertexPath, tessellationControlPath, tessellationEvaluationPath, fragmentPath);
 }
 
+/// <summary>
+/// Used to change the elevation of the generated terrain. Limits the elevation to a range
+/// </summary>
+/// <param name="change">Specified change in elevation</param>
 void Terrain::alterElevation(float change)
 {
 		m_elevation += change;

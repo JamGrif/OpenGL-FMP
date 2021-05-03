@@ -56,7 +56,7 @@ void Model::setMesh(const char* meshFilePath)
 /// <param name="fragmentPath">Fragment shader file path</param>
 void Model::setShaderOne(const char* vertexPath, const char* fragmentPath)
 {
-	m_modelShaderPassOne = ShaderManager::loadShader(vertexPath, fragmentPath);
+	m_modelShaderPassOne = ShaderManager::retrieveShader(vertexPath, fragmentPath);
 }
 
 /// <summary>
@@ -66,7 +66,7 @@ void Model::setShaderOne(const char* vertexPath, const char* fragmentPath)
 /// <param name="fragmentPath">Fragment shader file path</param>
 void Model::setShaderTwo(const char* vertexPath, const char* fragmentPath)
 {
-	m_modelShaderPassTwo = ShaderManager::loadShader(vertexPath, fragmentPath);
+	m_modelShaderPassTwo = ShaderManager::retrieveShader(vertexPath, fragmentPath);
 }
 
 /// <summary>

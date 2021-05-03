@@ -3,5 +3,4 @@ out vec2 texCoord;
 
 void main()
 {
-
 }
