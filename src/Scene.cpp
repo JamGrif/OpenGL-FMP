@@ -284,6 +284,24 @@ void Scene::initScene()
 	bed->setNormalTexture("res/textures/bed_norm.png", false);
 	m_sceneMeshes.push_back(bed);
 
+	//Table
+	ModelLighting* table = new ModelLighting(glm::vec3(-7.5f, -1.0f, 0.0f), glm::vec3(0.0f, 90.0f, 0.0f));
+	table->setMesh("res/meshes/table.obj");
+	table->setDiffuseTexture("res/textures/table_diff.png");
+	table->setSpecularTexture("res/textures/table_spec.png");
+	m_sceneMeshes.push_back(table);
+
+	//Knife
+	ModelLighting* knife = new ModelLighting(glm::vec3(-7.5f, 1.9f, 0.0f), glm::vec3(0.0f, 50.0, 0.0f));
+	knife->setMesh("res/meshes/knife.obj");
+	knife->setDiffuseTexture("res/textures/knife_diff.png");
+	knife->setSpecularTexture("res/textures/knife_spec.png");
+	knife->setNormalTexture("res/textures/knife_norm.png", false);
+	knife->SetXScale(1.5f);
+	knife->SetYScale(1.5f);
+	knife->SetZScale(1.5f);
+	m_sceneMeshes.push_back(knife);
+
 	//Crates
 	std::vector<glm::vec3> cratePosRot =
 	{

@@ -325,15 +325,20 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
 
 }
 
+//UNUSED - used to calculate if a pixel is in shadow or not by comparing it against the depthmap texture generated in the first pass
 //float shadowCalculation(vec4 fragPosLightSpace)
 //{
+//	Find the pixels light space position (range -1 - 1)
 //	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-//	projCoords = projCoords * 0.5 + 0.5;
+//	projCoords = projCoords * 0.5 + 0.5; //Transfer to range 0 - 1 to match depth buffer
 //
+//	//Sample the depth buffer from the first pass
 //	float closestDepth = texture(material.depthMap, projCoords.xy).r;
 //
+//	//Current depth of this pixel
 //	float currentDepth = projCoords.z;
 //
+//	Add a form of shadow bias to avoid shadow acne on surfaces
 //	float bias = 0.05;
 //	float shadow = 0.0;
 //	vec2 texelSize = 1.0 / textureSize(material.depthMap, 0);
@@ -341,12 +346,14 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
 //	{
 //		for (int y = -1; y <= 1; ++y)
 //		{
+//			//Allows softer shadows by sampling the surrounding texels as opposed to a single texel
 //			float pcfDepth = texture(material.depthMap, projCoords.xy + vec2(x,y) * texelSize).r;
 //			shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
 //		}
 //	}
 //	shadow /= 9.0;
 //
+//	//If pixel is simple outside of lights view, ensure its marked as not in shadow
 //	if (projCoords.z > 1.0)
 //		shadow = 0.0;
 //

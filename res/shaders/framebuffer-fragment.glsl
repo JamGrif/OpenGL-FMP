@@ -15,7 +15,7 @@ void main()
     }
     if (screenFilter == 2) //Inverse
     {
-        color = vec4(vec3(1.0 - texture(screenTexture, texCoords)), 1.0);
+        color = vec4(vec3(1.0 - texture(screenTexture, texCoords)), 1.0); //Inverts colours
     }
     if (screenFilter == 3) //Greyscale
     {

@@ -19,10 +19,11 @@ void main()
     
     for (int i = 0; i < 3; i++)
     {
+        //Moves the pixel depending on inflation amount
         gl_Position = proj_matrix * (gl_in[i].gl_Position + normalize(vec4(varyingNormal[i], 1.0)) * inflation);
         varyingNormalG = varyingNormal[i];
         varyingTexCoordG = varyingTexCoord[i];
-        EmitVertex();
+        EmitVertex(); //Pass vertex to the vertex stream
     }
-    EndPrimitive();
+    EndPrimitive(); //Complete the primitive after 3 vertices have been processed
 }
