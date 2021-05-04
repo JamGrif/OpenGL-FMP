@@ -265,6 +265,17 @@ void Scene::initScene()
 	stair->setNormalTexture("res/textures/stairs_norm.png", false);
 	m_sceneMeshes.push_back(stair);
 
+	//Watchtower
+	ModelLighting* tower = new ModelLighting(glm::vec3(-32.0f, -1.0f, 32.0f), glm::vec3(0.0f, 90.0f, 0.0f));
+	tower->setMesh("res/meshes/watchTower.obj");
+	tower->setDiffuseTexture("res/textures/watchTower_diff.png");
+	tower->setSpecularTexture("res/textures/watchTower_spec.png");
+	tower->setNormalTexture("res/textures/watchTower_norm.png", false);
+	tower->SetXScale(2.5f);
+	tower->SetYScale(2.5f);
+	tower->SetZScale(2.5f);
+	m_sceneMeshes.push_back(tower);
+
 	//Bed
 	ModelLighting* bed = new ModelLighting(glm::vec3(-7.0f, -0.2f, 6.0f), glm::vec3(0.0f, 180.0f, 0.0f));
 	bed->setMesh("res/meshes/bed.obj");

@@ -20,8 +20,8 @@ public:
 	Scene();
 	~Scene();
 
-	void initScene();
-	void updateScene();
+	void					initScene();
+	void					updateScene();
 
 private:
 
