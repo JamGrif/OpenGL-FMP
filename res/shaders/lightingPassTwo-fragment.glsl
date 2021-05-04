@@ -80,7 +80,7 @@ uniform DirectionalLight dLight;
 uniform SpotLight sLight;
 
 
-vec3 calculateDirLight(DirectionalLight dl, vec3 normal, vec3 viewDir, vec2 texCoords);
+vec3 calculateDirLight(DirectionalLight dl, vec3 normal, vec3 viewDir, vec2 alteredTexCoords);
 vec3 calculatePointLight(PointLight pl, vec3 normal, vec3 viewDir, vec2 alteredTexCoords);
 vec3 calculateSpotLight(SpotLight sl, vec3 normal, vec3 viewDir, vec2 alteredTexCoords);
 
@@ -161,7 +161,7 @@ void main(void)
 
 }
 
-vec3 calculateDirLight(DirectionalLight dl, vec3 normal, vec3 viewDir, vec2 texCoords)
+vec3 calculateDirLight(DirectionalLight dl, vec3 normal, vec3 viewDir, vec2 alteredTexCoords)
 {
 	vec3 lightDir;  
 
@@ -182,9 +182,9 @@ vec3 calculateDirLight(DirectionalLight dl, vec3 normal, vec3 viewDir, vec2 texC
 	float spec = pow(max(dot(normal, halfwayDir),0.0),material.shininess);
 
 	//Combine
-	vec3 ambient = dl.ambient * vec3(texture(material.diffuse, texCoords));
-	vec3 diffuse = dl.diffuse * diff * vec3(texture(material.diffuse, texCoords));
-	vec3 specular = dl.specular * spec * vec3(texture(material.specular, texCoords));
+	vec3 ambient = dl.ambient * vec3(texture(material.diffuse, alteredTexCoords));
+	vec3 diffuse = dl.diffuse * diff * vec3(texture(material.diffuse, alteredTexCoords));
+	vec3 specular = dl.specular * spec * vec3(texture(material.specular, alteredTexCoords));
 
 	return (ambient + diffuse + specular);
 

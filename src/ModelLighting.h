@@ -19,6 +19,8 @@ public:
     void                    setNormalTexture(const char* texturePath, bool normalize);
     void                    setHeightTexture(const char* texturePath, float heightAmount);
 
+    void                    setSpecularShiniess(float value);
+
 private:
 
     Texture*                m_modelDiffuseTexture;
@@ -26,6 +28,7 @@ private:
     Texture*                m_modelEmissionTexture;
     Texture*                m_modelNormalTexture;
     Texture*                m_modelHeightTexture;
+    float                   m_shininess;
 
     bool                    m_normalizeTexture;
     bool                    m_usingEmission;

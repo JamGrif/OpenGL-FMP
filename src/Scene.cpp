@@ -539,16 +539,16 @@ void Scene::initScene()
 
 	std::vector<const char*> floorMaterials =
 	{
-		//Diffuse map							//Specular Map							//Normal Map 
-		"res/textures/metal_diff.png",			"res/textures/metal_spec.png",			"res/textures/metal_norm.png",			//not normalized texture
-		"res/textures/tile_diff.png",			"res/textures/tile_spec.png",			"res/textures/tile_norm.png",			//not normalized texture
-		"res/textures/sand_diff.png",			"res/textures/sand_spec.png",			"res/textures/sand_norm.png",			//not normalized texture
-		"res/textures/marble_diff.png",			"res/textures/marble_spec.png",			"res/textures/marble_norm.png",			//not normalized texture
-		"res/textures/hieroglyphs_diff.png",	"res/textures/hieroglyphs_spec.png",	"res/textures/hieroglyphs_norm.png",	//not normalized texture	
-		"res/textures/metalHammer_diff.png",	"res/textures/metalHammer_spec.png",	"res/textures/metalHammer_norm.png",	//normalized texture		
-		"res/textures/skullGround_diff.png",	"res/textures/skullGround_spec.png",	"res/textures/skullGround_norm.png",	//normalized texture
-		"res/textures/rock_diff.png",			"res/textures/rock_spec.png",			"res/textures/rock_norm.png",			//normalized texture
-		"res/textures/concrete2_diff.png",		"res/textures/concrete2_spec.png",		"res/textures/concrete2_norm.png",		//normalized texture
+		//Diffuse map							//Specular Map							//Emision						//Normal Map 
+		"res/textures/metal_diff.png",			"res/textures/metal_spec.png",			"res/textures/blank_emis.png",	"res/textures/metal_norm.png",			//not normalized texture
+		"res/textures/tile_diff.png",			"res/textures/tile_spec.png",			"res/textures/blank_emis.png",	"res/textures/tile_norm.png",			//not normalized texture
+		"res/textures/sand_diff.png",			"res/textures/sand_spec.png",			"res/textures/blank_emis.png",	"res/textures/sand_norm.png",			//not normalized texture
+		"res/textures/lava_diff.png",			"res/textures/lava_spec.png",			"res/textures/lava_emis.png",	"res/textures/lava_norm.png",			//not normalized texture
+		"res/textures/hieroglyphs_diff.png",	"res/textures/hieroglyphs_spec.png",	"res/textures/blank_emis.png",	"res/textures/hieroglyphs_norm.png",	//not normalized texture	
+		"res/textures/metalHammer_diff.png",	"res/textures/metalHammer_spec.png",	"res/textures/blank_emis.png",	"res/textures/metalHammer_norm.png",	//normalized texture		
+		"res/textures/skullGround_diff.png",	"res/textures/skullGround_spec.png",	"res/textures/blank_emis.png",	"res/textures/skullGround_norm.png",	//normalized texture
+		"res/textures/rock_diff.png",			"res/textures/rock_spec.png",			"res/textures/blank_emis.png",	"res/textures/rock_norm.png",			//normalized texture
+		"res/textures/concrete2_diff.png",		"res/textures/concrete2_spec.png",		"res/textures/blank_emis.png",	"res/textures/concrete2_norm.png",		//normalized texture
 	};
 
 	std::vector<glm::vec3> floorPos =
@@ -563,8 +563,22 @@ void Scene::initScene()
 		glm::vec3(-24.0f, -1.25, 8.0),
 		glm::vec3(-12.0f, -1.25, 2.0),
 		glm::vec3(-12.0f, -1.25, 8.0),
-		
 	};
+
+	float materialShininess[] =
+	{
+		48.0f,
+		48.0f,
+		48.0f,
+		64.0f,
+		48.0f,
+		48.0f,
+		48.0f,
+		48.0f,
+		48.0f
+	};
+
+
 
 	int materialNum = 0;
 	for (int i = 0; i < floorPos.size(); i++)
@@ -573,17 +587,18 @@ void Scene::initScene()
 		floor->setMesh("res/meshes/plane.obj");
 		floor->setDiffuseTexture(floorMaterials.at(materialNum));
 		floor->setSpecularTexture(floorMaterials.at(materialNum+1));
-		if (materialNum >= 6) 
+		floor->setEmissionTexture(floorMaterials.at(materialNum + 2));
+		if (materialNum >= 16) 
 		{
-			floor->setNormalTexture(floorMaterials.at(materialNum + 2), true);
+			floor->setNormalTexture(floorMaterials.at(materialNum + 3), true);
 		}
 		else
 		{
-			floor->setNormalTexture(floorMaterials.at(materialNum + 2), false);
+			floor->setNormalTexture(floorMaterials.at(materialNum + 3), false);
 		}
-		
+		floor->setSpecularShiniess(materialShininess[i]);
 		m_sceneMeshes.push_back(floor);
-		materialNum += 3;
+		materialNum += 4;
 	}
 
 	//Normal vs no normal

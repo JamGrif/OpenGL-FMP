@@ -2,7 +2,7 @@
 
 ModelLighting::ModelLighting(glm::vec3 position, glm::vec3 rotation)
 	:Model(position, rotation), m_modelDiffuseTexture(nullptr), m_modelSpecularTexture(nullptr),
-	m_modelEmissionTexture(nullptr), m_modelNormalTexture(nullptr), m_modelHeightTexture(nullptr),
+	m_modelEmissionTexture(nullptr), m_modelNormalTexture(nullptr), m_modelHeightTexture(nullptr), m_shininess(48.0f),
 	m_normalizeTexture(false), m_usingEmission(false), m_usingNormal(false), m_usingHeight(false), m_heightAmount(0.5)
 {
 
@@ -173,7 +173,7 @@ void ModelLighting::drawPassTwo()
 	m_modelShaderPassTwo->setUniform1i("material.normal", 3);
 	m_modelShaderPassTwo->setUniform1i("material.height", 4);
 	//m_modelShaderPassTwo->setUniform1i("material.depthMap", 5); //depthMap contains shows depth information of scene for shadowing
-	m_modelShaderPassTwo->setUniform1f("material.shininess", 48.0f);
+	m_modelShaderPassTwo->setUniform1f("material.shininess", m_shininess);
 
 	m_modelShaderPassTwo->setUniform1i("material.normalizeTex", m_normalizeTexture);
 	m_modelShaderPassTwo->setUniform1i("material.usingNormal", m_usingNormal);
@@ -316,4 +316,9 @@ void ModelLighting::setHeightTexture(const char* texturePath, float heightAmount
 	m_modelHeightTexture = TextureManager::retrieveTexture(texturePath);
 	m_usingHeight = true;
 	m_heightAmount = heightAmount;
+}
+
+void ModelLighting::setSpecularShiniess(float value)
+{
+	m_shininess = value;
 }
