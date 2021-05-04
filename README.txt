@@ -5,10 +5,10 @@ The Release version is recommended as while both versions are visually the same,
 The scene shows most of the features originally promised in my project proposal and allows the user to fly around to see them all for themselves
 
 Features:
-	ADS Blinn-Phong light reflection model, Diffuse Map, Specular Map, Emission Map, Height Map, Normal Map, skybox cubemap, 
-	reflection environment map, refraction environment map, Mountains via Tessellation shaders, Model inflation via Geometry shader,
-	post-processing screen filters, coloured lighting, Directional/Point/Spot light, load external 3D models, load external textures,
-	load external shaders, Parallax mapping, sprite blending, mouse + keyboard input, camera movement on all 3 axis
+ADS Blinn-Phong light reflection model, Diffuse Map, Specular Map, Emission Map, Height Map, Normal Map, skybox cubemap, 
+reflection environment map, refraction environment map, Mountains via Tessellation shaders, Model inflation via Geometry shader,
+post-processing screen filters, coloured lighting, Directional/Point/Spot light, load external 3D models, load external textures,
+load external shaders, Parallax mapping, sprite blending, mouse + keyboard input, camera movement on all 3 axis
 
 Controls:
 W/A/S/D to move around the camera
