@@ -5,7 +5,9 @@
 #include "Input.h"
 
 Scene::Scene()
-	:m_sceneCamera(nullptr), m_sceneLightManager(nullptr), m_sceneMSAAFrameBuffer(nullptr), m_sceneFilterFramebuffer(nullptr)
+	:m_sceneCamera(nullptr), m_sceneLightManager(nullptr), m_sceneMSAAFrameBuffer(nullptr), m_sceneFilterFramebuffer(nullptr), m_mountainsX(nullptr), m_mountainsZ(nullptr),
+	m_materialLightMinZ(-5.0f), m_materialLightMaxZ(9.0f), m_materialLightMinX(-25.0f), m_materialLightMaxX(-13.0f), m_materialLightIncZ(true),
+	m_materialLightIncX(true), m_normalLightMaxZ(8.0f), m_normalLightMinZ(23.0f), m_normalLightIncZ(true), m_lightR(0.0f), m_lightG(0.0f), m_lightB(0.0f)
 {
 	std::cout << "Scene Initialized" << std::endl;
 }
@@ -39,9 +41,7 @@ Scene::~Scene()
 /// </summary>
 void Scene::initScene()
 {
-
-	//setupSceneFramebuffer();
-
+	//UNUSED function used for shadow buffers setup
 	//setupShadowStuff();
 	
 	addSceneCamera(0.0f, 2.0f, 0.0f);
@@ -50,6 +50,7 @@ void Scene::initScene()
 	//Skybox
 	m_sceneMeshes.push_back(new ModelSky());
 
+	//Framebuffers
 	m_sceneFilterFramebuffer = new Framebuffer(false);
 	m_sceneMSAAFrameBuffer = new Framebuffer(true);
 
@@ -67,6 +68,7 @@ void Scene::initScene()
 	g->SetZScale(1.5);
 	m_sceneMeshes.push_back(g);
 	
+	//Reflection environment map object
 	ModelEnvironment* reflectionModel = new ModelEnvironment(glm::vec3(14.0f, 0.5f, -7.0f));
 	reflectionModel->toggleReflection(true);
 	reflectionModel->setMesh("res/meshes/heart.obj");
@@ -75,6 +77,7 @@ void Scene::initScene()
 	reflectionModel->SetZScale(1);
 	m_sceneMeshes.push_back(reflectionModel);
 	
+	//Refraction environment map object
 	ModelEnvironment* refractionModel = new ModelEnvironment(glm::vec3(22.0f, 0.5f, -7.0f));
 	refractionModel->toggleRefraction(true);
 	refractionModel->setMesh("res/meshes/heart.obj");
@@ -83,70 +86,98 @@ void Scene::initScene()
 	refractionModel->SetZScale(1);
 	m_sceneMeshes.push_back(refractionModel);
 
-	//std::vector<glm::vec3> grassPos =
-	//{
-	//	glm::vec3(2.0f, 0.5f, 2.0f),
-	//	glm::vec3(-2.0f, 0.5f, -2.0f),
-	//	glm::vec3(2.0f, 0.5f, -2.0f),
-	//	glm::vec3(-2.0f, 0.5f, 2.0f),
-	//	glm::vec3(1.0f, 0.5f, 5.0f),
-	//};
-	//
-	//for (int i = 0; i < grassPos.size(); i++)
-	//{
-	//	ModelSprite* grass = new ModelSprite(grassPos.at(i), glm::vec3(0.0f, 0.0f, 0.0f));
-	//	grass->setSprite("res/textures/grass_sprite.png");
-	//	grass->SetXScale(0.3);
-	//	grass->SetYScale(0.3);
-	//	grass->SetZScale(0.3);
-	//	m_sceneMeshes.push_back(grass);
-	//}
-
+	//Grass
+	std::vector<glm::vec3> grassPos =
+	{
+		//Position
+		glm::vec3(4.0f, -0.5f, 13.0f),
+		glm::vec3(8.0f, -0.5f, 18.0f),
+		glm::vec3(14.0f, -0.5f, 15.0f),
+		glm::vec3(19.0f, -0.5f, -5.0f),
+		glm::vec3(23.0f, -0.5f, 10.0f),
+		glm::vec3(-4.0f, -0.5f,  13.0f),
+		glm::vec3(-8.0f, -0.5f,  18.0f),
+		glm::vec3(-14.0f, -0.5f, 15.0f),
+		glm::vec3(-19.0f, -0.5f, 17.0f)
+	};
 	
+	for (int i = 0; i < grassPos.size(); i++)
+	{
+		ModelSprite* grass = new ModelSprite(grassPos.at(i));
+		grass->setSprite("res/textures/grass_sprite.png");
+		grass->SetXScale(0.4f);
+		grass->SetYScale(0.4f);
+		grass->SetZScale(0.4f);
+		m_sceneMeshes.push_back(grass);
+	}
 
-	
+	//Lighting
 	m_sceneLightManager->addDirectionalLight(-2.0f, -3.0f, -1.0f, glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.4f, 0.4f, 0.4f), glm::vec3(0.3f, 0.3f, 0.3f));
 	
 	m_sceneLightManager->addSpotLight(0.0f, 0.0f, 0.0f, glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.8f,0.8f,0.8f), glm::vec3(1.0f, 1.0f, 1.0f));
 	m_sceneLightManager->getSpotLight(0)->toggleActive(); //Turns off spotlight by default
 
+	//Point lights
+	std::vector<glm::vec3> LightPosAmbDifSpc =
+	{
+		//Position						//Ambient						//Diffuse						//Specular
+		glm::vec3(0.0f, 3.0f, 0.0f),	glm::vec3(0.2f, 0.2f, 0.2f),	glm::vec3(1.0f, 1.0f, 1.0f),		glm::vec3(0.4f, 0.4f, 0.4f),		//House light
+		glm::vec3(-18.0f, 2.0f, 0.0f),	glm::vec3(0.2f, 0.2f, 0.2f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.4f, 0.4f, 0.4f),	//Material showcase light
+		glm::vec3(18.0f, 2.0f, 14.0f),	glm::vec3(0.2f, 0.2f, 0.2f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.4f, 0.4f, 0.4f),	//Normal showcase light
+		glm::vec3(-20.0f, 2.0f, 20.0f), glm::vec3(0.2f, 0.2f, 0.2f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.4f, 0.4f, 0.4f),	//Coloured lighting
+	};
+
+	for (int i = 0; i < LightPosAmbDifSpc.size(); i += 4)
+	{
+		m_sceneLightManager->addPointLight(LightPosAmbDifSpc.at(i).x, LightPosAmbDifSpc.at(i).y, LightPosAmbDifSpc.at(i).z, LightPosAmbDifSpc.at(i + 1), LightPosAmbDifSpc.at(i + 2), LightPosAmbDifSpc.at(i + 3));
+	}
+
+	//Objects that copy lights
+	for (int i = 0; i < m_sceneLightManager->getCurrentPointLights(); i++)
+	{
+		ModelBasic* light = new ModelBasic(LightPosAmbDifSpc.at(i));
+		light->setMesh("res/meshes/cube.obj");
+		light->copyPointLight(i);
+		m_sceneMeshes.push_back(light);
+	}
+
 	//Floor
 	std::vector<glm::vec3> FloorPosRot =
 	{
-		glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 0.0f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, 0.0f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f, 0.0f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 0.0f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, 0.0f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f, 0.0f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f)
+		//Position	
+		glm::vec3(0.0f, 0.0f, 0.0f), 
+		glm::vec3(6.0f, 0.0f, 0.0f), 
+		glm::vec3(-6.0f, 0.0f, 0.0f), 
+		glm::vec3(0.0f, 0.0f, 6.0f), 
+		glm::vec3(6.0f, 0.0f, 6.0f), 
+		glm::vec3(-6.0f, 0.0f, 6.0f),
+		glm::vec3(0.0f, 0.0f, -6.0f), 
+		glm::vec3(6.0f, 0.0f, -6.0f), 
+		glm::vec3(-6.0f, 0.0f, -6.0f)
 	};
 	
-	
-	for (int i = 0; i < FloorPosRot.size(); i += 2)
+	for (int i = 0; i < FloorPosRot.size(); i ++)
 	{
-		ModelLighting* Floor = new ModelLighting(FloorPosRot.at(i), FloorPosRot.at(i + 1));
+		ModelLighting* Floor = new ModelLighting(FloorPosRot.at(i));
 		Floor->setMesh("res/meshes/plane.obj");
 		Floor->setDiffuseTexture("res/textures/carpet_diff.png");
 		Floor->setSpecularTexture("res/textures/carpet_spec.png");
 		Floor->setNormalTexture("res/textures/carpet_norm.png", false);
 		Floor->setHeightTexture("res/textures/carpet_height.png", 0.05f);
-		//Floor->setEmissionTexture("res/textures/matrix_emis.png");
 		m_sceneMeshes.push_back(Floor);
 	}
 	
 	std::vector<glm::vec3> ConcreteFloor =
 	{
-		glm::vec3(0.0f, -0.8f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, -0.8f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f, -0.8f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, -0.8f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, -0.8f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f, -0.8f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, -0.8f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, -0.8f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		//Position						//Rotation
+		glm::vec3(0.0f, -0.8f, 0.0f),	glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(6.0f, -0.8f, 0.0f),	glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-6.0f, -0.8f, 0.0f),	glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, -0.8f, 6.0f),	glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(6.0f, -0.8f, 6.0f),	glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-6.0f, -0.8f, 6.0f),	glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, -0.8f, -6.0f),	glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(6.0f, -0.8f, -6.0f),	glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(-6.0f, -0.8f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f)
 	};
 	
@@ -165,17 +196,18 @@ void Scene::initScene()
 	//Side wall
 	std::vector<glm::vec3> SideWallPosRot =
 	{
-		glm::vec3(-9.0f, 2.8f, -6.0f), glm::vec3(90.0f, 0.0f, -90.0f),
-		glm::vec3(-9.0f, 2.8f, 0.0f), glm::vec3(90.0f, 0.0f, -90.0f),
-		glm::vec3(-9.0f, 2.8f, 6.0f), glm::vec3(90.0f, 0.0f, -90.0f),
-		glm::vec3(9.0f, 2.8f, -6.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-		glm::vec3(9.0f, 2.8f, 0.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-		glm::vec3(9.0f, 2.8f, 6.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-		glm::vec3(-6.0f, 2.8f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 2.8f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, 2.8f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f, 2.8f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f),
-		glm::vec3(6.0f, 2.8f, 9.0f), glm::vec3(-90.0f, 180.0f, 0.0f)
+		//Position						//Rotation
+		glm::vec3(-9.0f, 2.8f, -6.0f),	glm::vec3(90.0f, 0.0f, -90.0f),
+		glm::vec3(-9.0f, 2.8f, 0.0f),	glm::vec3(90.0f, 0.0f, -90.0f),
+		glm::vec3(-9.0f, 2.8f, 6.0f),	glm::vec3(90.0f, 0.0f, -90.0f),
+		glm::vec3(9.0f, 2.8f, -6.0f),	glm::vec3(90.0f, 0.0f, 90.0f),
+		glm::vec3(9.0f, 2.8f, 0.0f),	glm::vec3(90.0f, 0.0f, 90.0f),
+		glm::vec3(9.0f, 2.8f, 6.0f),	glm::vec3(90.0f, 0.0f, 90.0f),
+		glm::vec3(-6.0f, 2.8f, -9.0f),	glm::vec3(90.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 2.8f, -9.0f),	glm::vec3(90.0f, 0.0f, 0.0f),
+		glm::vec3(6.0f, 2.8f, -9.0f),	glm::vec3(90.0f, 0.0f, 0.0f),
+		glm::vec3(-6.0f, 2.8f, 9.0f),	glm::vec3(-90.0f, 180.0f, 0.0f),
+		glm::vec3(6.0f, 2.8f, 9.0f),	glm::vec3(-90.0f, 180.0f, 0.0f)
 	};
 	
 	for (int i = 0; i < SideWallPosRot.size(); i += 2)
@@ -189,18 +221,19 @@ void Scene::initScene()
 		m_sceneMeshes.push_back(wall);
 	}
 	
-	////Roof
+	//Roof
 	std::vector<glm::vec3> RoofPosRot =
 	{
-		glm::vec3(0.0f, 5.8f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(6.0f, 5.8f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(-6.0f, 5.8f, 0.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(0.0f, 5.8f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(6.0f, 5.8f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(-6.0f, 5.8f, 6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(0.0f, 5.8f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(6.0f, 5.8f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f),
-		glm::vec3(-6.0f, 5.8f, -6.0f), glm::vec3(0.0f, 0.0f, 180.0f)
+		//Position						//Rotation
+		glm::vec3(0.0f, 5.8f, 0.0f),	glm::vec3(0.0f, 0.0f, 180.0f),
+		glm::vec3(6.0f, 5.8f, 0.0f),	glm::vec3(0.0f, 0.0f, 180.0f),
+		glm::vec3(-6.0f, 5.8f, 0.0f),	glm::vec3(0.0f, 0.0f, 180.0f),
+		glm::vec3(0.0f, 5.8f, 6.0f),	glm::vec3(0.0f, 0.0f, 180.0f),
+		glm::vec3(6.0f, 5.8f, 6.0f),	glm::vec3(0.0f, 0.0f, 180.0f),
+		glm::vec3(-6.0f, 5.8f, 6.0f),	glm::vec3(0.0f, 0.0f, 180.0f),
+		glm::vec3(0.0f, 5.8f, -6.0f),	glm::vec3(0.0f, 0.0f, 180.0f),
+		glm::vec3(6.0f, 5.8f, -6.0f),	glm::vec3(0.0f, 0.0f, 180.0f),
+		glm::vec3(-6.0f, 5.8f, -6.0f),	glm::vec3(0.0f, 0.0f, 180.0f)
 	};
 	
 	for (int i = 0; i < RoofPosRot.size(); i += 2)
@@ -214,106 +247,92 @@ void Scene::initScene()
 	}
 	
 	//Dresser
-	std::vector<glm::vec3> DresserPosRot =
-	{
-		glm::vec3(0.0f, 0.0f, -7.75f), glm::vec3(0.0f, 0.0f, 0.0f),
-	};
+	ModelLighting* dresser = new ModelLighting(glm::vec3(0.0f, 0.0f, -7.75f), glm::vec3(0.0f, 0.0f, 0.0f));
+	dresser->setMesh("res/meshes/dresser.obj");
+	dresser->setDiffuseTexture("res/textures/dresser_diff.png");
+	dresser->setSpecularTexture("res/textures/dresser_spec.png");
+	dresser->setNormalTexture("res/textures/dresser_norm.png", false);
+	m_sceneMeshes.push_back(dresser);
 	
-	for (int i = 0; i < DresserPosRot.size(); i += 2)
-	{
-		ModelLighting* dresser = new ModelLighting(DresserPosRot.at(i), DresserPosRot.at(i + 1));
-		dresser->setMesh("res/meshes/dresser.obj");
-		dresser->setDiffuseTexture("res/textures/dresser_diff.png");
-		dresser->setSpecularTexture("res/textures/dresser_spec.png");
-		dresser->setNormalTexture("res/textures/dresser_norm.png", false);
-		m_sceneMeshes.push_back(dresser);
-	}
 	
 	//Front Stair
-	std::vector<glm::vec3> StairsPos =
-	{
-		glm::vec3(0.0f, -2.25f, 10.0f), glm::vec3(0.0f, 90.0f, 0.0f),
-	};
+	ModelLighting* stair = new ModelLighting(glm::vec3(0.0f, -2.25f, 10.0f), glm::vec3(0.0f, 90.0f, 0.0f));
+	stair->setMesh("res/meshes/stairs.obj");
+	stair->setDiffuseTexture("res/textures/stairs_diff.png");
+	stair->setSpecularTexture("res/textures/stairs_spec.png");
+	stair->setNormalTexture("res/textures/stairs_norm.png", false);
+	m_sceneMeshes.push_back(stair);
 	
-	for (int i = 0; i < StairsPos.size(); i += 2)
-	{
-		ModelLighting* Crate = new ModelLighting(StairsPos.at(i), StairsPos.at(i + 1));
-		Crate->setMesh("res/meshes/stairs.obj");
-		Crate->setDiffuseTexture("res/textures/stairs_diff.png");
-		Crate->setSpecularTexture("res/textures/stairs_spec.png");
-		Crate->setNormalTexture("res/textures/stairs_norm.png", false);
-		m_sceneMeshes.push_back(Crate);
-	}
 	
 	//Grass
 	std::vector<glm::vec3> GrassPosRot =
 	{
-		glm::vec3(0.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f,-1.5f,  0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f,-1.5f,  6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f,-1.5f,  -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		//Position							
+		glm::vec3(0.0f, -1.5f, 0.0f),		
+		glm::vec3(6.0f, -1.5f, 0.0f),		
+		glm::vec3(-6.0f,-1.5f,  0.0f),		
+		glm::vec3(0.0f, -1.5f, 6.0f),		
+		glm::vec3(6.0f, -1.5f, 6.0f),		
+		glm::vec3(-6.0f,-1.5f,  6.0f),		
+		glm::vec3(0.0f, -1.5f, -6.0f),		
+		glm::vec3(6.0f, -1.5f, -6.0f),		
+		glm::vec3(-6.0f,-1.5f,  -6.0f),		
 	
-		glm::vec3(-18.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-12.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-24.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-18.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-12.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-24.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-18.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-12.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-24.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-18.0f, -1.5f, 0.0f),		
+		glm::vec3(-12.0f, -1.5f, 0.0f),		
+		glm::vec3(-24.0f, -1.5f, 0.0f),		
+		glm::vec3(-18.0f, -1.5f, 6.0f),		
+		glm::vec3(-12.0f, -1.5f, 6.0f),		
+		glm::vec3(-24.0f, -1.5f, 6.0f),		
+		glm::vec3(-18.0f, -1.5f, -6.0f),	
+		glm::vec3(-12.0f, -1.5f, -6.0f),	
+		glm::vec3(-24.0f, -1.5f, -6.0f),	
 	
-		glm::vec3(18.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(12.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(24.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(18.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(12.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(24.0f, -1.5f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(18.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(12.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(24.0f, -1.5f, -6.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(18.0f, -1.5f, 0.0f),		
+		glm::vec3(12.0f, -1.5f, 0.0f),		
+		glm::vec3(24.0f, -1.5f, 0.0f),		
+		glm::vec3(18.0f, -1.5f, 6.0f),		
+		glm::vec3(12.0f, -1.5f, 6.0f),		
+		glm::vec3(24.0f, -1.5f, 6.0f),		
+		glm::vec3(18.0f, -1.5f, -6.0f),		
+		glm::vec3(12.0f, -1.5f, -6.0f),		
+		glm::vec3(24.0f, -1.5f, -6.0f),		
 	
 		//
-		glm::vec3(0.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f,-1.5f,  18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f,-1.5f,  24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f,-1.5f,  12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, -1.5f, 18.0f),		
+		glm::vec3(6.0f, -1.5f, 18.0f),		
+		glm::vec3(-6.0f,-1.5f,  18.0f),		
+		glm::vec3(0.0f, -1.5f, 24.0f),		
+		glm::vec3(6.0f, -1.5f, 24.0f),		
+		glm::vec3(-6.0f,-1.5f,  24.0f),		
+		glm::vec3(0.0f, -1.5f, 12.0f),		
+		glm::vec3(6.0f, -1.5f, 12.0f),		
+		glm::vec3(-6.0f,-1.5f,  12.0f),		
 	
-		glm::vec3(-18.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-12.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-24.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-18.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-12.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-24.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-18.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-12.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(-24.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-18.0f, -1.5f, 18.0f),	
+		glm::vec3(-12.0f, -1.5f, 18.0f),	
+		glm::vec3(-24.0f, -1.5f, 18.0f),	
+		glm::vec3(-18.0f, -1.5f, 24.0f),	
+		glm::vec3(-12.0f, -1.5f, 24.0f),	
+		glm::vec3(-24.0f, -1.5f, 24.0f),	
+		glm::vec3(-18.0f, -1.5f, 12.0f),	
+		glm::vec3(-12.0f, -1.5f, 12.0f),	
+		glm::vec3(-24.0f, -1.5f, 12.0f),	
 	
-		glm::vec3(18.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(12.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(24.0f, -1.5f, 18.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(18.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(12.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(24.0f, -1.5f, 24.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(18.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(12.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(24.0f, -1.5f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f)
+		glm::vec3(18.0f, -1.5f, 18.0f),		
+		glm::vec3(12.0f, -1.5f, 18.0f),		
+		glm::vec3(24.0f, -1.5f, 18.0f),		
+		glm::vec3(18.0f, -1.5f, 24.0f),		
+		glm::vec3(12.0f, -1.5f, 24.0f),		
+		glm::vec3(24.0f, -1.5f, 24.0f),		
+		glm::vec3(18.0f, -1.5f, 12.0f),		
+		glm::vec3(12.0f, -1.5f, 12.0f),		
+		glm::vec3(24.0f, -1.5f, 12.0f),		
 	};
 	
-	
-	for (int i = 0; i < GrassPosRot.size(); i += 2)
+	for (int i = 0; i < GrassPosRot.size(); i ++)
 	{
-		ModelLighting* Grass = new ModelLighting(GrassPosRot.at(i), GrassPosRot.at(i + 1));
+		ModelLighting* Grass = new ModelLighting(GrassPosRot.at(i));
 		Grass->setMesh("res/meshes/plane.obj");
 		Grass->setDiffuseTexture("res/textures/grass_diff.png");
 		Grass->setSpecularTexture("res/textures/grass_spec.png");
@@ -324,13 +343,14 @@ void Scene::initScene()
 	//Side wall
 	std::vector<glm::vec3> OutsideWall =
 	{
+		//Position						//Rotation
 		glm::vec3(-12.0f, 1.5f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
 		glm::vec3(-18.0f, 1.5f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
 		glm::vec3(-24.0f, 1.5f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
 
 		glm::vec3(-27.0f, 1.5f, -6.0f), glm::vec3(90.0f, 0.0f, -90.0f),
-		glm::vec3(-27.0f, 1.5f, 0.0f), glm::vec3(90.0f, 0.0f, -90.0f),
-		glm::vec3(-27.0f, 1.5f, 6.0f), glm::vec3(90.0f, 0.0f, -90.0f),
+		glm::vec3(-27.0f, 1.5f, 0.0f),	glm::vec3(90.0f, 0.0f, -90.0f),
+		glm::vec3(-27.0f, 1.5f, 6.0f),	glm::vec3(90.0f, 0.0f, -90.0f),
 		glm::vec3(-27.0f, 1.5f, 12.0f), glm::vec3(90.0f, 0.0f, -90.0f),
 		glm::vec3(-27.0f, 1.5f, 18.0f), glm::vec3(90.0f, 0.0f, -90.0f),
 		glm::vec3(-27.0f, 1.5f, 24.0f), glm::vec3(90.0f, 0.0f, -90.0f),
@@ -338,23 +358,23 @@ void Scene::initScene()
 		glm::vec3(-24.0f, 1.5f, 27.0f), glm::vec3(-90.0f, 0.0f, 0.0f),
 		glm::vec3(-18.0f, 1.5f, 27.0f), glm::vec3(-90.0f, 0.0f, 0.0f),
 		glm::vec3(-12.0f, 1.5f, 27.0f), glm::vec3(-90.0f, 0.0f, 0.0f),
-		glm::vec3(-6.0f, 1.5f, 27.0f), glm::vec3(-90.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 1.5f, 27.0f), glm::vec3(-90.0f, 0.0f, 0.0f),
-		glm::vec3(6.0f, 1.5f, 27.0f), glm::vec3(-90.0f, 0.0f, 0.0f),
-		glm::vec3(12.0f, 1.5f, 27.0f), glm::vec3(-90.0f, 0.0f, 0.0f),
-		glm::vec3(18.0f, 1.5f, 27.0f), glm::vec3(-90.0f, 0.0f, 0.0f),
-		glm::vec3(24.0f, 1.5f, 27.0f), glm::vec3(-90.0f, 0.0f, 0.0f),
+		glm::vec3(-6.0f, 1.5f, 27.0f),	glm::vec3(-90.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 1.5f, 27.0f),	glm::vec3(-90.0f, 0.0f, 0.0f),
+		glm::vec3(6.0f, 1.5f, 27.0f),	glm::vec3(-90.0f, 0.0f, 0.0f),
+		glm::vec3(12.0f, 1.5f, 27.0f),	glm::vec3(-90.0f, 0.0f, 0.0f),
+		glm::vec3(18.0f, 1.5f, 27.0f),	glm::vec3(-90.0f, 0.0f, 0.0f),
+		glm::vec3(24.0f, 1.5f, 27.0f),	glm::vec3(-90.0f, 0.0f, 0.0f),
 
-		glm::vec3(27.0f, 1.5f, 24.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-		glm::vec3(27.0f, 1.5f, 18.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-		glm::vec3(27.0f, 1.5f, 12.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-		glm::vec3(27.0f, 1.5f, 6.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-		glm::vec3(27.0f, 1.5f, 0.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-		glm::vec3(27.0f, 1.5f, -6.0f), glm::vec3(90.0f, 0.0f, 90.0f),
+		glm::vec3(27.0f, 1.5f, 24.0f),	glm::vec3(90.0f, 0.0f, 90.0f),
+		glm::vec3(27.0f, 1.5f, 18.0f),	glm::vec3(90.0f, 0.0f, 90.0f),
+		glm::vec3(27.0f, 1.5f, 12.0f),	glm::vec3(90.0f, 0.0f, 90.0f),
+		glm::vec3(27.0f, 1.5f, 6.0f),	glm::vec3(90.0f, 0.0f, 90.0f),
+		glm::vec3(27.0f, 1.5f, 0.0f),	glm::vec3(90.0f, 0.0f, 90.0f),
+		glm::vec3(27.0f, 1.5f, -6.0f),	glm::vec3(90.0f, 0.0f, 90.0f),
 
-		glm::vec3(12.0f, 1.5f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
-		glm::vec3(18.0f, 1.5f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
-		glm::vec3(24.0f, 1.5f, -9.0f), glm::vec3(90.0f, 0.0f, 0.0f),
+		glm::vec3(12.0f, 1.5f, -9.0f),	glm::vec3(90.0f, 0.0f, 0.0f),
+		glm::vec3(18.0f, 1.5f, -9.0f),	glm::vec3(90.0f, 0.0f, 0.0f),
+		glm::vec3(24.0f, 1.5f, -9.0f),	glm::vec3(90.0f, 0.0f, 0.0f),
 	};
 	
 	for (int i = 0; i < OutsideWall.size(); i += 2)
@@ -371,34 +391,56 @@ void Scene::initScene()
 	//Shed
 	std::vector<glm::vec3> ShedPos =
 	{
-		glm::vec3(-38.0f, 1.0f, 0.0f), glm::vec3(0.0f, 210.0f, 0.0f)
+		//Position							//Rotation
+		glm::vec3(-38.0f, 1.0f, 0.0f),		glm::vec3(0.0f, 210.0f, 0.0f),
+		glm::vec3(38.0f, 1.0f, 10.0f),		glm::vec3(0.0f, -210.0f, 0.0f),
+		glm::vec3(13.0f, 14.0f, -67.0f),	glm::vec3(0.0f, -210.0f, 0.0f)
 	};
 
 	for (int i = 0; i < ShedPos.size(); i += 2)
 	{
-		ModelLighting* dresser = new ModelLighting(ShedPos.at(i), ShedPos.at(i + 1));
-		dresser->setMesh("res/meshes/shed.obj");
-		dresser->setDiffuseTexture("res/textures/shed_diff.png");
-		dresser->setSpecularTexture("res/textures/shed_spec.png");
-		dresser->setNormalTexture("res/textures/shed_norm.png", false);
-		m_sceneMeshes.push_back(dresser);
+		ModelLighting* shed = new ModelLighting(ShedPos.at(i), ShedPos.at(i + 1));
+		shed->setMesh("res/meshes/shed.obj");
+		shed->setDiffuseTexture("res/textures/shed_diff.png");
+		shed->setSpecularTexture("res/textures/shed_spec.png");
+		shed->setNormalTexture("res/textures/shed_norm.png", false);
+		m_sceneMeshes.push_back(shed);
+	}
+
+	//Cottage
+	std::vector<glm::vec3> CottagePos =
+	{
+		//Position							//Rotation
+		glm::vec3(-23.0f, 0.0f, -20.0f),	glm::vec3(0.0f, 130.0f, 0.0f),
+		glm::vec3(20.0f, 1.0f, 37.0f),		glm::vec3(0.0f, 45.0f, 0.0f)
+	};
+
+	for (int i = 0; i < CottagePos.size(); i += 2)
+	{
+		ModelLighting* cottage = new ModelLighting(CottagePos.at(i), CottagePos.at(i + 1));
+		cottage->setMesh("res/meshes/cottage.obj");
+		cottage->setDiffuseTexture("res/textures/cottage_diff.png");
+		cottage->setSpecularTexture("res/textures/cottage_spec.png");
+		cottage->setNormalTexture("res/textures/cottage_norm.png", false);
+		m_sceneMeshes.push_back(cottage);
 	}
 
 	//Sign
 	std::vector<glm::vec3> SignPosRot =
 	{
-		glm::vec3(2.0f, -3.0f, 25.75f), glm::vec3(0.0f, 180.0f, 0.0f),		//Breating barrel /
-		glm::vec3(-3.0f, -1.3f, -4.0f), glm::vec3(0.0f, 30.0f, 0.0f),		//Q and E tessellation shader /
-		glm::vec3(7.0f, -1.3f, -4.5f), glm::vec3(0.0f, -90.0f, 0.0f),		//Fake depth from height / normal /
-		glm::vec3(3.0f, -1.3f, -4.0f), glm::vec3(0.0f, -30.0f, 0.0f),		//Sign text from emission /
-		glm::vec3(11.0f, -3.0f, -4.75f), glm::vec3(0.0f, 30.0f, 0.0f),		//Environment reflect /
-		glm::vec3(25.0f, -3.0f, -4.75f), glm::vec3(0.0f, -30.0f, 0.0f),		//Environment refract /
-		glm::vec3(25.0f, -3.0f, 15.0f), glm::vec3(0.0f, -90.0f, 0.0f),		//Normal vs no normal /
-		glm::vec3(-15.0f, -3.0f, -8.25f), glm::vec3(0.0f, 0.0f, 0.0f),		//Different materials /
-		glm::vec3(-26.0f, -3.0f, 17.75f), glm::vec3(0.0f, 90.0f, 0.0f),		//Colour lighting
-		glm::vec3(-23.0f, -3.0f, -8.25f), glm::vec3(0.0f, 0.0f, 0.0f),		//disable lights to show / 
-		glm::vec3(0.0f, -1.3f, -4.0f), glm::vec3(0.0f, 0.0f, 0.0f),			//toggle lights	/
-		glm::vec3(0.0f, 1.0f, -8.0f), glm::vec3(0.0f, 0.0f, 0.0f),			//change filters /
+		//Position							//Rotation
+		glm::vec3(2.0f, -3.0f, 25.75f),		glm::vec3(0.0f, 180.0f, 0.0f),		//Breating barrel 
+		glm::vec3(-3.0f, -1.3f, -4.0f),		glm::vec3(0.0f, 30.0f, 0.0f),		//Q and E tessellation shader 
+		glm::vec3(7.0f, -1.3f, -4.5f),		glm::vec3(0.0f, -90.0f, 0.0f),		//Fake depth from height / normal 
+		glm::vec3(3.0f, -1.3f, -4.0f),		glm::vec3(0.0f, -30.0f, 0.0f),		//Sign text from emission 
+		glm::vec3(11.0f, -3.0f, -4.75f),	glm::vec3(0.0f, 30.0f, 0.0f),		//Environment reflect 
+		glm::vec3(25.0f, -3.0f, -4.75f),	glm::vec3(0.0f, -30.0f, 0.0f),		//Environment refract 
+		glm::vec3(25.0f, -3.0f, 15.0f),		glm::vec3(0.0f, -90.0f, 0.0f),		//Normal vs no normal 
+		glm::vec3(-15.0f, -3.0f, -8.25f),	glm::vec3(0.0f, 0.0f, 0.0f),		//Different materials 
+		glm::vec3(-26.0f, -3.0f, 17.75f),	glm::vec3(0.0f, 90.0f, 0.0f),		//Colour lighting
+		glm::vec3(-23.0f, -3.0f, -8.25f),	glm::vec3(0.0f, 0.0f, 0.0f),		//disable lights to show 
+		glm::vec3(0.0f, -1.3f, -4.0f),		glm::vec3(0.0f, 0.0f, 0.0f),		//toggle lights	
+		glm::vec3(0.0f, 1.0f, -8.0f),		glm::vec3(0.0f, 0.0f, 0.0f),		//change filters 
 	};
 
 	std::vector <const char*> SignTex =
@@ -440,19 +482,20 @@ void Scene::initScene()
 	std::vector<const char*> floorMaterials =
 	{
 		//Diffuse map							//Specular Map							//Normal Map 
-		"res/textures/metal_diff.png",			"res/textures/metal_spec.png",			"res/textures/metal_norm.png",			//not norm
-		"res/textures/tile_diff.png",			"res/textures/tile_spec.png",			"res/textures/tile_norm.png",			//not norm
-		"res/textures/sand_diff.png",			"res/textures/sand_spec.png",			"res/textures/sand_norm.png",			//not norm
-		"res/textures/marble_diff.png",			"res/textures/marble_spec.png",			"res/textures/marble_norm.png",			//not norm
-		"res/textures/hieroglyphs_diff.png",	"res/textures/hieroglyphs_spec.png",	"res/textures/hieroglyphs_norm.png",	//not norm		
-		"res/textures/metalHammer_diff.png",	"res/textures/metalHammer_spec.png",	"res/textures/metalHammer_norm.png",	//norm		
-		"res/textures/skullGround_diff.png",	"res/textures/skullGround_spec.png",	"res/textures/skullGround_norm.png",	//norm
-		"res/textures/rock_diff.png",			"res/textures/rock_spec.png",			"res/textures/rock_norm.png",			//norm
-		"res/textures/concrete2_diff.png",		"res/textures/concrete2_spec.png",		"res/textures/concrete2_norm.png",		//norm
+		"res/textures/metal_diff.png",			"res/textures/metal_spec.png",			"res/textures/metal_norm.png",			//not normalized texture
+		"res/textures/tile_diff.png",			"res/textures/tile_spec.png",			"res/textures/tile_norm.png",			//not normalized texture
+		"res/textures/sand_diff.png",			"res/textures/sand_spec.png",			"res/textures/sand_norm.png",			//not normalized texture
+		"res/textures/marble_diff.png",			"res/textures/marble_spec.png",			"res/textures/marble_norm.png",			//not normalized texture
+		"res/textures/hieroglyphs_diff.png",	"res/textures/hieroglyphs_spec.png",	"res/textures/hieroglyphs_norm.png",	//not normalized texture	
+		"res/textures/metalHammer_diff.png",	"res/textures/metalHammer_spec.png",	"res/textures/metalHammer_norm.png",	//normalized texture		
+		"res/textures/skullGround_diff.png",	"res/textures/skullGround_spec.png",	"res/textures/skullGround_norm.png",	//normalized texture
+		"res/textures/rock_diff.png",			"res/textures/rock_spec.png",			"res/textures/rock_norm.png",			//normalized texture
+		"res/textures/concrete2_diff.png",		"res/textures/concrete2_spec.png",		"res/textures/concrete2_norm.png",		//normalized texture
 	};
 
 	std::vector<glm::vec3> floorPos =
 	{
+		//Position
 		glm::vec3(-24.0f, -1.25, -4.0),
 		glm::vec3(-18.0f, -1.25, -4.0),
 		glm::vec3(-12.0f, -1.25, -4.0),
@@ -486,15 +529,15 @@ void Scene::initScene()
 	}
 
 	//Normal vs no normal
-
 	std::vector<glm::vec3> planePos =
 	{
-		glm::vec3(25.0f, 1.0f, 6.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-		glm::vec3(25.0f, 1.0f, 12.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-		glm::vec3(25.0f, 1.0f, 18.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-		glm::vec3(25.0f, 1.0f, 24.0f), glm::vec3(90.0f, 0.0f, 90.0f),
-		glm::vec3(22.0f, 1.0f, 26.0f), glm::vec3(90.0f, 0.0f, 180.0f),
-		glm::vec3(16.0f, 1.0f, 26.0f), glm::vec3(90.0f, 0.0f, 180.0f),
+		//Position						//Rotation
+		glm::vec3(25.0f, 1.0f, 6.0f),	glm::vec3(90.0f, 0.0f, 90.0f),
+		glm::vec3(25.0f, 1.0f, 12.0f),	glm::vec3(90.0f, 0.0f, 90.0f),
+		glm::vec3(25.0f, 1.0f, 18.0f),	glm::vec3(90.0f, 0.0f, 90.0f),
+		glm::vec3(25.0f, 1.0f, 24.0f),	glm::vec3(90.0f, 0.0f, 90.0f),
+		glm::vec3(22.0f, 1.0f, 26.0f),	glm::vec3(90.0f, 0.0f, 180.0f),
+		glm::vec3(16.0f, 1.0f, 26.0f),	glm::vec3(90.0f, 0.0f, 180.0f),
 	};
 
 	ModelLighting * leather = new ModelLighting(planePos.at(0), planePos.at(1));
@@ -530,30 +573,6 @@ void Scene::initScene()
 	brick2->setNormalTexture("res/textures/cartoonBricks_norm.png", false);
 	m_sceneMeshes.push_back(brick2);
 	
-	
-	//Light
-	std::vector<glm::vec3> LightPosAmbDifSpc =
-	{
-		glm::vec3(0.0f, 3.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),		//House light
-		glm::vec3(-18.0f, 2.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),	//Material showcase light
-		glm::vec3(18.0f, 2.0f, 14.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),	//Normal showcase light
-		glm::vec3(-20.0f, 2.0f, 20.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),	//Coloured lighting
-	};
-	
-	for (int i = 0; i < LightPosAmbDifSpc.size(); i+=4)
-	{
-		m_sceneLightManager->addPointLight(LightPosAmbDifSpc.at(i).x, LightPosAmbDifSpc.at(i).y, LightPosAmbDifSpc.at(i).z, LightPosAmbDifSpc.at(i+1), LightPosAmbDifSpc.at(i+2), LightPosAmbDifSpc.at(i+3));
-	}
-
-	//Objects that copy lights
-	for (int i = 0; i < m_sceneLightManager->getCurrentPointLights(); i++)
-	{
-		ModelBasic* light = new ModelBasic(LightPosAmbDifSpc.at(i));
-		light->setMesh("res/meshes/cube.obj");
-		light->copyPointLight(i);
-		m_sceneMeshes.push_back(light);
-	}
-
 }
 
 /// <summary>
@@ -561,31 +580,30 @@ void Scene::initScene()
 /// </summary>
 void Scene::updateScene()
 {
+	//Update functions
 	updateSceneLight();
-
+	updateOnInput();
 	m_sceneCamera->Update(EngineStatics::getDeltaTime());
 
-	updateOnInput();
-
+	//Bind MSAA for object drawing
 	m_sceneMSAAFrameBuffer->bindFramebuffer();
 
-
+	//UNUSED code that was used for shadowing ---
 	//Draw first pass of all models
 	//glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 	//glClear(GL_DEPTH_BUFFER_BIT);
-
 	
 	for (Model* m : m_sceneMeshes)
 	{
 		m->setMatrixValues();
-		//m->drawPassOne();
+		//m->drawPassOne(); //drawPassOne is unused as it was used for shadowing in the ModelLighting class
 	}
 
+	//UNUSED code that was used for shadowing ---
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//glActiveTexture(GL_TEXTURE5);
 	//glBindTexture(GL_TEXTURE_2D, depthMap);
-
 
 	//Draw second pass of all models
 	for (Model* m : m_sceneMeshes)
@@ -597,9 +615,9 @@ void Scene::updateScene()
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_sceneMSAAFrameBuffer->getFBO());
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_sceneFilterFramebuffer->getFBO());
 	glBlitFramebuffer(0, 0, 1280, 720, 0, 0, 1280, 720, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-	
 	m_sceneMSAAFrameBuffer->unbindFramebuffer();
 	
+	//Draw screen filter to buffer
 	m_sceneFilterFramebuffer->draw();
 
 }
@@ -695,46 +713,50 @@ void Scene::updateOnInput()
 	}
 }
 
+/// <summary>
+/// Alters the lights position or colour every frame 
+/// </summary>
 void Scene::updateSceneLight()
 {
 	/*
 		Light over material showcase
 	*/
-	if (m_materialLightincZ)
+
+	if (m_materialLightIncZ)
 	{
 		m_sceneLightManager->getPointLight(1)->Position.z += 0.075f;
-		if (m_sceneLightManager->getPointLight(1)->Position.z >= m_materialLightmaxZ)
+		if (m_sceneLightManager->getPointLight(1)->Position.z >= m_materialLightMaxZ)
 		{
-			m_sceneLightManager->getPointLight(1)->Position.z = m_materialLightmaxZ;
-			m_materialLightincZ = false;
+			m_sceneLightManager->getPointLight(1)->Position.z = m_materialLightMaxZ;
+			m_materialLightIncZ = false;
 		}
 	}
 	else
 	{
 		m_sceneLightManager->getPointLight(1)->Position.z -= 0.075f;
-		if (m_sceneLightManager->getPointLight(1)->Position.z <= m_materialLightminZ)
+		if (m_sceneLightManager->getPointLight(1)->Position.z <= m_materialLightMinZ)
 		{
-			m_sceneLightManager->getPointLight(1)->Position.z = m_materialLightminZ;
-			m_materialLightincZ = true;
+			m_sceneLightManager->getPointLight(1)->Position.z = m_materialLightMinZ;
+			m_materialLightIncZ = true;
 		}
 	}
 
-	if (m_materialLightincX)
+	if (m_materialLightIncX)
 	{
 		m_sceneLightManager->getPointLight(1)->Position.x += 0.1f;
-		if (m_sceneLightManager->getPointLight(1)->Position.x >= m_materialLightmaxX)
+		if (m_sceneLightManager->getPointLight(1)->Position.x >= m_materialLightMaxX)
 		{
-			m_sceneLightManager->getPointLight(1)->Position.x = m_materialLightmaxX;
-			m_materialLightincX = false;
+			m_sceneLightManager->getPointLight(1)->Position.x = m_materialLightMaxX;
+			m_materialLightIncX = false;
 		}
 	}
 	else
 	{
 		m_sceneLightManager->getPointLight(1)->Position.x -= 0.1f;
-		if (m_sceneLightManager->getPointLight(1)->Position.x <= m_materialLightminX)
+		if (m_sceneLightManager->getPointLight(1)->Position.x <= m_materialLightMinX)
 		{
-			m_sceneLightManager->getPointLight(1)->Position.x = m_materialLightminX;
-			m_materialLightincX = true;
+			m_sceneLightManager->getPointLight(1)->Position.x = m_materialLightMinX;
+			m_materialLightIncX = true;
 		}
 	}
 
@@ -742,44 +764,47 @@ void Scene::updateSceneLight()
 		Light showing normals
 	*/
 
-	if (m_normalLightincZ)
+	if (m_normalLightIncZ)
 	{
 		m_sceneLightManager->getPointLight(2)->Position.z += 0.05f;
-		if (m_sceneLightManager->getPointLight(2)->Position.z >= m_normalLightmaxZ)
+		if (m_sceneLightManager->getPointLight(2)->Position.z >= m_normalLightMaxZ)
 		{
-			m_sceneLightManager->getPointLight(2)->Position.z = m_normalLightmaxZ;
-			m_normalLightincZ = false;
+			m_sceneLightManager->getPointLight(2)->Position.z = m_normalLightMaxZ;
+			m_normalLightIncZ = false;
 		}
 	}
 	else
 	{
 		m_sceneLightManager->getPointLight(2)->Position.z += 0.05f;
-		if (m_sceneLightManager->getPointLight(2)->Position.z >= m_normalLightminZ)
+		if (m_sceneLightManager->getPointLight(2)->Position.z >= m_normalLightMinZ)
 		{
-			m_sceneLightManager->getPointLight(2)->Position.z = m_normalLightminZ;
-			m_normalLightincZ = true;
+			m_sceneLightManager->getPointLight(2)->Position.z = m_normalLightMinZ;
+			m_normalLightIncZ = true;
 		}
 	}
 
 	/*
 		Coloured Lighting
 	*/
-	m_r -= 0.001f;
-	if (m_r <= 0.0f)
-		m_r = 1.0f;
 
-	m_g += 0.003f;
-	if (m_g >= 1.0f)
-		m_g = 0.0f;
+	m_lightR -= 0.001f;
+	if (m_lightR <= 0.0f)
+		m_lightR = 1.0f;
 
-	m_b += 0.002f;
-	if (m_b >= 1.0f)
-		m_b = 0.0f;
-	m_sceneLightManager->getPointLight(3)->Ambient = glm::vec3(m_r, m_g, m_b);
-	m_sceneLightManager->getPointLight(3)->Diffuse = glm::vec3(m_r, m_g, m_b);
-	m_sceneLightManager->getPointLight(3)->Specular = glm::vec3(m_r, m_g, m_b);
+	m_lightG += 0.003f;
+	if (m_lightG >= 1.0f)
+		m_lightG = 0.0f;
+
+	m_lightB += 0.002f;
+	if (m_lightB >= 1.0f)
+		m_lightB = 0.0f;
+
+	m_sceneLightManager->getPointLight(3)->Ambient = glm::vec3(m_lightR,  m_lightG,  m_lightB);
+	m_sceneLightManager->getPointLight(3)->Diffuse = glm::vec3(m_lightR,  m_lightG,  m_lightB);
+	m_sceneLightManager->getPointLight(3)->Specular = glm::vec3(m_lightR, m_lightG,  m_lightB);
 }
 
+//UNUSED function used for shadowing - this was to setup the depthMap texture which the scene would be drawn too during the first pass of some models
 //void Scene::setupShadowStuff()
 //{
 //

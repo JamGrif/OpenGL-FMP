@@ -36,23 +36,15 @@ void Camera::Update(GLfloat deltaTime)
         std::cout << "Position x - " << m_position.x << " Position y - " << m_position.y << " Position z - " << m_position.z << std::endl;
     }
 
+    //Get mouse movement
     double x, y;
     Input::getMouseMoved(x,y);
-    //std::cout << x << " " << y << std::endl;
     processMouse(x, y);
-    //std::cout << "camera updated" << std::endl;
 }
 
 glm::mat4 Camera::getViewMatrix() const
 {
-    //std::cout << "getviewmatrix" << std::endl;
-
-    //std::cout << "X: " << (int)position.x << std::endl;
-    //std::cout << "Y: " << (int)position.y << std::endl;
-    //std::cout << "Z: " << (int)position.z << std::endl;
-	//Stating where we want to look (front) 
     return glm::lookAt(m_position, m_position + m_front, m_up);
-
 }
 
 glm::vec3 Camera::getPosition() const

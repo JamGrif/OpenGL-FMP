@@ -123,11 +123,12 @@ void Application::appLoop()
 {
 	double previousTime = glfwGetTime();
 	int frameCount = 0;
+	double currentFrame;
 
 	while (!glfwWindowShouldClose(m_appWindow))
 	{
 		//Delta time
-		GLfloat currentFrame = glfwGetTime();
+		currentFrame = glfwGetTime();
 		m_deltaTime = currentFrame - m_lastFrame;
 		m_lastFrame = currentFrame;
 		 
