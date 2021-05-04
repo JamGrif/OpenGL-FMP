@@ -26,7 +26,7 @@ struct Light
 struct PointLight
 	:public Light
 {
-	PointLight(float x = 0.0f, float y = 0.0f, float z = 0.0f, glm::vec3 ambient = glm::vec3(1.0f,1.0f,1.0f), glm::vec3 diffuse = glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3 specular = glm::vec3(1.0f, 1.0f, 1.0f))
+	PointLight(float x = 0.0f, float y = 0.0f, float z = 0.0f, glm::vec3 ambient = glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3 diffuse = glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3 specular = glm::vec3(1.0f, 1.0f, 1.0f))
 		:Light(ambient, diffuse, specular)
 	{
 		Position.x = x;
@@ -38,14 +38,8 @@ struct PointLight
 	glm::vec3	Position;
 
 	float		Constant = 1.0f;
-	float		Linear = 0.07;
-	float		Quadratic = 0.017;
-	
-	//glm::vec3	Ambient { 0.2f, 0.2f, 0.2f };
-	//glm::vec3	Diffuse { 1.0f, 1.0f, 1.0f };
-	//glm::vec3	Specular{ 0.4f, 0.4f, 0.4f };
-
-	
+	float		Linear = 0.07f;
+	float		Quadratic = 0.017f;
 };
 
 struct DirectionalLight
@@ -61,11 +55,6 @@ struct DirectionalLight
 		lightActive = true;
 	}
 	glm::vec3	Direction;
-
-	//glm::vec3	Ambient { 0.2f, 0.2f, 0.2f };
-	//glm::vec3	Diffuse { 0.4f, 0.4f, 0.4f };
-	//glm::vec3	Specular{ 0.3f, 0.3f, 0.3f };
-
 };
 
 struct SpotLight
@@ -91,11 +80,6 @@ struct SpotLight
 	float		Constant = 1.0f;
 	float		Linear = 0.09f;
 	float		Quadratic = 0.032f;
-
-	//glm::vec3	Ambient{ 0.0f, 0.0f, 0.0f };
-	//glm::vec3	Diffuse{ 0.8f, 0.8f, 0.8f };
-	//glm::vec3	Specular{ 1.0f, 1.0f, 1.0f };
-
 };
 
 class LightManager

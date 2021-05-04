@@ -123,6 +123,7 @@ void Application::appLoop()
 {
 	double previousTime = glfwGetTime();
 	int frameCount = 0;
+
 	while (!glfwWindowShouldClose(m_appWindow))
 	{
 		//Delta time
@@ -130,17 +131,16 @@ void Application::appLoop()
 		m_deltaTime = currentFrame - m_lastFrame;
 		m_lastFrame = currentFrame;
 		 
-		// Measure speed
-		double currentTime = glfwGetTime();
+		// Calculate framecount
 		frameCount++;
 		// If a second has passed.
-		if (currentTime - previousTime >= 1.0)
+		if (currentFrame - previousTime >= 1.0)
 		{
 			// Display the frame count here any way you want.
 			glfwSetWindowTitle(m_appWindow, std::to_string(frameCount).c_str());
 
 			frameCount = 0;
-			previousTime = currentTime;
+			previousTime = currentFrame;
 		}
 
 		EngineStatics::setDeltaTime(m_deltaTime);
@@ -153,7 +153,6 @@ void Application::appLoop()
 		glfwSwapBuffers(m_appWindow);
 
 	}
-	
 }
 
 /// <summary>

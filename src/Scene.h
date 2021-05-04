@@ -29,7 +29,7 @@ private:
 
 	void updateOnInput();
 
-	void moveSceneLight();
+	void updateSceneLight();
 
 	
 
@@ -55,17 +55,24 @@ private:
 	//glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
 
 	//Used to move objects around the scene
-	float materialLightminZ = -5;
-	float materialLightmaxZ = 9;
-	float materialLightminX = -25;
-	float materialLightmaxX = -13;
-	bool materialLightincZ = true;
-	bool materialLightincX = true;
 
-	//
-	float normalLightmaxZ = 8;
-	float normalLightminZ = 23;
-	bool normalLightincZ = true;
+	//Light showing materials
+	float m_materialLightminZ = -5;
+	float m_materialLightmaxZ = 9;
+	float m_materialLightminX = -25;
+	float m_materialLightmaxX = -13;
+	bool m_materialLightincZ = true;
+	bool m_materialLightincX = true;
+
+	//Light showing normal maps
+	float m_normalLightmaxZ = 8;
+	float m_normalLightminZ = 23;
+	bool m_normalLightincZ = true;
+
+	//Light showing coloured lighting
+	float m_r = 0.0f;
+	float m_g = 0.0f;
+	float m_b = 0.0f;
 
 };
 

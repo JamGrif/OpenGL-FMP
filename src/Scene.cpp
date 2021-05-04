@@ -185,7 +185,7 @@ void Scene::initScene()
 		wall->setDiffuseTexture("res/textures/woodWall_diff.png");
 		wall->setSpecularTexture("res/textures/woodWall_spec.png");
 		wall->setNormalTexture("res/textures/woodWall_norm.png", false);
-		wall->setHeightTexture("res/textures/woodWall_height.png", 0.04);
+		wall->setHeightTexture("res/textures/woodWall_height.png", 0.04f);
 		m_sceneMeshes.push_back(wall);
 	}
 	
@@ -364,7 +364,7 @@ void Scene::initScene()
 		wall->setDiffuseTexture("res/textures/concreteBrick_diff.png");
 		wall->setSpecularTexture("res/textures/concreteBrick_spec.png");
 		wall->setNormalTexture("res/textures/concreteBrick_norm.png", false);
-		wall->setHeightTexture("res/textures/concreteBrick_height.png", 0.01);
+		wall->setHeightTexture("res/textures/concreteBrick_height.png", 0.01f);
 		m_sceneMeshes.push_back(wall);
 	}
 
@@ -395,7 +395,7 @@ void Scene::initScene()
 		glm::vec3(25.0f, -3.0f, -4.75f), glm::vec3(0.0f, -30.0f, 0.0f),		//Environment refract /
 		glm::vec3(25.0f, -3.0f, 15.0f), glm::vec3(0.0f, -90.0f, 0.0f),		//Normal vs no normal /
 		glm::vec3(-15.0f, -3.0f, -8.25f), glm::vec3(0.0f, 0.0f, 0.0f),		//Different materials /
-		glm::vec3(45.0f, 10.0f, -7.75f), glm::vec3(0.0f, 0.0f, 0.0f),		//Colour lighting
+		glm::vec3(-26.0f, -3.0f, 17.75f), glm::vec3(0.0f, 90.0f, 0.0f),		//Colour lighting
 		glm::vec3(-23.0f, -3.0f, -8.25f), glm::vec3(0.0f, 0.0f, 0.0f),		//disable lights to show / 
 		glm::vec3(0.0f, -1.3f, -4.0f), glm::vec3(0.0f, 0.0f, 0.0f),			//toggle lights	/
 		glm::vec3(0.0f, 1.0f, -8.0f), glm::vec3(0.0f, 0.0f, 0.0f),			//change filters /
@@ -537,6 +537,7 @@ void Scene::initScene()
 		glm::vec3(0.0f, 3.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),		//House light
 		glm::vec3(-18.0f, 2.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),	//Material showcase light
 		glm::vec3(18.0f, 2.0f, 14.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),	//Normal showcase light
+		glm::vec3(-20.0f, 2.0f, 20.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.4f, 0.4f),	//Coloured lighting
 	};
 	
 	for (int i = 0; i < LightPosAmbDifSpc.size(); i+=4)
@@ -560,7 +561,7 @@ void Scene::initScene()
 /// </summary>
 void Scene::updateScene()
 {
-	moveSceneLight();
+	updateSceneLight();
 
 	m_sceneCamera->Update(EngineStatics::getDeltaTime());
 
@@ -686,66 +687,97 @@ void Scene::updateOnInput()
 		if (m_sceneLightManager->getPointLight(2) != nullptr)
 			m_sceneLightManager->getPointLight(2)->toggleActive();
 	}
+
+	if (Input::getKeyPressedOnce(GLFW_KEY_MINUS))
+	{
+		if (m_sceneLightManager->getPointLight(3) != nullptr)
+			m_sceneLightManager->getPointLight(3)->toggleActive();
+	}
 }
 
-void Scene::moveSceneLight()
+void Scene::updateSceneLight()
 {
-	if (materialLightincZ)
+	/*
+		Light over material showcase
+	*/
+	if (m_materialLightincZ)
 	{
 		m_sceneLightManager->getPointLight(1)->Position.z += 0.075f;
-		if (m_sceneLightManager->getPointLight(1)->Position.z >= materialLightmaxZ)
+		if (m_sceneLightManager->getPointLight(1)->Position.z >= m_materialLightmaxZ)
 		{
-			m_sceneLightManager->getPointLight(1)->Position.z = materialLightmaxZ;
-			materialLightincZ = false;
+			m_sceneLightManager->getPointLight(1)->Position.z = m_materialLightmaxZ;
+			m_materialLightincZ = false;
 		}
 	}
 	else
 	{
 		m_sceneLightManager->getPointLight(1)->Position.z -= 0.075f;
-		if (m_sceneLightManager->getPointLight(1)->Position.z <= materialLightminZ)
+		if (m_sceneLightManager->getPointLight(1)->Position.z <= m_materialLightminZ)
 		{
-			m_sceneLightManager->getPointLight(1)->Position.z = materialLightminZ;
-			materialLightincZ = true;
+			m_sceneLightManager->getPointLight(1)->Position.z = m_materialLightminZ;
+			m_materialLightincZ = true;
 		}
 	}
 
-	if (materialLightincX)
+	if (m_materialLightincX)
 	{
 		m_sceneLightManager->getPointLight(1)->Position.x += 0.1f;
-		if (m_sceneLightManager->getPointLight(1)->Position.x >= materialLightmaxX)
+		if (m_sceneLightManager->getPointLight(1)->Position.x >= m_materialLightmaxX)
 		{
-			m_sceneLightManager->getPointLight(1)->Position.x = materialLightmaxX;
-			materialLightincX = false;
+			m_sceneLightManager->getPointLight(1)->Position.x = m_materialLightmaxX;
+			m_materialLightincX = false;
 		}
 	}
 	else
 	{
 		m_sceneLightManager->getPointLight(1)->Position.x -= 0.1f;
-		if (m_sceneLightManager->getPointLight(1)->Position.x <= materialLightminX)
+		if (m_sceneLightManager->getPointLight(1)->Position.x <= m_materialLightminX)
 		{
-			m_sceneLightManager->getPointLight(1)->Position.x = materialLightminX;
-			materialLightincX = true;
+			m_sceneLightManager->getPointLight(1)->Position.x = m_materialLightminX;
+			m_materialLightincX = true;
 		}
 	}
 
-	if (normalLightincZ)
+	/*
+		Light showing normals
+	*/
+
+	if (m_normalLightincZ)
 	{
 		m_sceneLightManager->getPointLight(2)->Position.z += 0.05f;
-		if (m_sceneLightManager->getPointLight(2)->Position.z >= normalLightmaxZ)
+		if (m_sceneLightManager->getPointLight(2)->Position.z >= m_normalLightmaxZ)
 		{
-			m_sceneLightManager->getPointLight(2)->Position.z = normalLightmaxZ;
-			normalLightincZ = false;
+			m_sceneLightManager->getPointLight(2)->Position.z = m_normalLightmaxZ;
+			m_normalLightincZ = false;
 		}
 	}
 	else
 	{
 		m_sceneLightManager->getPointLight(2)->Position.z += 0.05f;
-		if (m_sceneLightManager->getPointLight(2)->Position.z >= normalLightminZ)
+		if (m_sceneLightManager->getPointLight(2)->Position.z >= m_normalLightminZ)
 		{
-			m_sceneLightManager->getPointLight(2)->Position.z = normalLightminZ;
-			normalLightincZ = true;
+			m_sceneLightManager->getPointLight(2)->Position.z = m_normalLightminZ;
+			m_normalLightincZ = true;
 		}
 	}
+
+	/*
+		Coloured Lighting
+	*/
+	m_r -= 0.001f;
+	if (m_r <= 0.0f)
+		m_r = 1.0f;
+
+	m_g += 0.003f;
+	if (m_g >= 1.0f)
+		m_g = 0.0f;
+
+	m_b += 0.002f;
+	if (m_b >= 1.0f)
+		m_b = 0.0f;
+	m_sceneLightManager->getPointLight(3)->Ambient = glm::vec3(m_r, m_g, m_b);
+	m_sceneLightManager->getPointLight(3)->Diffuse = glm::vec3(m_r, m_g, m_b);
+	m_sceneLightManager->getPointLight(3)->Specular = glm::vec3(m_r, m_g, m_b);
 }
 
 //void Scene::setupShadowStuff()

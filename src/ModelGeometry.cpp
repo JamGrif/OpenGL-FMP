@@ -33,24 +33,23 @@ void ModelGeometry::drawPassTwo()
 
 	if (m_increasing)
 	{
-		m_inflation += 0.025 * EngineStatics::getDeltaTime();
-		if (m_inflation > 0.2)
+		m_inflation += 0.025f * EngineStatics::getDeltaTime();
+		if (m_inflation > 0.2f)
 		{
-			m_inflation = 0.2;
+			m_inflation = 0.2f;
 			m_increasing = false;
 		}
 	}
 	else
 	{
-		m_inflation -= 0.025 * EngineStatics::getDeltaTime();
-		if (m_inflation < -0.2)
+		m_inflation -= 0.025f * EngineStatics::getDeltaTime();
+		if (m_inflation < -0.2f)
 		{
-			m_inflation = -0.2;
+			m_inflation = -0.2f;
 			m_increasing = true;
 		}
 	}
 		
-
 	//Set Vertex values
 	m_modelShaderPassTwo->setUniformMatrix4fv("m_matrix", m_mMat);
 	m_modelShaderPassTwo->setUniformMatrix4fv("v_matrix", m_vMat);
@@ -60,8 +59,6 @@ void ModelGeometry::drawPassTwo()
 
 	setVBOAttrib(true, true, true, false, false);
 
-	
-
 	//Draw
 	glDrawElements(GL_TRIANGLES, m_modelMesh->getIndices().size(), GL_UNSIGNED_INT, 0);
 
@@ -69,6 +66,12 @@ void ModelGeometry::drawPassTwo()
 	m_GeometryTexture->Unbind();
 }
 
+/// <summary>
+/// Overloaded function from base model class which allows for geometry shader paths to be added
+/// </summary>
+/// <param name="vertexPath"></param>
+/// <param name="geometryPath"></param>
+/// <param name="fragmentPath"></param>
 void ModelGeometry::setShaderTwo(const char* vertexPath, const char* geometryPath, const char* fragmentPath)
 {
 	m_modelShaderPassTwo = ShaderManager::retrieveShader(vertexPath, geometryPath, fragmentPath);
