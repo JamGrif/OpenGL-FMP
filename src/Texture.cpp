@@ -2,6 +2,8 @@
 
 #include "stb_image.h"
 
+#include <iostream>
+
 std::vector<Texture*> TextureManager::loadedTextures;
 std::vector<CubeMap*> TextureManager::loadedCubemaps;
 

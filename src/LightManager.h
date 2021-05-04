@@ -2,7 +2,6 @@
 #include <glm\glm.hpp>
 #include <vector>
 
-#include <iostream>
 
 //Base class for all 3 lights - provides utility functions they all can use
 struct Light
@@ -17,6 +16,7 @@ struct Light
 	{
 		lightActive = lightActive == true ? false : true;
 	}
+
 	glm::vec3	Ambient;
 	glm::vec3	Diffuse;
 	glm::vec3	Specular;
@@ -35,6 +35,7 @@ struct PointLight
 
 		lightActive = true;
 	}
+
 	glm::vec3	Position;
 
 	float		Constant = 1.0f;
@@ -54,6 +55,7 @@ struct DirectionalLight
 
 		lightActive = true;
 	}
+
 	glm::vec3	Direction;
 };
 
@@ -72,6 +74,7 @@ struct SpotLight
 
 		lightActive = true;
 	}
+
 	glm::vec3	Position;
 	glm::vec3	Direction;
 	float		cutOff = 4.5f;
@@ -82,6 +85,7 @@ struct SpotLight
 	float		Quadratic = 0.032f;
 };
 
+//Class allowing all 3 types of lights to be created and managed by providing utility functions to interact with a specified light
 class LightManager
 {
 public:
@@ -89,25 +93,25 @@ public:
 	~LightManager();
 
 	//Directional Lights
-	void setDirectionalLight(float x, float y, float z, int index = 0);
-	void addDirectionalLight(float x, float y, float z, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
-	DirectionalLight* getDirectionalLight(int index = 0) const;
+	void							setDirectionalLight(float x, float y, float z, int index = 0);
+	void							addDirectionalLight(float x, float y, float z, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
+	DirectionalLight*				getDirectionalLight(int index = 0) const;
 
-	int getCurrentDirectionalLights() const;
+	int								getCurrentDirectionalLights() const;
 
 	//Point Lights
-	void setPointLight(float x, float y, float z, int index = 0);
-	void addPointLight(float x, float y, float z, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
-	PointLight* getPointLight(int index = 0) const;
+	void							setPointLight(float x, float y, float z, int index = 0);
+	void							addPointLight(float x, float y, float z, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
+	PointLight*						getPointLight(int index = 0) const;
 
-	int getCurrentPointLights() const;
+	int								getCurrentPointLights() const;
 
 	//Spot Lights
-	void setSpotLight(float x, float y, float z, int index = 0);
-	void addSpotLight(float x, float y, float z, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
-	SpotLight* getSpotLight(int index = 0) const;
+	void							setSpotLight(float x, float y, float z, int index = 0);
+	void							addSpotLight(float x, float y, float z, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
+	SpotLight*						getSpotLight(int index = 0) const;
 
-	int getCurrentSpotLights() const;
+	int								getCurrentSpotLights() const;
 
 private:
 

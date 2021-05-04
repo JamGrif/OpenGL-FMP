@@ -63,7 +63,4 @@ void ModelSprite::setSprite(const char* filePath)
 	m_modelSprite = TextureManager::retrieveTexture(filePath);
 }
 
-void ModelSprite::setPosData(std::vector<glm::vec3> data)
-{
-	m_PosData = data;
-}
+

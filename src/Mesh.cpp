@@ -69,7 +69,7 @@ bool Mesh::loadMesh(const char* filePath)
 		vector.z = mesh->mBitangents[i].z;
 		vertex.Bitangent = vector;
 
-		vertices.push_back(vertex);
+		m_vertices.push_back(vertex);
 	}
 
 	//Indices
@@ -78,7 +78,7 @@ bool Mesh::loadMesh(const char* filePath)
 		aiFace face = mesh->mFaces[i];
 		for (unsigned int j = 0; j < face.mNumIndices; j++)
 		{
-			indices.push_back(face.mIndices[j]);
+			m_indices.push_back(face.mIndices[j]);
 		}
 	}
 	return true;
@@ -87,12 +87,12 @@ bool Mesh::loadMesh(const char* filePath)
 
 std::vector<Vertex> Mesh::getVertices() const
 {
-	return vertices;
+	return m_vertices;
 }
 
 std::vector<unsigned int> Mesh::getIndices() const
 {
-	return indices;
+	return m_indices;
 }
 
 const char* Mesh::getFilePath() const

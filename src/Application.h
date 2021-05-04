@@ -8,14 +8,15 @@
 #include "Input.h"
 #include "Scene.h"
 
+//Abstracts the program out of main, encapsulating the entire program
 class Application
 {
 public:
 	Application();
 	~Application();
 
-	int appInit();
-	void appLoop();
+	int			appInit();
+	void		appLoop();
 
 	static void windowResizeCALLBACK(GLFWwindow* window, int newWidth, int newHeight);
 

@@ -13,6 +13,7 @@
 #include "Terrain.h"
 #include "ModelGeometry.h"
 
+//Class that contains all the objects of a loaded level. Loops through them every frame, updating and drawing them
 class Scene
 {
 public:
@@ -42,8 +43,6 @@ private:
 	Terrain*				m_mountainsX;				//Adjustable mountain along X axis
 	Terrain*				m_mountainsZ;				//Adjustable mountain along Z axis
 
-	//Used to move objects around the scene
-
 	//Light showing materials variables
 	float					m_materialLightMinZ = -5;
 	float					m_materialLightMaxZ = 9;
@@ -70,8 +69,6 @@ private:
 	//glm::mat4				lightProjection = glm::mat4(1.0f);
 	//glm::mat4				lightView = glm::mat4(1.0f);
 	//glm::mat4				lightSpaceMatrix = glm::mat4(1.0f);
-
-	
 
 };
 

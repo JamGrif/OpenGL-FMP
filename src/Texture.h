@@ -4,34 +4,35 @@
 #include <GLFW/glfw3.h>
 
 #include <vector>
-#include <iostream>
 
+//Stores texture information and provides a way to load a texture by interfacing with TextureManager
 class Texture
 {
 public:
 	Texture();
 	~Texture();
 
-	bool loadTexture(const char* filePath);
+	bool			loadTexture(const char* filePath);
 
-	virtual void Bind(unsigned int slot = 0) const;
-	virtual void Unbind() const;
+	virtual void	Bind(unsigned int slot = 0) const;
+	virtual void	Unbind() const;
 
 
-	const char* getFilePath() const;
-	GLuint getTexture() const;
+	const char*		getFilePath() const;
+	GLuint			getTexture() const;
 	
 
 protected:
 
-	GLuint		m_texture;
+	GLuint			m_texture;
 
-	const char* m_filePath;
+	const char*		m_filePath;
 
-	int			m_width, m_height, m_BPP;
+	int				m_width, m_height, m_BPP;
 
 };
 
+//Stores cubemap information and provides a way to load a cubemap by interfacing with TextureManager. Only used for skybox with fixed values for them
 class CubeMap :
 	public Texture
 	
@@ -40,10 +41,10 @@ public:
 	CubeMap();
 	~CubeMap();
 
-	void Bind(unsigned int slot = 0) const override;
-	void Unbind() const override;
+	void			Bind(unsigned int slot = 0) const override;
+	void			Unbind() const override;
 
-	bool loadCubeMap();
+	bool			loadCubeMap();
 
 private:
 
@@ -60,6 +61,7 @@ private:
 
 };
 
+//Stores current loaded textures ensuring only one of each texture gets loaded. Provides a way to load a texture from a file
 class TextureManager
 {
 public:
@@ -67,14 +69,14 @@ public:
 	static Texture* retrieveTexture(const char* filePath);
 	static CubeMap* retrieveCubeMap();
 
-	static void clearTextures();
-	static void clearCubemaps();
+	static void		clearTextures();
+	static void		clearCubemaps();
 
 private:
 
 	static std::vector<Texture*> loadedTextures;
 	static std::vector<CubeMap*> loadedCubemaps;
 
-	TextureManager();
+	TextureManager(); //Private so a class of this can't be initalized
 };
 

@@ -12,18 +12,19 @@ enum
 	END_OF_FILTER_ENUM
 };
 
+//Interface for a framebuffer, allowing it to be written to or read from
 class Framebuffer
 {
 public:
 	Framebuffer(bool multisampled);
 	~Framebuffer();
 
-	void draw();
+	void			draw();
 
-	void bindFramebuffer();
-	void unbindFramebuffer();
+	void			bindFramebuffer();
+	void			unbindFramebuffer();
 
-	void setFrameFilter(int index);
+	void			setFrameFilter(int index);
 
 	unsigned int getFBO();
 
@@ -41,15 +42,15 @@ private:
 		 1.0f,  1.0f,  1.0f, 1.0f
 	};
 
-	unsigned int			m_FBO;
-	unsigned int			m_frameColourTexture;
-	unsigned int			m_RBO;
+	unsigned int	m_FBO;
+	unsigned int	m_frameColourTexture;
+	unsigned int	m_RBO;
 	
-	unsigned int			m_quadVBO;
+	unsigned int	m_quadVBO;
 
-	int m_screenFilter;
+	int				m_screenFilter;
 
-	Shader* m_screenShader;
+	Shader*			m_screenShader;
 
 };
 

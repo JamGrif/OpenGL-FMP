@@ -1,5 +1,8 @@
 #pragma once
+
 #include "Model.h"
+
+//Class that is used for the skybox by loading a cubemap and using an "inside out" cube
 class ModelSky :
     public Model
 {

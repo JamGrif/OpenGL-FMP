@@ -2,7 +2,7 @@
 
 #include "Model.h"
 
-///
+//Class that allows an object to be lit by all the scene lights and gives the option for multiple texture maps to be applied
 class ModelLighting :
     public Model
 {
@@ -10,14 +10,14 @@ public:
     ModelLighting(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f));
     ~ModelLighting();
 
-    void drawPassOne() override;
-    void drawPassTwo() override;
+    void                    drawPassOne() override;
+    void                    drawPassTwo() override;
 
-    void setDiffuseTexture(const char* texturePath);
-    void setSpecularTexture(const char* texturePath);
-    void setEmissionTexture(const char* texturePath);
-    void setNormalTexture(const char* texturePath, bool normalize);
-    void setHeightTexture(const char* texturePath, float heightAmount);
+    void                    setDiffuseTexture(const char* texturePath);
+    void                    setSpecularTexture(const char* texturePath);
+    void                    setEmissionTexture(const char* texturePath);
+    void                    setNormalTexture(const char* texturePath, bool normalize);
+    void                    setHeightTexture(const char* texturePath, float heightAmount);
 
 private:
 

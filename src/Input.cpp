@@ -5,15 +5,15 @@
 #include "EngineStatics.h"
 
 //Keyboard
-bool Input::keys[1024];
-int Input::lastKey = 0;
+bool Input::m_keys[1024];
+int Input::m_lastKey = 0;
 
 //Mouse
-double Input::lastX = 0;
-double Input::lastY = 0;
-bool Input::firstMouse = true;
-double Input::xOffset = 0;
-double Input::yOffset = 0;
+double Input::m_lastX = 0;
+double Input::m_lastY = 0;
+bool Input::m_firstMouse = true;
+double Input::m_xOffset = 0;
+double Input::m_yOffset = 0;
 
 
 Input::Input()
@@ -51,12 +51,12 @@ void Input::keyCALLBACK(GLFWwindow* window, int key, int scancode, int action, i
         if (action == GLFW_PRESS)
         {
            // lastKey = key;
-            keys[key] = true;
+            m_keys[key] = true;
         }
         else if (action == GLFW_RELEASE)
         {
-            lastKey = 0;
-            keys[key] = false;
+            m_lastKey = 0;
+            m_keys[key] = false;
         }
     }
 }
@@ -68,7 +68,7 @@ void Input::keyCALLBACK(GLFWwindow* window, int key, int scancode, int action, i
 /// <returns>If the key is pressed or not</returns>
 bool Input::getKeyPressed(int key)
 {
-    if (keys[key])
+    if (m_keys[key])
     {
         
         return true;
@@ -78,9 +78,9 @@ bool Input::getKeyPressed(int key)
 
 bool Input::getKeyPressedOnce(int key)
 {
-    if (keys[key] && key != lastKey)
+    if (m_keys[key] && key != m_lastKey)
     {
-        lastKey = key;
+        m_lastKey = key;
         return true;
     }
     return false;
@@ -95,26 +95,31 @@ bool Input::getKeyPressedOnce(int key)
 void Input::mouseCALLBACK(GLFWwindow* window, double xPos, double yPos)
 {
     //std::cout << "mousecallback" << std::endl;
-    if (firstMouse)
+    if (m_firstMouse)
     {
-        lastX = xPos;
-        lastY = yPos;
-        firstMouse = false;
+        m_lastX = xPos;
+        m_lastY = yPos;
+        m_firstMouse = false;
     }
-    xOffset = xPos - lastX;
-    yOffset = lastY - yPos; //Reversed as Y coordinates go from bottom to left
+    m_xOffset = xPos - m_lastX;
+    m_yOffset = m_lastY - yPos; //Reversed as Y coordinates go from bottom to left
 
-    lastX = xPos;
-    lastY = yPos;
+    m_lastX = xPos;
+    m_lastY = yPos;
 }
 
+/// <summary>
+/// Returns how much the mouse has moved since last function call
+/// </summary>
+/// <param name="xMouse"></param>
+/// <param name="yMouse"></param>
 void Input::getMouseMoved(double& xMouse, double& yMouse)
 {
-    xMouse = xOffset;
-    yMouse = yOffset;
+    xMouse = m_xOffset;
+    yMouse = m_yOffset;
 
-    xOffset = 0;
-    yOffset = 0;
+    m_xOffset = 0;
+    m_yOffset = 0;
 
 }
 

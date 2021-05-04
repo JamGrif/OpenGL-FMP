@@ -1,5 +1,8 @@
 #include "LightManager.h"
 
+
+#include <iostream>
+
 LightManager::LightManager()
 	:m_maxDirectionalLights(1), m_currentDirectionalLights(0),
 	m_maxPointLights(4), m_currentPointLights(0),
@@ -15,8 +18,25 @@ LightManager::~LightManager()
 	for (PointLight* pl : m_scenePointLights)
 	{
 		delete pl;
+		pl = nullptr;
 	}
+	m_scenePointLights.clear();
+
+	for (DirectionalLight* dl : m_sceneDirectionalLights)
+	{
+		delete dl;
+		dl = nullptr;
+	}
+	m_sceneDirectionalLights.clear();
+
+	for (SpotLight* sl : m_sceneSpotLights)
+	{
+		delete sl;
+		sl = nullptr;
+	}
+	m_sceneSpotLights.clear();
 }
+
 
 /// <summary>
 /// Sets the XYZ direction of a specified directional light
@@ -47,7 +67,7 @@ void LightManager::addDirectionalLight(float x, float y, float z, glm::vec3 ambi
 		m_sceneDirectionalLights.push_back(direction);
 		m_currentDirectionalLights++;
 
-		std::cout << "LIGHTMANAGER->New directional light created at " << x << " " << y << " " << z << std::endl;
+		std::cout << "LIGHTMANAGER->New directional light created with direction " << x << " " << y << " " << z << std::endl;
 	}
 }
 

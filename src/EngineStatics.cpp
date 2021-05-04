@@ -1,20 +1,20 @@
 #include "EngineStatics.h"
 
-GLFWwindow* EngineStatics::appWindow = nullptr;
+GLFWwindow* EngineStatics::m_appWindow			= nullptr;
 
-int EngineStatics::screenWidth = 0;
+int EngineStatics::m_screenWidth				= 0;
 
-int EngineStatics::screenHeight = 0;
+int EngineStatics::m_screenHeight				= 0;
 
-Camera* EngineStatics::camera = nullptr;
+Camera* EngineStatics::m_camera					= nullptr;
 
-glm::mat4* EngineStatics::projectionMatrix;
+glm::mat4* EngineStatics::m_projectionMatrix	= nullptr;
 
-glm::mat4* EngineStatics::lightSpaceMatrix;
+glm::mat4* EngineStatics::m_lightSpaceMatrix	= nullptr;
 
-LightManager* EngineStatics::lightManager = nullptr;
+LightManager* EngineStatics::m_lightManager		= nullptr;
 
-unsigned int* EngineStatics::depthMap = 0;
+unsigned int* EngineStatics::m_depthMap			= 0;
 
-GLfloat EngineStatics::deltaTime = 0;
+GLfloat EngineStatics::m_deltaTime				= 0;
 

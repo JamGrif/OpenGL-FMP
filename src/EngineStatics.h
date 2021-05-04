@@ -3,57 +3,58 @@
 #include "Camera.h"
 #include "LightManager.h"
 
+//Used to allow classes to easily access required values created in other parts of the program
 class EngineStatics
 {
 public:
 
-	static GLFWwindow* getAppWindow() { return appWindow; }
-	static void setAppWindow(GLFWwindow* w) { appWindow = w; }
+	static GLFWwindow*		getAppWindow() { return m_appWindow; }
+	static void				setAppWindow(GLFWwindow* w) { m_appWindow = w; }
 
-	static int getScreenWidth() { return screenWidth; }
-	static void setScreenWidth(int width) { screenWidth = width; }
+	static int				getScreenWidth() { return m_screenWidth; }
+	static void				setScreenWidth(int width) { m_screenWidth = width; }
 
-	static int getScreenHeight() { return screenHeight; }
-	static void setScreenHeight(int height) { screenHeight = height; }
+	static int				getScreenHeight() { return m_screenHeight; }
+	static void				setScreenHeight(int height) { m_screenHeight = height; }
 
-	static Camera* getCamera() { return camera; }
-	static void setCamera(Camera* c) { camera = c; }
+	static Camera*			getCamera() { return m_camera; }
+	static void				setCamera(Camera* c) { m_camera = c; }
 	
-	static glm::mat4* getProjectionMatrix() { return projectionMatrix; }
-	static void setProjectionMatrix(glm::mat4* pm) { projectionMatrix = pm; }
+	static glm::mat4*		getProjectionMatrix() { return m_projectionMatrix; }
+	static void				setProjectionMatrix(glm::mat4* pm) { m_projectionMatrix = pm; }
 
-	static glm::mat4* getLightSpaceMatrix() { return lightSpaceMatrix; }
-	static void setLightSpaceMatrix(glm::mat4* lsm) { lightSpaceMatrix = lsm; }
+	static glm::mat4*		getLightSpaceMatrix() { return m_lightSpaceMatrix; }
+	static void				setLightSpaceMatrix(glm::mat4* lsm) { m_lightSpaceMatrix = lsm; }
 
-	static LightManager* getLightManager() { return lightManager; }
-	static void setLightManager(LightManager* lm) { lightManager = lm; }
+	static LightManager*	getLightManager() { return m_lightManager; }
+	static void				setLightManager(LightManager* lm) { m_lightManager = lm; }
 
-	static unsigned int* getDepthMap() { return depthMap; }
-	static void setDepthMap(unsigned int* dm) { depthMap = dm; }
+	static unsigned int*	getDepthMap() { return m_depthMap; }
+	static void				setDepthMap(unsigned int* dm) { m_depthMap = dm; }
 
-	static GLfloat getDeltaTime() { return deltaTime; }
-	static void setDeltaTime(float dt) { deltaTime = dt; }
+	static GLfloat			getDeltaTime() { return m_deltaTime; }
+	static void				setDeltaTime(float dt) { m_deltaTime = dt; }
 
 
 private:
 
-	static GLFWwindow* appWindow;
+	static GLFWwindow*		m_appWindow;
 
-	static int screenWidth;
+	static int				m_screenWidth;
 
-	static int screenHeight;
+	static int				m_screenHeight;
 
-	static Camera* camera;
+	static Camera*			m_camera;
 
-	static glm::mat4* projectionMatrix;
+	static glm::mat4*		m_projectionMatrix;
 
-	static glm::mat4* lightSpaceMatrix;
+	static glm::mat4*		m_lightSpaceMatrix;
 
-	static LightManager* lightManager;
+	static LightManager*	m_lightManager;
 
-	static unsigned int* depthMap;
+	static unsigned int*	m_depthMap;
 
-	static GLfloat deltaTime;
+	static GLfloat			m_deltaTime;
 
 };
 

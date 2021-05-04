@@ -4,6 +4,8 @@
 
 #include "Input.h"
 
+#include <iostream>
+
 Scene::Scene()
 	:m_sceneCamera(nullptr), m_sceneLightManager(nullptr), m_sceneMSAAFrameBuffer(nullptr), m_sceneFilterFramebuffer(nullptr), m_mountainsX(nullptr), m_mountainsZ(nullptr),
 	m_materialLightMinZ(-5.0f), m_materialLightMaxZ(9.0f), m_materialLightMinX(-25.0f), m_materialLightMaxX(-13.0f), m_materialLightIncZ(true),
@@ -118,7 +120,7 @@ void Scene::initScene()
 	m_sceneLightManager->getSpotLight(0)->toggleActive(); //Turns off spotlight by default
 
 	//Point lights
-	std::vector<glm::vec3> LightPosAmbDifSpc =
+	std::vector<glm::vec3> lightPosAmbDifSpc =
 	{
 		//Position						//Ambient						//Diffuse						//Specular
 		glm::vec3(0.0f, 3.0f, 0.0f),	glm::vec3(0.2f, 0.2f, 0.2f),	glm::vec3(1.0f, 1.0f, 1.0f),		glm::vec3(0.4f, 0.4f, 0.4f),		//House light
@@ -127,22 +129,22 @@ void Scene::initScene()
 		glm::vec3(-20.0f, 2.0f, 20.0f), glm::vec3(0.2f, 0.2f, 0.2f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.4f, 0.4f, 0.4f),	//Coloured lighting
 	};
 
-	for (int i = 0; i < LightPosAmbDifSpc.size(); i += 4)
+	for (int i = 0; i < lightPosAmbDifSpc.size(); i += 4)
 	{
-		m_sceneLightManager->addPointLight(LightPosAmbDifSpc.at(i).x, LightPosAmbDifSpc.at(i).y, LightPosAmbDifSpc.at(i).z, LightPosAmbDifSpc.at(i + 1), LightPosAmbDifSpc.at(i + 2), LightPosAmbDifSpc.at(i + 3));
+		m_sceneLightManager->addPointLight(lightPosAmbDifSpc.at(i).x, lightPosAmbDifSpc.at(i).y, lightPosAmbDifSpc.at(i).z, lightPosAmbDifSpc.at(i + 1), lightPosAmbDifSpc.at(i + 2), lightPosAmbDifSpc.at(i + 3));
 	}
 
 	//Objects that copy lights
 	for (int i = 0; i < m_sceneLightManager->getCurrentPointLights(); i++)
 	{
-		ModelBasic* light = new ModelBasic(LightPosAmbDifSpc.at(i));
+		ModelBasic* light = new ModelBasic(lightPosAmbDifSpc.at(i));
 		light->setMesh("res/meshes/cube.obj");
 		light->copyPointLight(i);
 		m_sceneMeshes.push_back(light);
 	}
 
 	//Floor
-	std::vector<glm::vec3> FloorPosRot =
+	std::vector<glm::vec3> floorPosRot =
 	{
 		//Position	
 		glm::vec3(0.0f, 0.0f, 0.0f), 
@@ -156,18 +158,18 @@ void Scene::initScene()
 		glm::vec3(-6.0f, 0.0f, -6.0f)
 	};
 	
-	for (int i = 0; i < FloorPosRot.size(); i ++)
+	for (int i = 0; i < floorPosRot.size(); i ++)
 	{
-		ModelLighting* Floor = new ModelLighting(FloorPosRot.at(i));
-		Floor->setMesh("res/meshes/plane.obj");
-		Floor->setDiffuseTexture("res/textures/carpet_diff.png");
-		Floor->setSpecularTexture("res/textures/carpet_spec.png");
-		Floor->setNormalTexture("res/textures/carpet_norm.png", false);
-		Floor->setHeightTexture("res/textures/carpet_height.png", 0.05f);
-		m_sceneMeshes.push_back(Floor);
+		ModelLighting* floor = new ModelLighting(floorPosRot.at(i));
+		floor->setMesh("res/meshes/plane.obj");
+		floor->setDiffuseTexture("res/textures/carpet_diff.png");
+		floor->setSpecularTexture("res/textures/carpet_spec.png");
+		floor->setNormalTexture("res/textures/carpet_norm.png", false);
+		floor->setHeightTexture("res/textures/carpet_height.png", 0.05f);
+		m_sceneMeshes.push_back(floor);
 	}
 	
-	std::vector<glm::vec3> ConcreteFloor =
+	std::vector<glm::vec3> concreteFloor =
 	{
 		//Position						//Rotation
 		glm::vec3(0.0f, -0.8f, 0.0f),	glm::vec3(0.0f, 0.0f, 0.0f),
@@ -182,19 +184,19 @@ void Scene::initScene()
 	};
 	
 	
-	for (int i = 0; i < ConcreteFloor.size(); i += 2)
+	for (int i = 0; i < concreteFloor.size(); i += 2)
 	{
-		ModelLighting* Floor = new ModelLighting(ConcreteFloor.at(i), ConcreteFloor.at(i + 1));
-		Floor->setMesh("res/meshes/slab.obj");
-		Floor->setDiffuseTexture("res/textures/concreteSlab_diff.png");
-		Floor->setSpecularTexture("res/textures/concreteSlab_spec.png");
-		Floor->setNormalTexture("res/textures/concreteSlab_norm.png", false);
-		Floor->setHeightTexture("res/textures/concreteSlab_height.png", 0.01f);
-		m_sceneMeshes.push_back(Floor);
+		ModelLighting* floor = new ModelLighting(concreteFloor.at(i), concreteFloor.at(i + 1));
+		floor->setMesh("res/meshes/slab.obj");
+		floor->setDiffuseTexture("res/textures/concreteSlab_diff.png");
+		floor->setSpecularTexture("res/textures/concreteSlab_spec.png");
+		floor->setNormalTexture("res/textures/concreteSlab_norm.png", false);
+		floor->setHeightTexture("res/textures/concreteSlab_height.png", 0.01f);
+		m_sceneMeshes.push_back(floor);
 	}
 	
 	//Side wall
-	std::vector<glm::vec3> SideWallPosRot =
+	std::vector<glm::vec3> sideWallPosRot =
 	{
 		//Position						//Rotation
 		glm::vec3(-9.0f, 2.8f, -6.0f),	glm::vec3(90.0f, 0.0f, -90.0f),
@@ -210,9 +212,9 @@ void Scene::initScene()
 		glm::vec3(6.0f, 2.8f, 9.0f),	glm::vec3(-90.0f, 180.0f, 0.0f)
 	};
 	
-	for (int i = 0; i < SideWallPosRot.size(); i += 2)
+	for (int i = 0; i < sideWallPosRot.size(); i += 2)
 	{
-		ModelLighting* wall = new ModelLighting(SideWallPosRot.at(i), SideWallPosRot.at(i + 1));
+		ModelLighting* wall = new ModelLighting(sideWallPosRot.at(i), sideWallPosRot.at(i + 1));
 		wall->setMesh("res/meshes/wall.obj");
 		wall->setDiffuseTexture("res/textures/woodWall_diff.png");
 		wall->setSpecularTexture("res/textures/woodWall_spec.png");
@@ -222,7 +224,7 @@ void Scene::initScene()
 	}
 	
 	//Roof
-	std::vector<glm::vec3> RoofPosRot =
+	std::vector<glm::vec3> roofPosRot =
 	{
 		//Position						//Rotation
 		glm::vec3(0.0f, 5.8f, 0.0f),	glm::vec3(0.0f, 0.0f, 180.0f),
@@ -236,9 +238,9 @@ void Scene::initScene()
 		glm::vec3(-6.0f, 5.8f, -6.0f),	glm::vec3(0.0f, 0.0f, 180.0f)
 	};
 	
-	for (int i = 0; i < RoofPosRot.size(); i += 2)
+	for (int i = 0; i < roofPosRot.size(); i += 2)
 	{
-		ModelLighting* Floor = new ModelLighting(RoofPosRot.at(i), RoofPosRot.at(i + 1));
+		ModelLighting* Floor = new ModelLighting(roofPosRot.at(i), roofPosRot.at(i + 1));
 		Floor->setMesh("res/meshes/wall.obj");
 		Floor->setDiffuseTexture("res/textures/metal2_diff.png");
 		Floor->setSpecularTexture("res/textures/metal2_spec.png");
@@ -262,7 +264,34 @@ void Scene::initScene()
 	stair->setSpecularTexture("res/textures/stairs_spec.png");
 	stair->setNormalTexture("res/textures/stairs_norm.png", false);
 	m_sceneMeshes.push_back(stair);
-	
+
+	//Bed
+	ModelLighting* bed = new ModelLighting(glm::vec3(-7.0f, -0.2f, 6.0f), glm::vec3(0.0f, 180.0f, 0.0f));
+	bed->setMesh("res/meshes/bed.obj");
+	bed->setDiffuseTexture("res/textures/bed_diff.png");
+	bed->setSpecularTexture("res/textures/bed_spec.png");
+	bed->setNormalTexture("res/textures/bed_norm.png", false);
+	m_sceneMeshes.push_back(bed);
+
+	//Crates
+	std::vector<glm::vec3> cratePosRot =
+	{
+		//Position						//Rotation
+		glm::vec3(7.75f, 0.0f, 7.75f),	glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(5.75f, 0.0f, 7.75f),	glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(7.25f, 0.0f, 5.1f),	glm::vec3(0.0f, 30.0f, 0.0f),
+		glm::vec3(7.5f, 2.0f, 7.5f),	glm::vec3(0.0f, 60.0f, 0.0f)
+	};
+
+	for (int i = 0; i < cratePosRot.size(); i+=2)
+	{
+		ModelLighting* crate = new ModelLighting(cratePosRot.at(i), cratePosRot.at(i+1));
+		crate->setMesh("res/meshes/crate.obj");
+		crate->setDiffuseTexture("res/textures/crate_diff.png");
+		crate->setSpecularTexture("res/textures/crate_spec.png");
+		crate->setNormalTexture("res/textures/crate_norm.png", false);
+		m_sceneMeshes.push_back(crate);
+	}
 	
 	//Grass
 	std::vector<glm::vec3> GrassPosRot =
