@@ -10,6 +10,7 @@ ModelGeometry::ModelGeometry(glm::vec3 position, glm::vec3 rotation)
 
 ModelGeometry::~ModelGeometry()
 {
+	m_GeometryTexture = nullptr;
 }
 
 /// <summary>

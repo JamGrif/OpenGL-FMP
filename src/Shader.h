@@ -70,7 +70,7 @@ public:
 
 private:
 
-	static std::vector<Shader*> loadedShaders;
+	static std::vector<Shader*> m_loadedShaders;
 
 	ShaderManager(); //Private so a class of this can't be initalized
 };

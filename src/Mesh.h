@@ -45,7 +45,7 @@ public:
 
 private:
 
-	static std::vector<Mesh*>	loadedModels;
+	static std::vector<Mesh*>	m_loadedModels;
 
 	MeshManager(); //Private so a class of this can't be initalized
 };

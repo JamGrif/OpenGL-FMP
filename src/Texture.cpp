@@ -4,11 +4,11 @@
 
 #include <iostream>
 
-std::vector<Texture*> TextureManager::loadedTextures;
-std::vector<CubeMap*> TextureManager::loadedCubemaps;
+std::vector<Texture*> TextureManager::m_loadedTextures;
+std::vector<CubeMap*> TextureManager::m_loadedCubemaps;
 
 Texture::Texture()
-	:m_texture(0), m_width(0), m_height(0), m_BPP(0)
+	:m_texture(0), m_width(0), m_height(0), m_BPP(0), m_filePath("")
 {
 	
 }
@@ -119,7 +119,7 @@ GLuint Texture::getTexture() const
 Texture* TextureManager::retrieveTexture(const char* filePath)
 {
 	//Check if texture is already loaded
-	for (Texture* t : loadedTextures)
+	for (Texture* t : m_loadedTextures)
 	{
 		if (t->getFilePath() == filePath)
 		{
@@ -133,7 +133,7 @@ Texture* TextureManager::retrieveTexture(const char* filePath)
 	if (!newTexture->loadTexture(filePath)) //Attempt to load texture
 	{
 		//Texture failed to load so check if missing texture texture is already loaded and then return it
-		for (Texture* t : loadedTextures)
+		for (Texture* t : m_loadedTextures)
 		{
 			if (t->getFilePath() == "res/textures/missingtexture.png")
 			{
@@ -148,8 +148,8 @@ Texture* TextureManager::retrieveTexture(const char* filePath)
 		newTexture->loadTexture("res/textures/missingtexture.png");
 	}
 
-	loadedTextures.push_back(newTexture);
-	return loadedTextures.back();
+	m_loadedTextures.push_back(newTexture);
+	return m_loadedTextures.back();
 }
 
 /// <summary>
@@ -159,36 +159,36 @@ Texture* TextureManager::retrieveTexture(const char* filePath)
 CubeMap* TextureManager::retrieveCubeMap()
 {
 	//If a loaded cubemap exists, return a pointer to it
-	if (loadedCubemaps.size() > 0)
+	if (m_loadedCubemaps.size() > 0)
 	{
-		return loadedCubemaps.back();
+		return m_loadedCubemaps.back();
 	}
 
 	//Otherwise create a new cubemap
 	CubeMap* t = new CubeMap;
 	t->loadCubeMap();
-	loadedCubemaps.push_back(t);
-	return loadedCubemaps.back();
+	m_loadedCubemaps.push_back(t);
+	return m_loadedCubemaps.back();
 }
 
 void TextureManager::clearTextures()
 {
-	for (Texture* t : loadedTextures)
+	for (Texture* t : m_loadedTextures)
 	{
 		delete t;
 		t = nullptr;
 	}
-	loadedTextures.clear();
+	m_loadedTextures.clear();
 }
 
 void TextureManager::clearCubemaps()
 {
-	for (CubeMap* cm : loadedCubemaps)
+	for (CubeMap* cm : m_loadedCubemaps)
 	{
 		delete cm;
 		cm = nullptr;
 	}
-	loadedCubemaps.clear();
+	m_loadedCubemaps.clear();
 }
 
 CubeMap::CubeMap()
@@ -234,9 +234,9 @@ bool CubeMap::loadCubeMap()
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_texture);
 
-	for (unsigned int i = 0; i < skyFaces.size(); i++)
+	for (unsigned int i = 0; i < m_skyFaces.size(); i++)
 	{
-		localBuffer = stbi_load(skyFaces[i], &m_width, &m_height, &m_BPP, 0);
+		localBuffer = stbi_load(m_skyFaces[i], &m_width, &m_height, &m_BPP, 0);
 		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, localBuffer);
 		stbi_image_free(localBuffer);
 	}

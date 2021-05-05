@@ -12,6 +12,7 @@ ModelEnvironment::ModelEnvironment(glm::vec3 position, glm::vec3 rotation)
 
 ModelEnvironment::~ModelEnvironment()
 {
+	m_skyTexture = nullptr;
 }
 
 /// <summary>

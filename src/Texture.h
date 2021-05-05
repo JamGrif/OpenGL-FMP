@@ -49,7 +49,7 @@ public:
 private:
 
 	//Overwrite these files to import custom skybox
-	std::vector<const char*> skyFaces = 
+	std::vector<const char*> m_skyFaces =
 	{ 
 		"res/textures/sky/right.png" ,
 		"res/textures/sky/left.png",
@@ -74,8 +74,8 @@ public:
 
 private:
 
-	static std::vector<Texture*> loadedTextures;
-	static std::vector<CubeMap*> loadedCubemaps;
+	static std::vector<Texture*> m_loadedTextures;
+	static std::vector<CubeMap*> m_loadedCubemaps;
 
 	TextureManager(); //Private so a class of this can't be initalized
 };

@@ -143,7 +143,7 @@ void Scene::initScene()
 		m_sceneMeshes.push_back(light);
 	}
 
-	//Floor
+	//Carpet Floor
 	std::vector<glm::vec3> floorPosRot =
 	{
 		//Position	
@@ -169,6 +169,7 @@ void Scene::initScene()
 		m_sceneMeshes.push_back(floor);
 	}
 	
+	//Concrete below grass
 	std::vector<glm::vec3> concreteFloor =
 	{
 		//Position						//Rotation
@@ -195,7 +196,7 @@ void Scene::initScene()
 		m_sceneMeshes.push_back(floor);
 	}
 	
-	//Side wall
+	//House wall
 	std::vector<glm::vec3> sideWallPosRot =
 	{
 		//Position						//Rotation
@@ -223,7 +224,7 @@ void Scene::initScene()
 		m_sceneMeshes.push_back(wall);
 	}
 	
-	//Roof
+	//Metal roof
 	std::vector<glm::vec3> roofPosRot =
 	{
 		//Position						//Rotation
@@ -398,7 +399,7 @@ void Scene::initScene()
 	}
 	
 	
-	//Side wall
+	//Perimeter wall
 	std::vector<glm::vec3> OutsideWall =
 	{
 		//Position						//Rotation
@@ -475,7 +476,7 @@ void Scene::initScene()
 
 	for (int i = 0; i < CottagePos.size(); i += 2)
 	{
-		ModelLighting* cottage = new ModelLighting(CottagePos.at(i), CottagePos.at(i + 1));
+		ModelLighting* cottage = new ModelLighting(CottagePos.at(i), CottagePos.at(i + 1.0));
 		cottage->setMesh("res/meshes/cottage.obj");
 		cottage->setDiffuseTexture("res/textures/cottage_diff.png");
 		cottage->setSpecularTexture("res/textures/cottage_spec.png");
@@ -533,10 +534,7 @@ void Scene::initScene()
 		signNum++;
 	}
 
-	/*
-		Floor showcase
-	*/
-
+	//Material showcase
 	std::vector<const char*> floorMaterials =
 	{
 		//Diffuse map							//Specular Map							//Emision						//Normal Map 
@@ -578,8 +576,6 @@ void Scene::initScene()
 		48.0f
 	};
 
-
-
 	int materialNum = 0;
 	for (int i = 0; i < floorPos.size(); i++)
 	{
@@ -601,7 +597,7 @@ void Scene::initScene()
 		materialNum += 4;
 	}
 
-	//Normal vs no normal
+	//Normal vs no normal showcase
 	std::vector<glm::vec3> planePos =
 	{
 		//Position						//Rotation

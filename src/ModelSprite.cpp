@@ -13,7 +13,7 @@ ModelSprite::ModelSprite(glm::vec3 position, glm::vec3 rotation)
 
 ModelSprite::~ModelSprite()
 {
-	
+	m_modelSprite = nullptr;
 }
 
 /// <summary>

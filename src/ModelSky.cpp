@@ -12,7 +12,7 @@ ModelSky::ModelSky(glm::vec3 position, glm::vec3 rotation)
 	//Skybox uses its own VBO and attribute system to allow the use of a custom cube
 	glGenBuffers(1, &m_skyboxVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, m_skyboxVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_skyboxVertices), &m_skyboxVertices, GL_STATIC_DRAW);
 }
 
 ModelSky::~ModelSky()

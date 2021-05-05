@@ -64,7 +64,7 @@ Framebuffer::Framebuffer(bool multisampled)
 	//Create the VBO object the screen will be drawn to
 	glGenBuffers(1, &m_quadVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, m_quadVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_quadVertices), &m_quadVertices, GL_STATIC_DRAW);
 }
 
 Framebuffer::~Framebuffer()

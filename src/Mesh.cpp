@@ -6,9 +6,10 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-std::vector<Mesh*> MeshManager::loadedModels;
+std::vector<Mesh*> MeshManager::m_loadedModels;
 
 Mesh::Mesh()
+	:m_filePath("")
 {
 }
 
@@ -108,7 +109,7 @@ const char* Mesh::getFilePath() const
 Mesh* MeshManager::loadModel(const char* filePath)
 {
 	//Check if model is already loaded loaded
-	for (Mesh* im : loadedModels)
+	for (Mesh* im : m_loadedModels)
 	{
 		if (im->getFilePath() == filePath)
 		{
@@ -123,7 +124,7 @@ Mesh* MeshManager::loadModel(const char* filePath)
 	if (!newMesh->loadMesh(filePath)) //Attempt to load texture
 	{
 		//Texture failed to load so check if missing texture texture is already loaded and then return it
-		for (Mesh* m : loadedModels)
+		for (Mesh* m : m_loadedModels)
 		{
 			if (m->getFilePath() == "res/meshes/cube.obj")
 			{
@@ -138,16 +139,16 @@ Mesh* MeshManager::loadModel(const char* filePath)
 		newMesh->loadMesh("res/meshes/cube.obj");
 	}
 
-	loadedModels.push_back(newMesh);
-	return loadedModels.back();
+	m_loadedModels.push_back(newMesh);
+	return m_loadedModels.back();
 }
 
 void MeshManager::clearMeshes()
 {
-	for (Mesh* m : loadedModels)
+	for (Mesh* m : m_loadedModels)
 	{
 		delete m;
 		m = nullptr;
 	}
-	loadedModels.clear();
+	m_loadedModels.clear();
 }

@@ -30,7 +30,7 @@ public:
 
 private:
 
-	float quadVertices[24] =
+	float m_quadVertices[24] =
 	{
 		//Pos		//Texcoords
 		-1.0f,  1.0f,  0.0f, 1.0f,

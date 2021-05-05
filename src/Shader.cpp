@@ -4,10 +4,10 @@
 #include <sstream>
 #include <iostream>
 
-std::vector<Shader*> ShaderManager::loadedShaders;
+std::vector<Shader*> ShaderManager::m_loadedShaders;
 
 Shader::Shader()
-	:m_shaderProgram(0)
+	:m_shaderProgram(0), m_vertexPath(""), m_fragmentPath(""), m_tessellationControlPath(""), m_tessellationEvaluationPath(""), m_geometryPath("")
 {
 	
 
@@ -526,7 +526,7 @@ int Shader::getUniformLocation(const std::string& name)
 Shader* ShaderManager::retrieveShader(const GLchar* vertexPath, const GLchar* fragmentPath)
 {
 	//Check if shader program is already loaded
-	for (Shader* s : loadedShaders)
+	for (Shader* s : m_loadedShaders)
 	{
 		if (s->getVertexPath() == vertexPath && s->getFragmentPath() == fragmentPath)
 		{
@@ -540,14 +540,14 @@ Shader* ShaderManager::retrieveShader(const GLchar* vertexPath, const GLchar* fr
 
 	Shader* s = new Shader();
 	s->loadShader(vertexPath, fragmentPath);
-	loadedShaders.push_back(s);
-	return loadedShaders.back();
+	m_loadedShaders.push_back(s);
+	return m_loadedShaders.back();
 }
 
 Shader* ShaderManager::retrieveShader(const GLchar* vertexPath, const GLchar* tessellationControlPath, const GLchar* tessellationEvaluationPath, const GLchar* fragmentPath)
 {
 	//Check if exact same shader program is already loaded
-	for (Shader* s : loadedShaders)
+	for (Shader* s : m_loadedShaders)
 	{
 		if (s->getVertexPath() == vertexPath &&
 			s->getTessellationControlPath() == tessellationControlPath &&
@@ -564,14 +564,14 @@ Shader* ShaderManager::retrieveShader(const GLchar* vertexPath, const GLchar* te
 
 	Shader* s = new Shader();
 	s->loadShader(vertexPath, tessellationControlPath, tessellationEvaluationPath, fragmentPath);
-	loadedShaders.push_back(s);
-	return loadedShaders.back();
+	m_loadedShaders.push_back(s);
+	return m_loadedShaders.back();
 }
 
 Shader* ShaderManager::retrieveShader(const GLchar* vertexPath, const GLchar* geometryPath, const GLchar* fragmentPath)
 {
 	//Check if exact same shader program is already loaded
-	for (Shader* s : loadedShaders)
+	for (Shader* s : m_loadedShaders)
 	{
 		if (s->getVertexPath() == vertexPath &&
 			s->getGeometryPath() == geometryPath &&
@@ -587,16 +587,16 @@ Shader* ShaderManager::retrieveShader(const GLchar* vertexPath, const GLchar* ge
 
 	Shader* s = new Shader();
 	s->loadShader(vertexPath, geometryPath, fragmentPath);
-	loadedShaders.push_back(s);
-	return loadedShaders.back();
+	m_loadedShaders.push_back(s);
+	return m_loadedShaders.back();
 }
 
 void ShaderManager::clearShaders()
 {
-	for (Shader* s : loadedShaders)
+	for (Shader* s : m_loadedShaders)
 	{
 		delete s;
 		s = nullptr;
 	}
-	loadedShaders.clear();
+	m_loadedShaders.clear();
 }

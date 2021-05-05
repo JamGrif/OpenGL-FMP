@@ -10,11 +10,8 @@ int main()
 		app->appLoop();
 	}
 
-
 	delete app;
 	app = nullptr;
-
-	
 
 	return 0;
 }

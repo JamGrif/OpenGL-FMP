@@ -6,13 +6,15 @@ The scene shows most of the features originally promised in my project proposal 
 
 Features:
 ADS Blinn-Phong light reflection model, Diffuse Map, Specular Map, Emission Map, Height Map, Normal Map, skybox cubemap, 
-reflection environment map, refraction environment map, Mountains via Tessellation shaders, Model inflation via Geometry shader,
-post-processing screen filters, coloured lighting, Directional/Point/Spot light, load external 3D models, load external textures,
-load external shaders, Parallax mapping, sprite blending, mouse + keyboard input, camera movement on all 3 axis
+reflection environment map, refraction environment map, Mountains via height map with Tessellation shaders, 
+Model inflation via Geometry shader, post-processing screen filters, coloured lighting, Directional/Point/Spot light, load external 3D models,
+load external textures, load external shaders, Parallax mapping, sprite blending, mouse + keyboard input, camera movement on all 3 axis
 
 Controls:
 W/A/S/D to move around the camera
 Moving the mouse moves the front facing vector of the camera
+Q lowers surrounding mountain elevation
+E raises surrounding mountain elevation
 1/2/3/4/5 changes the screen filter applied to the drawn frame
 	1 Normal 
 	2 Inverse
