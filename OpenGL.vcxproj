@@ -139,8 +139,9 @@
       <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>xcopy /y /d $(ProjectDir)dependencies\assimp\lib\assimp-vc140-mt.dll $(TargetDir)
+mkdir $(TargetDir)\res 
+xcopy /y /d $(ProjectDir)res $(TargetDir)\res /S</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -162,8 +163,9 @@
       <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>xcopy /y /d $(ProjectDir)dependencies\assimp\lib\assimp-vc140-mt.dll $(TargetDir)
+mkdir $(TargetDir)\res 
+xcopy /y /d $(ProjectDir)res $(TargetDir)\res /S</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

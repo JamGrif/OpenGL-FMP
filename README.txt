@@ -1,8 +1,6 @@
-The built .exe versions of both the debug and release versions of the program are included
-They can be found at (ProjectDirectory)->bin->x64->Release/Debug->OpenGL.exe
+Built exe is available at (ProjectDirectory)->bin->x64->Release/Debug->OpenGL.exe
+Program can only be compiled in 64bit mode in Visual Studio
 The Release version is recommended as while both versions are visually the same, the Release version has superior performance and loading times
-
-The scene shows most of the features originally promised in my project proposal and allows the user to fly around to see them all for themselves
 
 Features:
 ADS Blinn-Phong light reflection model, Diffuse Map, Specular Map, Emission Map, Height Map, Normal Map, skybox cubemap, 
