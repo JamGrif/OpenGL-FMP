@@ -1,3 +1,5 @@
+Renderer Showcase Video - https://www.youtube.com/watch?v=QOnscYxgrNQ
+
 Built exe is available at (ProjectDirectory)->bin->x64->Release/Debug->OpenGL.exe
 Program can only be compiled in 64bit mode in Visual Studio
 The Release version is recommended as while both versions are visually the same, the Release version has superior performance and loading times
