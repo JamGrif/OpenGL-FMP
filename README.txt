@@ -1,3 +1,5 @@
+I have been developing this project further here: https://github.com/JamGrif/OpenGLProject
+
 Renderer Showcase Video - https://www.youtube.com/watch?v=QOnscYxgrNQ
 
 Built exe is available at (ProjectDirectory)->bin->x64->Release/Debug->OpenGL.exe
